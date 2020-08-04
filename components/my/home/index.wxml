@@ -1,0 +1,80 @@
+<!--components/my/home/index.wxml-->
+<view class="card">
+	<view class="card-content card-my-wrap" wx:if="{{!hasUserInfo && canIUse}}">
+		<view class="my-avatar-wrap">
+			<image class="userinfo-avatar" src="/imgs/logo.png"></image>
+			<text class="userinfo-nickname card-content-tip">请登录，选择班级</text>
+		</view>
+
+		<view class="my-label-wrap">
+			<!-- <text class="label bg-blue" style="padding:10rpx 40rpx;" bindtap="goSignup">登录</text> -->
+			<button class="cu-btn round bg-blue" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="getUserInfo">
+				登录</button>
+		</view>
+	</view>
+
+	<view wx:else class="card-content card-my-wrap">
+		<view class="my-avatar-wrap">
+			<image class="userinfo-avatar iamge-border" src="{{userInfo.avatarUrl}}" id="{{userInfo.userId}}" bindtap='goProfile'></image>
+			<text class="userinfo-nickname">{{userInfo.nickName}}</text>
+		</view>
+
+		<view class="my-label-wrap">
+			<view class="cu-tag round bg-orange light">{{userInfo.realName}}</view>
+			<view class="cu-tag round bg-olive light">{{userInfo.genderName}}</view>
+			<view class="cu-tag round bg-blue light">{{userInfo.province}}{{userInfo.city}}</view>
+			<view class="cu-tag round bg-yellow light">{{userInfo.classNumber}}</view>
+			<view wx:if="{{classmates.length>4}}" class="cu-tag round light">约饭{{userInfo.dateCount}}次</view>
+			<view wx:if="{{classmates.length>4}}" class="cu-tag round light">被约{{userInfo.callDateCount}}次</view>
+		</view>
+	</view>
+</view>
+
+<view class="cu-list menu card-menu margin-top">
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text class="cuIcon-emojiflashfill text-pink"></text>
+			<text class="text-grey">同学</text>
+		</view>
+		<view class="action">
+			<view class="cu-avatar-group">
+				<view class="cu-avatar round sm" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10004.jpg);"></view>
+				<view class="cu-avatar round sm" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10003.jpg);"></view>
+				<view class="cu-avatar round sm" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10002.jpg);"></view>
+				<view class="cu-avatar round sm" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10001.jpg);"></view>
+			</view>
+			<text class="text-grey text-sm">4 人</text>
+		</view>
+	</view>
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text class="cuIcon-calendar text-green"></text>
+			<text class="text-grey">课程表</text>
+		</view>
+		<view class="action">
+			<button class="cu-btn round bg-green">
+				<text class="cuIcon-upload"></text> 上传</button>
+		</view>
+	</view>
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text class="cuIcon-tagfill text-red"></text>
+			<text class="text-grey">标签</text>
+		</view>
+		<view class="action">
+			<view class="cu-tag round bg-orange light">音乐</view>
+			<view class="cu-tag round bg-olive light">电影</view>
+			<view class="cu-tag round bg-blue light">旅行</view>
+		</view>
+	</view>
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text class="cuIcon-group_fill text-green"></text>
+			<text class="text-grey">班级</text>
+		</view>
+		<view class="action">
+			<text class="text-grey text-sm">2019-MBA-PB-4班</text>
+		</view>
+	</view>
+
+</view>

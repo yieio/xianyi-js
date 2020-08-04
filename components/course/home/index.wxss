@@ -1,0 +1,47 @@
+/* pages/course/home/index.wxss */
+/**最近课程样式**/
+.nextcourse-title {
+  border-left: solid 16rpx #3cb371;
+}
+
+.course-info-wrap {
+  margin-top: 10rpx;
+}
+
+.course-date {
+  font-size: 42rpx;
+  font-weight: bold;
+}
+
+.course-date-tip {
+  font-size: 24rpx;
+  color: #888;
+}
+
+.course-name {
+  line-height: 2;
+}
+.course-name-txt{
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.course-name-tip {
+  font-size: 24rpx;
+  color: #888;
+}
+
+.course-info {
+  font-size: 32rpx;
+  margin-top: 26rpx;
+}
+
+.exam-tip{
+  padding: 0rpx 20rpx;
+  border-radius: 30rpx;
+  color:#ffffff;
+  display: inline-block;
+  font-size: 24rpx;
+  margin-left: 14rpx;
+  vertical-align: middle;
+}
