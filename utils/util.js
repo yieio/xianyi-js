@@ -66,6 +66,16 @@ const formatWeekDay = date=>{
  return weekday[date.getDay()]; 
 }
 
+const  getGenderName = gint=> {
+  var result = "未知";
+  if (gint == 1) {
+    result = "靓仔";
+  } else if (gint == 2) {
+    result = "美女";
+  }
+  return result;
+}
+
 module.exports = {
  formatTime: formatTime,
  getDateGap: getDateGap,
@@ -73,4 +83,5 @@ module.exports = {
  formatDate: formatDate,
  formatDayGap: formatDayGap,
  formatDateTime:formatDateTime,
+ getGenderName:getGenderName
 }

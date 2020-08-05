@@ -6,9 +6,9 @@
 	<view class="cu-bar tabbar bg-white shadow foot">
 		<view class="action" bindtap="navChange" data-cur="course">
 			<view class='cuIcon-cu-image'>
-				<image src="/imgs/course-icon{{curPage=='course'?'-cur':''}}.png"></image>
+				<image src="/imgs/xianyi-icon{{curPage=='course'?'-cur':''}}.png"></image>
 			</view>
-			<view class="{{curPage=='course'?'text-green':'text-gray'}}">课程表</view>
+			<view class="{{curPage=='course'?'text-green':'text-gray'}}">闲倚</view>
 		</view>
 
 		<view class="action" bindtap="navChange" data-cur="my">

@@ -20,12 +20,12 @@
 		</view>
 
 		<view class="my-label-wrap">
-			<view class="cu-tag round bg-orange light">{{userInfo.realName}}</view>
-			<view class="cu-tag round bg-olive light">{{userInfo.genderName}}</view>
-			<view class="cu-tag round bg-blue light">{{userInfo.province}}{{userInfo.city}}</view>
-			<view class="cu-tag round bg-yellow light">{{userInfo.classNumber}}</view>
-			<view wx:if="{{classmates.length>4}}" class="cu-tag round light">约饭{{userInfo.dateCount}}次</view>
-			<view wx:if="{{classmates.length>4}}" class="cu-tag round light">被约{{userInfo.callDateCount}}次</view>
+			<view class="cu-tag round bg-orange light margin-top-xs">{{userInfo.realName}}</view>
+			<view class="cu-tag round bg-olive light margin-top-xs">{{userInfo.genderName}}</view>
+			<view class="cu-tag round bg-blue light margin-top-xs">{{userInfo.province}}{{userInfo.city}}</view>
+			<view class="cu-tag round bg-yellow light margin-top-xs">{{userInfo.classNumber}}</view>
+			<view wx:if="{{classmates.length>4}}" class="cu-tag round light margin-top-xs">约饭{{userInfo.dateCount}}次</view>
+			<view wx:if="{{classmates.length>4}}" class="cu-tag round light margin-top-xs">被约{{userInfo.callDateCount}}次</view>
 		</view>
 	</view>
 </view>
@@ -70,11 +70,31 @@
 	<view class="cu-item {{menuArrow?'arrow':''}}">
 		<view class="content">
 			<text class="cuIcon-group_fill text-green"></text>
-			<text class="text-grey">班级</text>
+			<text class="text-grey">班集体</text>
 		</view>
 		<view class="action">
-			<text class="text-grey text-sm">2019-MBA-PB-4班</text>
+			<text class="text-grey text-sm">{{userInfo.classNumber}}</text>
 		</view>
 	</view>
 
 </view>
+
+<!--弹窗-->
+<!--加入班级弹窗-->
+<view class="cu-modal bottom-modal {{isShowAddClassDialog?'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">加入班集体</view> 
+    </view>
+    <view class="padding-xl">
+      你还未加入班集体，快去加入吧~
+    </view>
+    <view class="cu-bar bg-white"> 
+      <view class="action margin-0 flex-sub solid-right" bindtap="hideModal">取消</view>
+      <view class="action margin-0 flex-sub  text-green" bindtap="hideModal">去加入</view>
+    </view>
+  </view>
+</view>
+<!--加入班级弹窗结束-->
+
+<!--弹窗结束-->

@@ -22,7 +22,9 @@ create.Page(store, {
    * 切换底部导航
    */
   navChange:function(e){
-    this.store.set(this.store.data, 'selectPage', e.currentTarget.dataset.cur)
+    let title = e.currentTarget.dataset.cur=="my"?"我":"闲倚";
+    wx.setNavigationBarTitle({title:title});
+    this.store.set(this.store.data, 'selectPage', e.currentTarget.dataset.cur);
   },
 
 
@@ -40,8 +42,8 @@ create.Page(store, {
     } else if (this.data.canIUse) {
       // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
       // 所以此处加入 callback 以防止这种情况
-      app.userInfoReadyCallback = res => {
-        this.store.data.userInfo = res.userInfo
+      app.userInfoReadyCallback = res => { 
+        this.store.data.userInfo = app.globalData.userInfo
         this.store.data.hasUserInfo = true
       }
     } else {

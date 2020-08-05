@@ -8,6 +8,7 @@ export default {
     latestCourse: [],
     schoolTerm:1,
     
+    isShowAddClassDialog:false,
     
     logs: [],
   },
