@@ -66,8 +66,23 @@ create.Component(store,{
       });
     },
 
-    goCourse:function(e){
-      config.router.goCourse();
+    actionTap:function(e){
+      let key = e.currentTarget.dataset.key;
+      let _t = this;
+      let _tsd = _t.store.data;
+      let classNumber = "";
+      let schoolTerm = 1;
+      let courseDate = "";
+      console.log(_tsd.latestCourse);
+      if(_tsd.latestCourse.length>0){
+        classNumber = _tsd.latestCourse[0].classNumber;
+        schoolTerm = _tsd.latestCourse[0].schoolTerm;
+        courseDate = _tsd.latestCourse[0].courseDate;
+      }
+      if(key=="goCourseList"){
+        config.router.goCourseList(e,classNumber,schoolTerm,courseDate); 
+      }
+      
 
     }
   },

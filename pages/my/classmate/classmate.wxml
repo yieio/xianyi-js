@@ -1,0 +1,60 @@
+<!--pages/my/classmate/classmate.wxml-->
+<view class="container">
+	<view class="card">
+		<text class="card-title mate-title">同学</text>
+		<view wx:if="{{classmates.length>0}}" class="cu-tag round bg-green light margin-left-xs">{{classmates.length}}</view>
+		<view wx:if="{{classmates.length<=0}}" class="card-content card-content-tip" style="">
+			还没有同学，发到群里让他们进来先吧^o^
+		</view>
+		<view wx:else class="card-content clearfix">
+			<block wx:for="{{classmates}}" wx:for-index="idx" wx:for-item="cmate" wx:key="unique">
+				<block wx:if="{{idx<15}}">
+					<view id="{{cmate.userId}}" bindtap="actionTap" key="goProfile" class="classmate-item-wrap ">
+						<view class="classmate-item-header">
+							<image src='{{cmate.avatarUrl}}'></image>
+						</view>
+						<view class="classmate-item-name">
+							<text>{{cmate.realName}}</text>
+						</view>
+					</view>
+				</block>
+				<block wx:else>
+					<view id="{{cmate.userId}}" bindtap="actionTap" key="goProfile" class="classmate-item-wrap {{isShowAllClassmate?'':'hide'}}">
+						<view class="classmate-item-header">
+							<image src='{{cmate.avatarUrl}}'></image>
+						</view>
+						<view class="classmate-item-name">
+							<text>{{cmate.realName}}</text>
+						</view>
+					</view>
+				</block>
+			</block>
+		</view>
+		<view class="cu-bar bg-white">
+			<view wx:if="{{classmates.length>15}}" class="action margin-0 flex-sub" bindtap="actionTap" data-key="showAllClassmate">{{isShowAllClassmate?'收起':'查看全部同学'}}</view>
+		</view>
+	</view>
+
+	<view class="cu-list menu card-menu margin-bottom-xl">
+		<view class="cu-item" bindtap="menuTap" data-key="classNumber">
+			<view class="content">
+				<text class="cuIcon-newshot text-green"></text>
+				<text class="text-grey">{{userInfo.className}}</text>
+			</view>
+			<view class="action">
+				<text class="text-grey text-sm">{{userInfo.classNumber}}</text>
+			</view>
+		</view>
+
+		<view class="cu-item">
+			<view class="content">
+				<text class="cuIcon-share text-green"></text>
+				<button class="cu-btn bg-white text-grey" style="padding:0; font-size:30rpx;" open-type="share">邀请同学加入</button>
+			</view>
+			<view class="action">
+
+			</view>
+		</view>
+
+	</view>
+</view>

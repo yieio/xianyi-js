@@ -1,0 +1,28 @@
+<!--pages/course/list/list.wxml-->
+<!--pages/course/course.wxml-->
+<view class="container">
+ 
+<scroll-view scroll-y="true" style="height:{{scrollViewHeight}}px" scroll-into-view="{{scrollToViewId}}">
+ 
+  <view class="cu-timeline" wx:for="{{courses}}" wx:for-item="cDate" wx:for-index="idx" wx:key="unique"  id="date{{idx}}">
+  <view class="cu-time">{{cDate.date}} {{cDate.gap}} {{cDate.week}}</view>
+  <view class="cu-item" wx:for="{{cDate.courseItems}}" wx:for-item="course" wx:for-index="idy" wx:key="unique">
+    <view class="content">
+       <view class="course-item-time">
+        <text>{{course.timeGap}} @{{course.classRoom}}</text>
+      </view>
+      <view class="course-item-name-wrap" style="background:{{course.nameEnSimple}}">
+        <view class="course-item-name">
+          <text>{{course.name}}</text>
+        </view>
+        <view class="course-item-tip">
+          <text>{{course.teacher}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+</scroll-view>
+ 
+</view>

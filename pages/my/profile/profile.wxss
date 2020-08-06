@@ -1,0 +1,4 @@
+/* pages/my/profile/profile.wxss */
+.my-avatar-wrap .iamge-border{
+  border:solid 8rpx #f1f1f1;
+}

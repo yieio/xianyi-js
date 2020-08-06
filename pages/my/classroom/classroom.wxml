@@ -1,0 +1,94 @@
+<!--pages/my/classroom/classroom.wxml-->
+
+<view class="container">
+	<view class="card">
+		<view class="padding-lg" style="text-align:center">
+			<view class="text-xsl"><text class="cuIcon-group_fill text-green"></text></view>
+
+			<view class="cu-tag round bg-blue light">{{userInfo.className}}</view>
+		</view>
+
+		<view class="cu-bar bg-white">
+			<view wx:if="{{!userInfo.className}}" class="action margin-0 flex-sub solids-right" bindtap="classActionTap" data-key="createClass">新建班级</view>
+			<view class="action margin-0 flex-sub  text-green" bindtap="classActionTap" data-key="changeClass">加入班级</view>
+		</view>
+	</view>
+
+<view class="cu-list menu card-menu"> 
+	<view class="cu-item" bindtap="menuTap" data-key="classNumber">
+		<view class="content">
+			<text class="cuIcon-newshot text-green"></text>
+			<text class="text-grey">班级编号</text>
+		</view>
+		<view class="action">
+		<text class="text-grey text-sm">{{userInfo.classNumber}}</text>
+		</view>
+	</view>
+ 
+	<view class="cu-item">
+		<view class="content">
+			<text class="cuIcon-share text-green"></text>
+      <button class="cu-btn bg-white text-grey" style="padding:0; font-size:30rpx;"  open-type="share">邀请同学加入</button>
+		</view>
+		<view class="action">
+			 
+		</view>
+	</view>
+
+</view>
+
+	<!--弹窗-->
+	<!--更换班级弹窗-->
+	<view class="cu-modal bottom-modal {{isShowChangeClassDialog?'show':''}}">
+  <form bindsubmit="changeClassroomFormSubmit">
+		<view class="cu-dialog" style="height:100vh;">
+			<view class="cu-bar bg-white"> 
+				<view class="action text-grey" bindtap="hideModal">取消</view>
+				<view class="action title">加入班集体</view>
+				<view class="action text-grey" style="margin-right:30rpx;">
+					<button class="cu-btn bg-green" form-type="submit">加入</button>
+				</view>
+			</view>
+			<view class="padding" style="text-align:left;">
+				<view class="cu-form-group">
+					<view class="title">班级编号</view>
+					<input id="classNumber" name="classNumber" type="number" placeholder="输入班级编号"></input>
+				</view>
+			</view>
+		</view>
+  </form>
+	</view>
+	<!--更换班级弹窗-->
+
+	<!--创建班级弹窗-->
+	<view class="cu-modal bottom-modal {{isShowCreateClassDialog?'show':''}}">
+  <form bindsubmit="createClassroomFormSubmit">
+		<view class="cu-dialog" style="height:100vh;">
+			<view class="cu-bar bg-white">
+
+				<view class="action text-grey" bindtap="hideModal">取消</view>
+				<view class="action title">新建班集体</view>
+				<view class="action text-grey" style="margin-right:30rpx;">
+					<button class="cu-btn bg-green" form-type="submit">新建</button>
+				</view>
+
+			</view>
+			<view class="padding" style="text-align:left;">
+				<view class="cu-form-group">
+					<view class="title">班级名称</view>
+					<input id="name" name="name" placeholder="输入班级名称"></input>
+				</view>
+				<view class="cu-form-group">
+					<view class="title">入学年份</view>
+					<input id="startYear" name="startYear" type="number" placeholder="输入入学年份"></input>
+				</view>
+			</view>
+		</view>
+    </form>
+	</view>
+	<!--创建班级弹窗-->
+
+	<!--弹窗结束-->
+
+
+</view>

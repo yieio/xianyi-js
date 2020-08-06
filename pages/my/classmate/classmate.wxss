@@ -1,0 +1,25 @@
+/* pages/my/classmate/classmate.wxss */
+.classmate-item-wrap {
+  width: 126rpx;
+  height: 150rpx;
+  margin: 18rpx 0;
+  float: left;
+}
+
+.classmate-item-header {
+  margin: auto;
+  width: 110rpx;
+  height: 120rpx;
+  text-align: center;
+}
+
+.classmate-item-header image {
+  width: 110rpx;
+  height: 110rpx;
+  border-radius: 20rpx;
+}
+
+.classmate-item-name {
+  text-align: center;
+  font-size: 26rpx;
+}

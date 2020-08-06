@@ -9,6 +9,12 @@ export default {
     schoolTerm:1,
     
     isShowAddClassDialog:false,
+    isShowCreateClassDialog:false,
+    isShowChangeClassDialog:false,
+
+    classmates:[],
+    subClassmates:[],
+    
     
     logs: [],
   },

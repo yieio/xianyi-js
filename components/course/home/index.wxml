@@ -23,7 +23,8 @@
 
 	<view wx:else class="card-content card-content-tip">最近没有课~~</view>
 
-	<view class="card-action" style="">
-		<view class="action-btn" hover-class="action-btn-hover" style="" bindtap='goCourse'>查看课程表</view>
+
+	<view class="cu-bar bg-white solid-top">
+		<view class="action margin-0 flex-sub" bindtap="actionTap" data-key="goCourseList">查看课程表</view>
 	</view>
 </view>
