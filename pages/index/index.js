@@ -34,7 +34,20 @@ create.Page(store, {
       url: '../logs/logs'
     })
   },
-  onLoad: function () {
+
+  getUserInfo: function (e) {
+    this.store.data.userInfo = e.detail.userInfo
+    this.store.data.hasUserInfo = true
+  },
+
+
+  onLoad: function (options) {
+    var _t = this;
+    var _tsd = _t.store.data;
+    if(options.classNumber){
+      _tsd.classNumber = options.classNumber; 
+    } 
+
     if (app.globalData.userInfo) {
       this.store.data.userInfo = app.globalData.userInfo
       this.store.data.hasUserInfo = true
@@ -58,9 +71,22 @@ create.Page(store, {
     } 
 
   },
-  getUserInfo: function (e) {
-    this.store.data.userInfo = e.detail.userInfo
-    this.store.data.hasUserInfo = true
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function () {
+    let _t = this;
+    let _tsd = _t.store.data; 
+    let classNumber = _tsd.userInfo.classNumber || _tsd.classNumber;
+    let className = _tsd.userInfo.className || "";
+
+    console.log("onShareAppMessage=>"+classNumber);
+    
+    return { 
+      title: className+'最近课程',
+      path:'/pages/index/index?classNumber='+ classNumber
+    };
 
   }
 })

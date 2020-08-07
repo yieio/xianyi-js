@@ -1,1 +1,52 @@
 /* pages/course/list/list.wxss */
+.cu-timeline>.cu-item:before{
+  background:none;
+}
+
+.cu-timeline{
+  background: none;
+}
+
+.course-info-wrap {
+  margin-top: 10rpx;
+  padding:26rpx;
+  padding-top:20rpx;
+  display:inline-block;
+  border-radius: 15rpx;
+}
+
+.course-date { 
+  color:#888;
+}
+
+.course-date-tip {
+  font-size: 24rpx;
+  color: #ffffff;
+}
+
+.course-name {
+  line-height: 2;
+}
+.course-name-txt{
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.course-name-tip {
+  font-size: 24rpx;
+  color: #ffffff;
+}
+
+.course-info {
+  font-size: 32rpx; 
+}
+
+.exam-tip{
+  padding: 0rpx 20rpx;
+  border-radius: 30rpx;
+  color:#ffffff;
+  display: inline-block;
+  font-size: 24rpx;
+  margin-left: 14rpx;
+  vertical-align: middle;
+}

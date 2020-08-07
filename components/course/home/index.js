@@ -5,7 +5,7 @@ import config from '../../../config.js';
 import store from '../../../store/index'
 
 create.Component(store,{
-  use:['userInfo','hasUserInfo','courseDate','latestCourse'],
+  use:['userInfo','hasUserInfo','courseDate','latestCourse','classNumber'],
   /**
    * 组件的属性列表
    */
@@ -69,17 +69,16 @@ create.Component(store,{
     actionTap:function(e){
       let key = e.currentTarget.dataset.key;
       let _t = this;
-      let _tsd = _t.store.data;
-      let classNumber = "";
-      let schoolTerm = 1;
-      let courseDate = "";
-      console.log(_tsd.latestCourse);
-      if(_tsd.latestCourse.length>0){
-        classNumber = _tsd.latestCourse[0].classNumber;
-        schoolTerm = _tsd.latestCourse[0].schoolTerm;
-        courseDate = _tsd.latestCourse[0].courseDate;
-      }
+      let _tsd = _t.store.data; 
       if(key=="goCourseList"){
+        let classNumber = "";
+        let schoolTerm = 1;
+        let courseDate = "";  
+        if(_tsd.latestCourse.length>0){
+          classNumber = _tsd.latestCourse[0].classNumber;
+          schoolTerm = _tsd.latestCourse[0].schoolTerm;
+          courseDate = _tsd.latestCourse[0].courseDate;
+        };
         config.router.goCourseList(e,classNumber,schoolTerm,courseDate); 
       }
       
@@ -90,9 +89,18 @@ create.Component(store,{
   lifetimes:{
     attached: function() {
       // 在组件实例进入页面节点树时执行 
-      var classNumber = '2019-MBA-PB-4班';
-      var userId = 0;
-      this.getLatestCourse(classNumber,userId);
+      var _t = this;
+      var _tsd = _t.store.data;
+      var classNumber = _tsd.userInfo.classNumber || _tsd.classNumber || '';
+      var userId = _tsd.userInfo.userId || 0;
+      if(!classNumber&&userId==0){
+        //不请求服务器，引导授权登录，加入班级
+        console.log(classNumber);
+        console.log(userId);
+      }else{
+        _t.getLatestCourse(classNumber,userId); 
+      }
+      
     },
     detached: function() {
       // 在组件实例被从页面节点树移除时执行

@@ -4,6 +4,8 @@ export default {
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     
+    classNumber:'',
+
     courseDate: {hasCourse: false},
     latestCourse: [],
     schoolTerm:1,

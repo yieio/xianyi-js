@@ -1,10 +1,12 @@
 {
   "pages": [
+    
     "pages/index/index",
     "pages/my/classroom/classroom",
     "pages/my/classmate/classmate",
     "pages/my/profile/profile",
     "pages/course/list/list"
+    
   ],
   "window": {
     "backgroundTextStyle": "light",

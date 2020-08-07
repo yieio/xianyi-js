@@ -1,28 +1,41 @@
 <!--pages/course/list/list.wxml-->
 <!--pages/course/course.wxml-->
 <view class="container">
- 
-<scroll-view scroll-y="true" style="height:{{scrollViewHeight}}px" scroll-into-view="{{scrollToViewId}}">
- 
-  <view class="cu-timeline" wx:for="{{courses}}" wx:for-item="cDate" wx:for-index="idx" wx:key="unique"  id="date{{idx}}">
-  <view class="cu-time">{{cDate.date}} {{cDate.gap}} {{cDate.week}}</view>
-  <view class="cu-item" wx:for="{{cDate.courseItems}}" wx:for-item="course" wx:for-index="idy" wx:key="unique">
-    <view class="content">
-       <view class="course-item-time">
-        <text>{{course.timeGap}} @{{course.classRoom}}</text>
-      </view>
-      <view class="course-item-name-wrap" style="background:{{course.nameEnSimple}}">
-        <view class="course-item-name">
-          <text>{{course.name}}</text>
-        </view>
-        <view class="course-item-tip">
-          <text>{{course.teacher}}</text>
-        </view>
-      </view>
-    </view>
-  </view>
-</view>
 
-</scroll-view>
- 
+	<view class="cu-bar bg-white">
+		<view class="action">
+			<text class="cuIcon-titles text-green"></text>
+			<text class="text-xl text-bold">{{className?className:classNumber}}</text>
+		</view> 
+	</view>
+		<view class="bg-white padding padding-top-xs shadow ">
+			<view wx:if="{{courseStartDate}}" class="cu-tag round bg-green light">开课时间：{{courseStartDate}}</view>
+			<view wx:if="{{courseEndDate}}" class="cu-tag round bg-red light">结课时间：{{courseEndDate}}</view>
+		</view>
+
+	<scroll-view scroll-y="true" style="height:{{scrollViewHeight}}px" scroll-into-view="{{scrollToViewId}}">
+
+		<view class="cu-timeline" wx:for="{{courses}}" wx:for-item="cDate" wx:for-index="idx" wx:key="unique" id="date{{idx}}">
+			<!-- <view class="cu-time">{{cDate.date}} {{cDate.gap}} {{cDate.week}}</view> -->
+			<view class="cu-time">{{cDate.simpleDate}}</view>
+			<view class="cu-item">
+				<view class="course-date">{{cDate.date}} {{cDate.gap}} {{cDate.week}}</view>
+				<view class="course-info-wrap" wx:for="{{cDate.courseItems}}" wx:for-item="item" wx:for-index="idy" wx:key="unique" style="background:{{item.nameEnSimple}};color:#ffffff">
+					<view class="course-info">
+						<text class="course-date-tip">{{item.timeGap}} @{{item.classRoom}}</text>
+						<view class="course-name">
+							<text class="course-name-txt">{{item.name}}</text>
+							<text wx:if="{{item.isExam}}" class="bg-orange exam-tip">考试</text>
+						</view>
+						<view class="course-name-tip">{{item.teacher}}</view>
+					</view>
+				</view>
+
+
+
+			</view>
+		</view>
+
+	</scroll-view>
+
 </view>

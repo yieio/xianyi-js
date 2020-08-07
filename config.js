@@ -37,6 +37,7 @@ var router = {
     let _classNumber = classNumber || e.currentTarget.dataSet.classNumber;
     let _schoolTerm = schoolTerm || e.currentTarget.dataSet.schoolTerm;
     let _courseDate = courseDate || e.currentTarget.dataSet.courseDate;
+    
 
     wx.navigateTo({
       url: '/pages/course/list/list?classNumber=' + _classNumber + '&schoolTerm=' + _schoolTerm+'&courseDate='+_courseDate
