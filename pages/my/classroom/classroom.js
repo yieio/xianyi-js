@@ -51,7 +51,7 @@ create.Page(store,{
    */
   createClassroomFormSubmit:function(e){
     var _t = this;
-    var _td = _t.store.data;
+    var _tsd = _t.store.data;
     var formData = e.detail.value; 
 
     formData.name = formData.name.replace(/^\s*|\s*$/g, "");
@@ -87,8 +87,8 @@ create.Page(store,{
         if (result.data.type == 200) {
           var _data = result.data.data;
           //处理返回的数据
-          _td.userInfo.classNumber = _data.classInfo.classNumber;
-          _td.userInfo.className = _data.classInfo.name;
+          _tsd.userInfo.classNumber = _data.classInfo.classNumber;
+          _tsd.userInfo.className = _data.classInfo.name;          
           
           wx.showToast({
             title: '新建班级成功',
@@ -96,7 +96,7 @@ create.Page(store,{
             duration: 2000
           });
 
-          _td.isShowCreateClassDialog = false;
+          _tsd.isShowCreateClassDialog = false;
         } else {
           wx.showToast({
             title: '新建班级失败',

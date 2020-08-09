@@ -21,51 +21,6 @@ create.Component(store,{
    * 组件的方法列表
    */
   methods: {
-    getLatestCourse: function(classNumber,userId) {
-      var _t = this;
-      var _td = _t.store.data;
-      wx.request({
-        url: config.api.latestCourse,
-        method: "GET",
-        dataType: "json",
-        data:{classNumber:classNumber,userId:userId},
-        success: function(result) {
-          console.log(config.api.latestCourse + "?classNumber=" + classNumber + "=>");
-          console.log(result);
-          if (result.data.type == 200) {
-            var cs = result.data.data.courses;
-            var courseDate = {};
-  
-            if (cs.length <= 0) {
-              return;
-            }
-  
-            var item = cs[0];
-            var date = new Date(item.courseDate);
-            courseDate.hasCourse = true;
-            courseDate.date = util.formatDate(date);
-            courseDate.gap = util.formatDayGap(util.getDateGap(date));
-            courseDate.week = util.formatWeekDay(date);
-  
-            for (var i = 0; i < cs.length; i++) {
-              var item = cs[i];
-              var start = util.formatTime(item.startTime);
-              var end = util.formatTime(item.endTime);
-              cs[i].timeGap = start + "-" + end;
-            }
-  
-            _t.store.set(_td,'courseDate',courseDate);
-            _t.store.set(_td,'latestCourse', cs);
-            _t.store.set(_td,'schoolTerm', item.schoolTerm);
-
-          } else { 
-            _t.store.set(_td,'courseDate',null);
-            _t.store.set(_td,'latestCourse', []);
-          }
-        }
-      });
-    },
-
     actionTap:function(e){
       let key = e.currentTarget.dataset.key;
       let _t = this;
@@ -75,11 +30,24 @@ create.Component(store,{
         let schoolTerm = 1;
         let courseDate = "";  
         if(_tsd.latestCourse.length>0){
-          classNumber = _tsd.latestCourse[0].classNumber;
-          schoolTerm = _tsd.latestCourse[0].schoolTerm;
+          classNumber = _tsd.latestCourse[0].classNumber || _tsd.userInfo.classNumber;
+          schoolTerm = _tsd.latestCourse[0].schoolTerm || _tsd.schoolTerm;
           courseDate = _tsd.latestCourse[0].courseDate;
         };
-        config.router.goCourseList(e,classNumber,schoolTerm,courseDate); 
+
+        classNumber = classNumber||_tsd.classNumber;
+
+        let userId = _tsd.userInfo.userId || 0;
+        if(!classNumber&&userId==0){
+          wx.showToast({
+            title: '没有课程表',
+            icon: 'none',
+            duration: 2000
+          });
+
+        }else{
+          config.router.goCourseList(e,classNumber,schoolTerm,courseDate);   
+        } 
       }
       
 
@@ -87,20 +55,9 @@ create.Component(store,{
   },
 
   lifetimes:{
-    attached: function() {
-      // 在组件实例进入页面节点树时执行 
-      var _t = this;
-      var _tsd = _t.store.data;
-      var classNumber = _tsd.userInfo.classNumber || _tsd.classNumber || '';
-      var userId = _tsd.userInfo.userId || 0;
-      if(!classNumber&&userId==0){
-        //不请求服务器，引导授权登录，加入班级
-        console.log(classNumber);
-        console.log(userId);
-      }else{
-        _t.getLatestCourse(classNumber,userId); 
-      }
-      
+    created:function(){ 
+    },
+    attached: function() { 
     },
     detached: function() {
       // 在组件实例被从页面节点树移除时执行

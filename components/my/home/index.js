@@ -16,7 +16,8 @@ create.Component(store, {
     'canIUse',
     'isShowAddClassDialog',
     'classmates',
-    'subClassmates'
+    'subClassmates',
+    'classNumber'
   ],
   /**
    * 组件的属性列表
@@ -33,22 +34,39 @@ create.Component(store, {
    * 组件的方法列表
    */
   methods: {
+    /**
+     * 授权获取用户信息，提交到服务端保存
+     * @param  e 
+     */
     getUserInfo: function (e) {
       //拒绝授权的时候
       if (!e.detail.userInfo) {
         return;
       }
-      let userInfo = e.detail.userInfo;
-      userInfo.genderName = util.getGenderName(userInfo.gender);
-
-      this.store.data.userInfo = userInfo;
-      this.store.data.hasUserInfo = true;
 
       //获取到了用户信息，提交到服务器，这里可能有之前登录失败的情况需要处理
       if (!app.globalData.userToken) {
+        //弹窗让用户重试
+        wx.showToast({
+          title: '服务请求失败，请重新进入小程序',
+          icon: 'none',
+          duration: 2000
+        });
         return;
       }
-      var _t = this;
+
+      let _t = this;
+      let _tsd = _t.store.data;
+
+      let userInfo = e.detail.userInfo;
+      userInfo.genderName = util.getGenderName(userInfo.gender);
+      //从入口进来带了classNumber 参数，自动加入该班级
+      userInfo.classNumber = _tsd.classNumber || '';
+
+      _tsd.userInfo = userInfo;
+      _tsd.hasUserInfo = true;
+
+
       wx.request({
         url: app.api.signup,
         method: "POST",
@@ -60,20 +78,17 @@ create.Component(store, {
           console.log(result);
           if (result.data.type == 200) {
             var _data = result.data.data;
-            app.globalData.userInfo = _data.userInfo;
-            app.globalData.userInfo.genderName = util.getGenderName(_data.userInfo.gender);
-            _t.store.data.userInfo = e.detail.userInfo;
-            _t.store.data.hasUserInfo = true;
-            //设置storage
-            wx.setStorageSync('userInfo', app.globalData.userInfo);
+            let ui = _data.userInfo;
+            ui.genderName = util.getGenderName(_data.userInfo.gender);
+
+            _tsd.userInfo = ui;
+            _tsd.hasUserInfo = true;
+
             //检查班级设置情况，没有班级弹窗引导去设置
-            if (!_data.userInfo.classNumber) {
-
-
-
-            }
+            _t.hasClassroom();
 
           } else {
+            //弹窗让用户重试
             wx.showToast({
               title: '授权登录失败',
               icon: 'none',
@@ -82,54 +97,31 @@ create.Component(store, {
           }
         }
       })
-
-
     },
-
-    getClassmates: function () {
-      var _t = this;
-      var _td = _t.store.data;
-      wx.request({
-        url: config.api.classmates,
-        method: "GET",
-        header: {
-          'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
-        },
-        dataType: "json",
-        success: function (result) {
-          if (result.data.type != 200) {
-            wx.showToast({
-              title: '获取同学信息失败',
-              icon: 'none',
-              duration: 2000
-            });
-            return;
-          }
-
-          var cs = result.data.data.classmates;
-          _td.classmates = cs;
-          let sub = 3;
-          if(cs.length>sub){
-            _td.subClassmates = [];
-            for(let i=0;i<sub;i++){
-              _td.subClassmates.push(cs[i]);
-            }
-
-          }else{
-            _td.subClassmates = cs;
-          }
-
-
-        }
-      });
-    },
-
-
-
-    hideModal: function (e) {
+    /**
+     * 是否已经加入班级
+     */
+    hasClassroom: function () {
       let _t = this;
-      let _td = _t.store.data;
-      _td.isShowAddClassDialog = false;
+      let _tsd = _t.store.data;
+      let result = !_tsd.userInfo.classNumber;
+      _tsd.isShowAddClassDialog = result;
+      return !result;
+    },
+
+    isLogin: function () {
+      let _t = this;
+      let _tsd = _t.store.data;
+      let result = !app.globalData.userToken;
+      if (result) {
+        wx.showToast({
+          title: '您需要先登录',
+          icon: 'none',
+          duration: 2000
+        });
+      }
+      return !result;
+
     },
 
     /**
@@ -137,11 +129,31 @@ create.Component(store, {
      * @param e 
      */
     menuTap: function (e) {
+      let _t = this;
       let key = e.currentTarget.dataset.key;
       if (key == "classroom") {
-        config.router.goClassroom();
-      }else if(key=="classmate"){
-        config.router.goClassmate();
+        if (_t.isLogin()) {
+          if (_t.hasClassroom()) {
+            config.router.goClassroom();
+          }
+        }
+
+      } else if (key == "classmate") {
+        if (_t.isLogin()) {
+          if (_t.hasClassroom()) {
+            config.router.goClassmate();
+          }
+        }
+      } else if (key == "myCourse") {
+        if (_t.isLogin()) {
+          config.router.goMyCourse();
+        } 
+      } else if(key=="classCourse"){
+        if (_t.isLogin()) {
+          if (_t.hasClassroom()) {
+            config.router.goClassCourse();
+          }
+        }
       }
     },
 
@@ -149,12 +161,17 @@ create.Component(store, {
      * 其他绑定的点击事件
      * @param e 
      */
-    actionTap:function(e){
+    actionTap: function (e) {
+      //console.log(e);
       var _t = this;
       var _tsd = _t.store.data;
       let key = e.currentTarget.dataset.key;
-      if(key=="goProfile"){
-        config.router.goProfile(e,_tsd.userInfo.userId);
+      if (key == "goProfile") {
+        config.router.goProfile(e, _tsd.userInfo.userId);
+      } else if (key == "hideModal") {
+        _tsd.isShowAddClassDialog = false;
+      } else if (key == "goClassroom") {
+        config.router.goClassroom();
       }
     }
 
@@ -164,19 +181,9 @@ create.Component(store, {
     attached: function () {
       let _t = this;
       let _td = _t.store.data;
-      // 在组件实例进入页面节点树时执行 
-      console.log(this.store.data.userInfo);
-      console.log(this.store.data.hasUserInfo);
-
-      if (!_td.userInfo.classNumber) {
+      if (_td.userInfo.hasUserInfo && !_td.userInfo.classNumber) {
         _td.isShowAddClassDialog = true;
       }
-      
-      //获取同学
-      if(app.globalData.userToken){
-        _t.getClassmates();
-      }
-
     },
     detached: function () {
       // 在组件实例被从页面节点树移除时执行

@@ -35,7 +35,7 @@ create.Page(store, {
       scrollToViewId: "date5",
       classNumber: options.classNumber,
       className: options.className || '',
-      userId: options.userId ||0, //传userid将获取用户的选修课
+      userId: options.userId || _tsd.userInfo.userId || 0, //传userid将获取用户的选修课
       schoolTerm: options.schoolTerm,
       courseDate: options.courseDate,
       courseStartDate: '',
@@ -67,7 +67,7 @@ create.Page(store, {
           var classInfo = result.data.data.classInfo;
           if(classInfo){
             _t.setData({
-              className:classInfo.className
+              className:classInfo.name
             })
           }
 
@@ -207,7 +207,11 @@ create.Page(store, {
     var _td = _t.data;
     return {
       title: "课程表",
-      path: '/pages/course/list/list?classNumber=' + _td.classNumber + '&schoolTerm=' + _td.schoolTerm + '&courseDate=' + _td.courseDate + '&className=' + _td.className
+      path: '/pages/course/list/list?classNumber='+ _td.classNumber 
+      + '&schoolTerm=' + _td.schoolTerm 
+      + '&courseDate=' + _td.courseDate 
+      + '&className=' + _td.className
+      + '&userId=' + _td.userId
     };
 
   }

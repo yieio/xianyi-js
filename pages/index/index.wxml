@@ -1,6 +1,6 @@
 <!--index.wxml-->
 <view class="container">
-	<latest-course  wx:if="{{curPage=='course'}}"></latest-course>
+	<latest-course  wx:if="{{curPage=='course'}}" id="latestCourseComponent"></latest-course>
 	<my-page  wx:if="{{curPage=='my'}}"></my-page>
 
 	<view class="cu-bar tabbar bg-white shadow foot">

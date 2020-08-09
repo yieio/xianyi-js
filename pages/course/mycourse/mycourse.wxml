@@ -1,0 +1,96 @@
+<!--pages/course/mycourse/mycourse.wxml-->
+<view class="container">
+	<view class="cu-bar bg-white fixed">
+		<view class="action">
+			<text class="cuIcon-titles text-green"></text>
+			<text class="text-xl">{{"已选修课程"}}</text>
+			<view class="cu-tag round bg-green light margin-left-xs">{{myCourses.length}}</view>
+		</view>
+		<view class="action">
+			<button class="cu-btn line-green round" bindtap="actionTap" data-key="showAddMyCourseDialog">添加</button>
+		</view>
+	</view>
+
+	<!--选修课程列表开始--> 
+	<view style="margin-top:130rpx;">
+		<view class="cu-list menu card-menu margin-top">
+			<view class="cu-item" wx:for="{{myCourses}}" wx:for-item="course" wx:for-index="idx" wx:key="unique" id="{{course.id}}">
+				<view class="content padding-tb-sm">
+					<view>
+						<text class="cuIcon-favor text-blue margin-right-xs"></text> {{course.name}}
+            </view>
+					<view class="text-gray text-sm" style="line-height:1.5"> 
+          <view class="margin-top-xs">{{course.teacher}}</view>
+						<view class="">开课：{{course.startTime}}</view>
+						<view class="">结课：{{course.endTime}}</view>
+					</view>
+				</view>
+				<view class="action">
+					<button class="cu-btn line-gray round" bindtap="actionTap" data-key="goMyCourseInfo" data-courseid="{{course.id}}">设置</button>
+				</view> 
+			</view>
+ 
+		</view>
+	</view>
+ 
+	<!--选修课程列表结束-->
+
+	<!--弹窗-->
+	<!--添加选修课弹窗-->
+	<view class="cu-modal bottom-modal {{isShowAddMyCourseDialog?'show':''}}">
+		<form bindsubmit="courseFormSubmit">
+			<view class="cu-dialog" style="height:100vh;">
+				<view class="cu-bar bg-white">
+					<view class="action text-grey" bindtap="actionTap" data-key="hideAddMyCourseDialog">取消</view>
+					<view class="action title">添加选修课</view>
+					<view class="action text-grey" style="margin-right:30rpx;">
+						<button class="cu-btn bg-green" form-type="submit">添加</button>
+					</view>
+				</view>
+				<view class="padding" style="text-align:left;">
+					<view class="cu-form-group">
+						<view class="title">课程名称</view>
+						<input id="name" name="name" placeholder="输入课程名称"></input>
+					</view>
+					<view class="cu-form-group">
+						<view class="title">老师姓名</view>
+						<input id="teacher" name="teacher" placeholder="输入老师姓名"></input>
+					</view>
+					<view><text class="text-gray text-df" style="line-height: 80rpx;padding: 1rpx 30rpx;">首节课信息：</text></view>
+					<view class="cu-form-group">
+						<view class="title">课室名</view>
+						<input id="classRoom" name="classRoom" placeholder="输入课室名"></input>
+					</view> 
+					<view class="cu-form-group">
+						<view class="title">开课日期</view>
+						<picker mode="date" name="courseDate" id="courseDate" value="{{courseDate}}" start="2020-01-01" bindchange="pickerDataChange">
+							<input class="" value="{{courseDate}}" placeholder="请选择首节课日期" disabled="true" style="text-align:left;" />
+
+						</picker>
+					</view>
+
+					<view class="cu-form-group">
+						<view class="title">开始时间</view>
+						<picker name="startTime" id="startTime"   mode="time" value="{{startTime}}" start="08:00" end="23:00" bindchange="pickerDataChange">
+							<input class="" value="{{startTime}}" placeholder="开始时间" disabled="true" />
+						</picker>
+
+					</view>
+
+					<view class="cu-form-group">
+						<view class="title">结束时间</view>
+						<picker name="endTime" id="endTime"  mode="time" value="{{endTime}}" start="08:30" end="23:00" bindchange="pickerDataChange">
+							<input class="" value="{{endTime}}" placeholder="截止时间" disabled="true" />
+						</picker>
+
+					</view>
+
+
+
+				</view>
+			</view>
+		</form>
+	</view>
+	<!--添加选修课弹窗结束-->
+	<!--弹窗结束-->
+</view>

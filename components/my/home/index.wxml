@@ -5,7 +5,7 @@
 	<view class="card-content card-my-wrap" wx:if="{{!hasUserInfo && canIUse}}">
 		<view class="my-avatar-wrap">
 			<image class="userinfo-avatar" src="/imgs/logo.png"></image>
-			<text class="userinfo-nickname card-content-tip">请登录，加入班级</text>
+			<text class="userinfo-nickname card-content-tip">请登录，加入班集体</text>
 		</view>
 
 		<view class="my-label-wrap">
@@ -21,10 +21,10 @@
 		</view>
 
 		<view class="my-label-wrap">
-			<view class="cu-tag round bg-orange light margin-top-xs">{{userInfo.realName}}</view>
+			<view wx:if="{{userInfo.realName}}" class="cu-tag round bg-orange light margin-top-xs">{{userInfo.realName}}</view>
 			<view class="cu-tag round bg-olive light margin-top-xs">{{userInfo.genderName}}</view>
 			<view class="cu-tag round bg-blue light margin-top-xs">{{userInfo.province}}{{userInfo.city}}</view>
-			<view class="cu-tag round bg-purple light margin-top-xs">{{userInfo.className}}</view>
+			<view wx:if="{{userInfo.className}}" class="cu-tag round bg-purple light margin-top-xs">{{userInfo.className}}</view>
 			<view class="cu-tag round bg-cyan light margin-top-xs">约饭{{userInfo.dateCount}}次</view>
 			<view class="cu-tag round bg-cyan light margin-top-xs">被约{{userInfo.callDateCount}}次</view>
 		</view>
@@ -34,55 +34,49 @@
 
 <!--我页面菜单列表开始-->
 <view class="cu-list menu card-menu margin-top">
-	<view class="cu-item" bindtap="menuTap" data-key="classmate">
-		<view class="content">
-			<text class="cuIcon-emojiflashfill text-pink"></text>
-			<text class="text-grey">同学</text>
-		</view>
-		<view class="action">
-			<view class="cu-avatar-group">
-				<view 
-				wx:for="{{subClassmates}}" 
-				wx:for-item="cmate" 
-				wx:for-index="idx" 
-				wx:key="unique" 
-				class="cu-avatar round sm" 
-				style="background-image:url({{cmate.avatarUrl}});">
-				</view>
-			</view>
-			<text class="text-grey text-sm">{{classmates.length}} 人</text>
-		</view>
-	</view>
-	<view class="cu-item">
-		<view class="content">
-			<text class="cuIcon-calendar text-green"></text>
-			<text class="text-grey">课程表</text>
-		</view>
-		<view class="action">
-			<button class="cu-btn round bg-green">
-				<text class="cuIcon-upload"></text> 上传</button>
-		</view>
-	</view>
-	<view class="cu-item">
-		<view class="content">
-			<text class="cuIcon-tagfill text-red"></text>
-			<text class="text-grey">标签</text>
-		</view>
-		<view class="action">
-			<view class="cu-tag round bg-orange light">音乐</view>
-			<view class="cu-tag round bg-olive light">电影</view>
-			<view class="cu-tag round bg-blue light">旅行</view>
-		</view>
-	</view>
 	<view class="cu-item" bindtap="menuTap" data-key="classroom">
 		<view class="content">
 			<text class="cuIcon-group_fill text-green"></text>
 			<text class="text-grey">班集体</text>
 		</view>
 		<view class="action">
-			<text class="text-grey text-sm">{{userInfo.className}}</text>
+			<text class="text-grey text-sm">{{userInfo.className||"未加入"}}</text>
 		</view>
 	</view>
+	<view class="cu-item" bindtap="menuTap" data-key="classmate">
+		<view class="content">
+			<text class="cuIcon-emojiflashfill text-yellow"></text>
+			<text class="text-grey">同学</text>
+		</view>
+		<view class="action">
+			<view class="cu-avatar-group">
+				<view wx:for="{{subClassmates}}" wx:for-item="cmate" wx:for-index="idx" wx:key="unique" class="cu-avatar round sm" style="background-image:url({{cmate.avatarUrl}});">
+				</view>
+			</view>
+			<text class="text-grey text-sm">{{classmates.length}} 人</text>
+		</view>
+	</view>
+	 
+	<view class="cu-item" bindtap="menuTap" data-key="classCourse">
+		<view class="content">
+			<text class="cuIcon-calendar text-green"></text>
+			<text class="text-grey">课程表</text>
+		</view>
+		<view class="action">
+			
+		</view>
+	</view>
+
+	<view class="cu-item" bindtap="menuTap" data-key="myCourse">
+		<view class="content">
+			<text class="cuIcon-favorfill text-red"></text>
+			<text class="text-grey">选修课</text>
+		</view>
+		<view class="action">
+		 
+		</view>
+	</view>
+
 
 </view>
 <!--我页面菜单列表结束-->
@@ -90,7 +84,7 @@
 
 <!--弹窗-->
 <!--加入班级弹窗-->
-<view class="cu-modal bottom-modal {{isShowAddClassDialog?'show':''}}">
+<view class="cu-modal bottom-modal {{isShowAddClassDialog?'show':''}}" bindtap="actionTap" data-key="hideModal">
 	<view class="cu-dialog">
 		<view class="cu-bar bg-white justify-end">
 			<view class="content">加入班集体</view>
@@ -99,11 +93,14 @@
 			你还未加入班集体，快去加入吧~
 		</view>
 		<view class="cu-bar bg-white">
-			<view class="action margin-0 flex-sub solid-right" bindtap="hideModal">取消</view>
-			<view class="action margin-0 flex-sub  text-green" bindtap="hideModal">去加入</view>
+			<view class="action margin-0 flex-sub solid-right" bindtap="actionTap" data-key="hideModal">取消</view>
+			<view class="action margin-0 flex-sub  text-green" bindtap="actionTap" data-key="goClassroom">去加入</view>
 		</view>
 	</view>
 </view>
 <!--加入班级弹窗结束-->
+
+<!--授权注册失败重试弹窗-->
+<!--授权注册失败重试结束-->
 
 <!--弹窗结束-->

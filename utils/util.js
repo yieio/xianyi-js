@@ -14,7 +14,7 @@ const formatTime = date => {
 * 2019-09-30T09:00:00 要输出 2019/09/30 09:00
 */
 const formatDateTime = dateTime=>{ 
- return dateTime.replace(/-/g,'/').replace('T',' '); 
+ return dateTime.replace(/-/g,'/').replace('T',' ').slice(0,16); 
 }
 
 const formatDate = date => {

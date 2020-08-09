@@ -14,7 +14,7 @@
 							<image src='{{cmate.avatarUrl}}'></image>
 						</view>
 						<view class="classmate-item-name">
-							<text>{{cmate.realName}}</text>
+							<text>{{cmate.realName||cmate.nickName}}</text>
 						</view>
 					</view>
 				</block>
@@ -24,7 +24,7 @@
 							<image src='{{cmate.avatarUrl}}'></image>
 						</view>
 						<view class="classmate-item-name">
-							<text>{{cmate.realName}}</text>
+							<text>{{cmate.realName||cmate.nickName}}</text>
 						</view>
 					</view>
 				</block>

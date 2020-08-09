@@ -1,11 +1,14 @@
 {
-  "pages": [
-    
+  "pages": [ 
     "pages/index/index",
     "pages/my/classroom/classroom",
     "pages/my/classmate/classmate",
     "pages/my/profile/profile",
-    "pages/course/list/list"
+    "pages/course/list/list",
+    "pages/course/classcourse/classcourse",
+    "pages/course/classcourse/courseinfo",
+    "pages/course/mycourse/mycourse",
+    "pages/course/mycourse/courseinfo"
     
   ],
   "window": {

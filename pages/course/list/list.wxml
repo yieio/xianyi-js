@@ -5,7 +5,7 @@
 	<view class="cu-bar bg-white">
 		<view class="action">
 			<text class="cuIcon-titles text-green"></text>
-			<text class="text-xl text-bold">{{className?className:classNumber}}</text>
+			<text class="text-xl">{{className||classNumber||"我的课程表"}}</text>
 		</view> 
 	</view>
 		<view class="bg-white padding padding-top-xs shadow ">
