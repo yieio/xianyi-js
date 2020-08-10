@@ -88,7 +88,7 @@ create.Page(store,{
           var _data = result.data.data;
           //处理返回的数据
           _tsd.userInfo.classNumber = _data.classInfo.classNumber;
-          _tsd.userInfo.className = _data.classInfo.name;          
+          _tsd.userInfo.className = _data.classInfo.name;    
           
           wx.showToast({
             title: '新建班级成功',

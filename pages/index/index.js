@@ -134,7 +134,7 @@ create.Page(store, {
    * @param  userInfo 
    */
   login: function (userInfo) {
-    let _t = this; 
+    let _t = this;
     let _tsd = _t.store.data;
 
     // 登录
@@ -149,7 +149,7 @@ create.Page(store, {
         userInfo.code = res.code;
         //发送code 到服务端
         wx.request({
-          url: config.api.login+"?code="+res.code,
+          url: config.api.login + "?code=" + res.code,
           method: "post",
           dataType: "json",
           data: userInfo,
@@ -162,7 +162,7 @@ create.Page(store, {
 
               if (_data.userInfo.nickName) {
                 let ui = _data.userInfo;
-                ui.genderName = util.getGenderName(_data.userInfo.gender); 
+                ui.genderName = util.getGenderName(_data.userInfo.gender);
 
                 _tsd.userInfo = ui;
                 _tsd.hasUserInfo = true;
@@ -227,10 +227,25 @@ create.Page(store, {
    * 监控用户数据的变化，写入app.globalData和storeage
    * @param  e 
    */
-  userInfoChangeHandler:function(e){
-    if(e.userInfo){
+  userInfoChangeHandler: function (e) { 
+    if (e.userInfo) {
       app.globalData.userInfo = e.userInfo;
       wx.setStorageSync('userInfo', app.globalData.userInfo);
+    } else {
+      let _tsd = this.store.data;
+      let keys = Object.keys(e);
+      let isChange = false;
+      for(let i=0;i<keys.length;i++){
+        if(keys[i].indexOf("userInfo")==0){
+          isChange = true;
+          break;
+        }
+      }
+      if(isChange){
+        app.globalData.userInfo = _tsd.userInfo;
+      wx.setStorageSync('userInfo', app.globalData.userInfo);
+      }
+
     }
 
   },
@@ -270,7 +285,7 @@ create.Page(store, {
     let _tsd = _t.store.data;
     let classNumber = _tsd.userInfo.classNumber || _tsd.classNumber;
     let className = _tsd.userInfo.className || "";
- 
+
     return {
       title: className + '最近课程',
       path: '/pages/index/index?classNumber=' + classNumber

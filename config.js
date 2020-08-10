@@ -1,6 +1,6 @@
 var config = {
   //host: "https://rice.yieio.com/api"
-  host: "https://192.168.31.182:5001/api"
+  host: "http://192.168.1.195:7001/api"
 }
 
 var api = {
@@ -25,6 +25,7 @@ var api = {
   addMyCourse: config.host + "/study/AddMyCourse",
   deleteMyCourseDate: config.host + "/study/deleteMyCourse",
   updateMyCourse: config.host + "/study/UpdateMyCourse",
+  uploadClassCourse:config.host+"/study/UploadClassCourse",
 }
 
 module.exports.api = api;
@@ -46,7 +47,7 @@ var router = {
    */
   goCourseList: function (e, classNumber, schoolTerm,courseDate) {
     let _classNumber = classNumber  || '';
-    let _schoolTerm = schoolTerm  || 1;
+    let _schoolTerm = schoolTerm;
     let _courseDate = courseDate  || '';
     
 

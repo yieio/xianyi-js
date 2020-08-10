@@ -1,5 +1,6 @@
 {
   "pages": [ 
+    
     "pages/index/index",
     "pages/my/classroom/classroom",
     "pages/my/classmate/classmate",
