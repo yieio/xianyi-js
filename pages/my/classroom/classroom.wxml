@@ -14,7 +14,7 @@
 		</view>
 	</view>
 
-	<view wx:if="{{userInfo.className}}" class="cu-list menu card-menu">
+	<view wx:if="{{userInfo.className}}" class="cu-list menu card-menu margin-top-x margin-bottom-x shadow-lg radius">
 		<view class="cu-item" bindtap="menuTap" data-key="classNumber">
 			<view class="content">
 				<text class="cuIcon-newshot text-green"></text>
@@ -25,14 +25,13 @@
 			</view>
 		</view>
 
-		<view class="cu-item">
-			<view class="content">
-				<text class="cuIcon-share text-green"></text>
-				<button class="cu-btn bg-white text-grey" style="padding:0; font-size:30rpx;" open-type="share">邀请同学加入</button>
-			</view>
-			<view class="action">
+		<view class="cu-item arrow">
 
-			</view>
+			<button class="cu-btn content" open-type="share">
+				<text class="cuIcon-share text-cyan"></text>
+				<text class="text-grey">邀请同学加入</text>
+			</button>
+
 		</view>
 
 	</view>

@@ -212,8 +212,7 @@ create.Page(store, {
         wx.uploadFile({
           url: config.api.uploadClassCourse,
           header: {
-            'Authorization': 'Bearer ' + app.globalData.userToken.accessToken,
-            'Content-type':'multipart/form-data; boundary=XXX'
+            'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
           },
           filePath: tempFilePaths[0].path,
           name: 'file',
@@ -221,7 +220,7 @@ create.Page(store, {
             'classNumber': _tsd.userInfo.classNumber
           },
           success (result){ 
-            if (result.data.type == 200) {
+            if (result.statusCode == 200) {
               wx.showToast({
                 title: '课程上传成功',
                 icon: 'success',

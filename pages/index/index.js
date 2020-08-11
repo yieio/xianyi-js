@@ -227,7 +227,7 @@ create.Page(store, {
    * 监控用户数据的变化，写入app.globalData和storeage
    * @param  e 
    */
-  userInfoChangeHandler: function (e) { 
+  userInfoChangeHandler: function (e) {
     if (e.userInfo) {
       app.globalData.userInfo = e.userInfo;
       wx.setStorageSync('userInfo', app.globalData.userInfo);
@@ -235,15 +235,15 @@ create.Page(store, {
       let _tsd = this.store.data;
       let keys = Object.keys(e);
       let isChange = false;
-      for(let i=0;i<keys.length;i++){
-        if(keys[i].indexOf("userInfo")==0){
+      for (let i = 0; i < keys.length; i++) {
+        if (keys[i].indexOf("userInfo") == 0) {
           isChange = true;
           break;
         }
       }
-      if(isChange){
+      if (isChange) {
         app.globalData.userInfo = _tsd.userInfo;
-      wx.setStorageSync('userInfo', app.globalData.userInfo);
+        wx.setStorageSync('userInfo', app.globalData.userInfo);
       }
 
     }
@@ -275,6 +275,15 @@ create.Page(store, {
       _t.getWxSetting();
     }
 
+  },
+
+  /**
+   * 下拉刷新
+   */
+  onPullDownRefresh: function () {
+    let _t = this; 
+    _t.getWxSetting(); 
+    wx.stopPullDownRefresh();
   },
 
   /**
