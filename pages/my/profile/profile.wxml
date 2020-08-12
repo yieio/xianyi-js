@@ -1,22 +1,20 @@
 <!--pages/my/profile/profile.wxml-->
 <view class="container">
 
-	<view class="card">
-		<!-- <image wx:if="{{isShowEdit}}" class="setting-icon" src="/imgs/settings-b.png" bindtap="goEditProfile" style="height:48rpx;width:48rpx;float:right;margin-right:32rpx;"></image> -->		
-		
-		<text class="cuIcon-edit text-gray fr margin-right" bindtap="actionTap" key="editProfile" style="font-size:44rpx;"></text>
+	<view class="card"> 
+		<text class="cuIcon-edit text-gray fr margin-right" wx:if="{{canEdit}}" bindtap="actionTap" data-key="editProfile" style="font-size:44rpx;"></text>
 		<view class="card-content card-my-wrap">
 
-			<view class="my-avatar-wrap">
-				<image class="userinfo-avatar iamge-border" src="{{userInfo.avatarUrl}}"></image>
+			<view class="my-avatar-wrap"> 
+				<view class="cu-avatar round xxl iamge-border" style="background-image:url({{userInfo.avatarUrl}});"></view>
 				<text class="userinfo-nickname">{{userInfo.nickName}}</text>
 			</view>
 
 			<view class="my-label-wrap">
-				<view class="cu-tag round bg-orange light margin-top-xs">{{userInfo.realName}}</view>
+				<view wx:if="{{userInfo.realName}}" class="cu-tag round bg-orange light margin-top-xs">{{userInfo.realName}}</view>
 				<view class="cu-tag round bg-olive light margin-top-xs">{{userInfo.genderName}}</view>
 				<view class="cu-tag round bg-blue light margin-top-xs">{{userInfo.province}}{{userInfo.city}}</view>
-				<view class="cu-tag round bg-purple light margin-top-xs">{{userInfo.className}}</view>
+				<view class="cu-tag round bg-purple light margin-top-xs">{{userInfo.className||userInfo.classNumber}}</view>
 				<view class="cu-tag round bg-cyan light margin-top-xs">约饭{{userInfo.dateCount}}次</view>
 				<view class="cu-tag round bg-cyan light margin-top-xs">被约{{userInfo.callDateCount}}次</view>
 			</view>
@@ -41,7 +39,53 @@
 		<text class="card-title bl-green">我的资源是什么？</text>
 
 		<view class="card-content card-content-tip">{{userInfo.mySource}}</view>
-
 	</view>
+
+	<!--弹窗-->
+	<!--更换/加入班级班级弹窗-->
+	<view class="cu-modal bottom-modal {{isShowEditProfileDialog?'show':''}}">
+		<form bindsubmit="profileFormSubmit">
+			<view class="cu-dialog" style="height:100vh;">
+				<view class="cu-bar bg-white">
+					<view class="action text-grey" bindtap="actionTap" data-key="hideEditProfileDialog">取消</view>
+					<view class="action title">编辑个人信息</view>
+					<view class="action text-grey" style="margin-right:30rpx;">
+						<button class="cu-btn bg-green" form-type="submit">保存</button>
+					</view>
+				</view>
+				<view class="padding" style="text-align:left;">
+					<view class="cu-form-group">
+						<view class="title">姓名</view>
+						<input id="realName" name="realName" value="{{userInfo.realName}}" placeholder="您的真实姓名"></input>
+					</view>
+
+					<view class="cu-form-group">
+						<view class="title">手机号码</view>
+						<input id="phoneNumber" name="phoneNumber" value="{{userInfo.phoneNumber}}" type="number" maxlength="11" placeholder="您的手机号码"></input>
+					</view>
+
+					<view><text class="text-gray text-df" style="line-height: 80rpx;padding: 1rpx 30rpx;">我是谁?</text></view>
+					<view class="cu-form-group">
+						<textarea id="myIntro" name="myIntro" value="{{userInfo.myIntro}}" maxlength="-1" placeholder="自我描述，例：我是xx"></textarea>
+					</view>
+					<view><text class="text-gray text-df" style="line-height: 80rpx;padding: 1rpx 30rpx;">我从哪里来?</text></view>
+					<view class="cu-form-group">
+						<textarea id="cameFrom" name="cameFrom" value="{{userInfo.cameFrom}}" maxlength="-1" placeholder="来自哪里,例：生于xx,毕业于xx,就职于xx"></textarea>
+					</view>
+
+					<view><text class="text-gray text-df" style="line-height: 80rpx;padding: 1rpx 30rpx;">我的兴趣爱好/擅长?</text></view>
+					<view class="cu-form-group">
+						<textarea id="hobby" name="hobby" value="{{userInfo.hobby}}" maxlength="-1" placeholder="兴趣爱好,例：打篮球，写代码，看美剧"></textarea>
+					</view>
+
+					<view><text class="text-gray text-df" style="line-height: 80rpx;padding: 1rpx 30rpx;">我的资源是什么?</text></view>
+					<view class="cu-form-group">
+						<textarea id="mySource" name="mySource" value="{{userInfo.mySource}}" placeholder="可共享的资源" maxlength="-1"></textarea>
+					</view>
+				</view>
+			</view>
+		</form>
+	</view>
+	<!--更换/加入班级班级弹窗-->
 
 </view>

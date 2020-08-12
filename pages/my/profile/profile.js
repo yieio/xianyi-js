@@ -17,11 +17,23 @@ create.Page(store,{
     let userId = options.userId;
 
     if(userId != _tsd.userInfo.userId){
-      _t.setData({
-        userInfo:{},
+      _t.setData({ 
+        canEdit:false,
+        userInfo:{}
+      })
+      wx.setNavigationBarTitle({
+        title: '同学信息',
+      })
+    }else{ 
+      _t.setData({ 
+        canEdit:true,
+        userInfo:_tsd.userInfo
       })
     }
 
+    _t.setData({
+      isShowEditProfileDialog:false
+    });
   },
 
   /**
@@ -47,8 +59,7 @@ create.Page(store,{
         }
 
         var cp = result.data.data.classmateProfile;
-        cp.genderName = util.getGenderName(cp.gender);
-
+        cp.genderName = util.getGenderName(cp.gender); 
         _t.setData({
           userInfo: cp
         }); 
@@ -57,11 +68,94 @@ create.Page(store,{
 
   },
 
+  /**
+   * 保存用户资料
+   */
+  profileFormSubmit: function(e) {
+    //姓名，手机号，不能为空
+    var formData = e.detail.value;
+    let _t = this;
+    let _td = _t.data;
+    let _tsd = _t.store.data;
+    formData.realName = formData.realName.replace(/^\s*|\s*$/g, "");
+    if (formData.realName.length < 2) {
+      wx.showToast({
+        title: '真实姓名至少需要2个字符',
+        icon: 'none',
+        duration: 2000
+      });
+      return false;
+    };
+
+    formData.phoneNumber = formData.phoneNumber.replace(/^\s*|\s*$/g, "");
+    if (formData.phoneNumber.length != 11) {
+      wx.showToast({
+        title: '手机号码应为11位数字',
+        icon: 'none',
+        duration: 2000
+      });
+      return false;
+    };
+
+    formData.userId = _tsd.userInfo.userId;
+    
+
+    //发起接口调用,保存用户信息
+    wx.request({
+      url: app.api.editProfile,
+      method: "POST",
+      header: {
+        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+      },
+      data: formData,
+      success: function (result) {
+        console.log(result);
+        if (result.data.type == 200) {
+          var _data = result.data.data; 
+          _td.userInfo = _data.userInfo;
+          _td.userInfo.genderName = util.getGenderName(_data.userInfo.gender);
+          _tsd.userInfo = _td.userInfo;
+          _t.setData({
+            userInfo : _td.userInfo,
+            isShowEditProfileDialog:false
+          });
+          
+
+          //跳转到首页
+          wx.showToast({
+            title: '保存成功',
+            icon: 'success',
+            duration: 2000
+          });
+        } else {
+          wx.showToast({
+            title: '保存失败',
+            icon: 'none',
+            duration: 2000
+          });
+        }
+      }
+    })
+  },
+
+  /**
+   * 处理页面点击事件
+   * @param  e 
+   */
   actionTap:function(e){
+    let _t = this;
     let key = e.currentTarget.dataset.key;
+    console.log(e);
 
     if(key=="editProfile"){
+      _t.setData({
+        isShowEditProfileDialog:true
+      });
 
+    }else if(key=="hideEditProfileDialog"){
+      _t.setData({
+        isShowEditProfileDialog:false
+      });
     }
   },
  

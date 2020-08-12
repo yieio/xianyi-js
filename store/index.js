@@ -3,11 +3,15 @@ export default {
     userInfo: {},
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
+
+    selectPage:"course",//首页tab选中项
     
     classNumber:'',
 
     courseDate: {hasCourse: false},
     latestCourse: [],
+    showNoneCourseTip:false,//最近没有课程
+    showCourseLoadding:true,//最近没有课程
     schoolTerm:1,
     
     isShowAddClassDialog:false,

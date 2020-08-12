@@ -11,7 +11,9 @@ create.Page(store, {
     'userInfo',
     'hasUserInfo',
     'canIUse',
-    'selectPage'
+    'selectPage',
+    'showNoneCourseTip',
+    'showCourseLoadding'
   ],
   computed: {
     curPage() {
@@ -31,20 +33,13 @@ create.Page(store, {
     this.store.set(this.store.data, 'selectPage', e.currentTarget.dataset.cur);
   },
 
-
-  //事件处理函数
-  bindViewTap: function () {
-    wx.navigateTo({
-      url: '../logs/logs'
-    })
-  },
-
   /**
    * 获取最新课程
    */
   getLatestCourse: function (classNumber, userId) {
     var _t = this;
     var _td = _t.store.data;
+    _td.showCourseLoadding = true;
     wx.request({
       url: config.api.latestCourse,
       method: "GET",
@@ -61,8 +56,11 @@ create.Page(store, {
           var courseDate = {};
 
           if (cs.length <= 0) {
+            _td.showNoneCourseTip = true;
             return;
           }
+
+          _td.showNoneCourseTip = false;
 
           var item = cs[0];
           var date = new Date(item.courseDate);
@@ -86,6 +84,9 @@ create.Page(store, {
           _t.store.set(_td, 'courseDate', null);
           _t.store.set(_td, 'latestCourse', []);
         }
+      },
+      complete: function (e) {
+        _td.showCourseLoadding = false;
       }
     });
   },
@@ -174,6 +175,16 @@ create.Page(store, {
                 if (_tsd.userInfo.classNumber) {
                   _t.getClassmates();
                 }
+              } else {
+                console.log(_tsd.selectPage);
+                console.log(_tsd.classNumber);
+                if (!_tsd.classNumber) {
+                  _tsd.selectPage = "my";
+                  wx.showToast({
+                    title: '需要您先登录加入班集体',
+                    icon: 'none'
+                  })
+                }
               }
 
             } else {
@@ -228,24 +239,38 @@ create.Page(store, {
    * @param  e 
    */
   userInfoChangeHandler: function (e) {
+    let _t = this;
+    let _tsd = _t.store.data;
+    if (e.hasUserInfo) {
+      //首次登录后，刷新最近课程
+      _t.getLatestCourse(_tsd.userInfo.classNumber, _tsd.userInfo.userId);
+      if (_tsd.userInfo.classNumber) {
+        _t.getClassmates();
+      }
+    }
+
     if (e.userInfo) {
       app.globalData.userInfo = e.userInfo;
       wx.setStorageSync('userInfo', app.globalData.userInfo);
     } else {
-      let _tsd = this.store.data;
       let keys = Object.keys(e);
       let isChange = false;
       for (let i = 0; i < keys.length; i++) {
+        //监听班级变动重新获取用户数据
+        if (keys[i].indexOf("userInfo.classNumber")==0) {
+          _t.getLatestCourse(_tsd.userInfo.classNumber, _tsd.userInfo.userId);
+          if (_tsd.userInfo.classNumber) {
+            _t.getClassmates();
+          }
+        }
         if (keys[i].indexOf("userInfo") == 0) {
-          isChange = true;
-          break;
+          isChange = true; 
         }
       }
       if (isChange) {
         app.globalData.userInfo = _tsd.userInfo;
         wx.setStorageSync('userInfo', app.globalData.userInfo);
       }
-
     }
 
   },
@@ -281,8 +306,8 @@ create.Page(store, {
    * 下拉刷新
    */
   onPullDownRefresh: function () {
-    let _t = this; 
-    _t.getWxSetting(); 
+    let _t = this;
+    _t.getWxSetting();
     wx.stopPullDownRefresh();
   },
 
@@ -298,6 +323,22 @@ create.Page(store, {
     return {
       title: className + '最近课程',
       path: '/pages/index/index?classNumber=' + classNumber
+    };
+
+  },
+
+  /**
+   * 分享到朋友圈
+   */
+  onShareTimeline: function () {
+    let _t = this;
+    let _tsd = _t.store.data;
+    let classNumber = _tsd.userInfo.classNumber || _tsd.classNumber;
+    let className = _tsd.userInfo.className || "";
+
+    return {
+      title: className + '最近课程',
+      query: 'classNumber=' + classNumber
     };
 
   }

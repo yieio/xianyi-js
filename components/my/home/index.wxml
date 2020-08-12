@@ -2,21 +2,13 @@
 
 <!--我的基本信息卡片开始-->
 <view class="card">
-	<view class="card-content card-my-wrap" wx:if="{{!hasUserInfo && canIUse}}">
-		<view class="my-avatar-wrap">
-			<image class="userinfo-avatar" src="/imgs/logo.png"></image>
-			<text class="userinfo-nickname card-content-tip">请登录，加入班集体</text>
-		</view>
+	<view wx:if="{{hasUserInfo}}" class="card-content card-my-wrap">
+		<view class="my-avatar-wrap">  
+			 <view class="cu-avatar round xxl iamge-border" style="background-image:url({{userInfo.avatarUrl}});" bindtap='actionTap' data-key="goProfile">
+    <view class="cu-tag badge bg-blue cuIcon-settings"></view>
+  </view>
 
-		<view class="my-label-wrap">
-			<button class="cu-btn round bg-blue" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="getUserInfo">
-				登录</button>
-		</view>
-	</view>
 
-	<view wx:else class="card-content card-my-wrap">
-		<view class="my-avatar-wrap">
-			<image class="userinfo-avatar iamge-border" src="{{userInfo.avatarUrl}}" id="{{userInfo.userId}}" bindtap='actionTap' data-key="goProfile"></image>
 			<text class="userinfo-nickname">{{userInfo.nickName}}</text>
 		</view>
 
@@ -29,12 +21,27 @@
 			<view class="cu-tag round bg-cyan light margin-top-xs">被约{{userInfo.callDateCount}}次</view>
 		</view>
 	</view>
+
+	<!--登录界面开始-->
+	<view class="card-content card-my-wrap" wx:else="{{canIUse}}">
+		<view class="my-avatar-wrap">			
+			<image class="userinfo-avatar" src="/imgs/logo.png"></image>
+			<text class="userinfo-nickname card-content-tip">请登录，加入班集体</text>
+		</view>
+
+		<view class="my-label-wrap">
+			<button class="cu-btn round bg-green" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="getUserInfo">
+				登录</button>
+		</view>
+	</view>
+	<!--登录界面结束-->
+
 </view>
 <!--我的基本信息卡片开始-->
 
 <!--我页面菜单列表开始-->
 <view class="cu-list menu card-menu margin-top">
-	<view class="cu-item" bindtap="menuTap" data-key="classroom">
+	<view class="cu-item" hover-class="tap-hover" bindtap="menuTap"  data-key="classroom">
 		<view class="content">
 			<text class="cuIcon-group_fill text-green"></text>
 			<text class="text-grey">班集体</text>
@@ -43,7 +50,7 @@
 			<text class="text-grey text-sm">{{userInfo.className||"未加入"}}</text>
 		</view>
 	</view>
-	<view class="cu-item" bindtap="menuTap" data-key="classmate">
+	<view class="cu-item" hover-class="tap-hover" bindtap="menuTap" data-key="classmate">
 		<view class="content">
 			<text class="cuIcon-emojiflashfill text-yellow"></text>
 			<text class="text-grey">同学</text>
@@ -57,7 +64,7 @@
 		</view>
 	</view>
 
-	<view class="cu-item arrow" bindtap="menuTap" data-key="classCourse">
+	<view class="cu-item arrow" hover-class="tap-hover" bindtap="menuTap" data-key="classCourse">
 		<view class="content">
 			<text class="cuIcon-calendar text-green"></text>
 			<text class="text-grey">课程表</text>
@@ -67,7 +74,7 @@
 		</view>
 	</view>
 
-	<view class="cu-item arrow" bindtap="menuTap" data-key="myCourse">
+	<view class="cu-item arrow" hover-class="tap-hover" bindtap="menuTap" data-key="myCourse">
 		<view class="content">
 			<text class="cuIcon-favorfill text-red"></text>
 			<text class="text-grey">选修课</text>
@@ -78,7 +85,7 @@
 	</view>
 </view>
 
-<view class="cu-list menu card-menu margin-top"> 
+<view class="cu-list menu card-menu margin-top">
 	<view class="cu-item arrow">
 		<button class="cu-btn content" open-type="feedback">
 			<text class="cuIcon-writefill text-cyan"></text>

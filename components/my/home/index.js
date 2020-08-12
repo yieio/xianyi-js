@@ -63,9 +63,8 @@ create.Component(store, {
       //从入口进来带了classNumber 参数，自动加入该班级
       userInfo.classNumber = _tsd.classNumber || '';
 
-      _tsd.userInfo = userInfo;
-      _tsd.hasUserInfo = true;
-
+      //_tsd.userInfo = userInfo;
+      //_tsd.hasUserInfo = true;
 
       wx.request({
         url: app.api.signup,
@@ -112,7 +111,7 @@ create.Component(store, {
     isLogin: function () {
       let _t = this;
       let _tsd = _t.store.data;
-      let result = !app.globalData.userToken;
+      let result = !app.globalData.userToken || !_tsd.userInfo || !_tsd.userInfo.nickName;
       if (result) {
         wx.showToast({
           title: '您需要先登录',
@@ -133,9 +132,7 @@ create.Component(store, {
       let key = e.currentTarget.dataset.key;
       if (key == "classroom") {
         if (_t.isLogin()) {
-          if (_t.hasClassroom()) {
-            config.router.goClassroom();
-          }
+          config.router.goClassroom();
         }
 
       } else if (key == "classmate") {
@@ -147,8 +144,8 @@ create.Component(store, {
       } else if (key == "myCourse") {
         if (_t.isLogin()) {
           config.router.goMyCourse();
-        } 
-      } else if(key=="classCourse"){
+        }
+      } else if (key == "classCourse") {
         if (_t.isLogin()) {
           if (_t.hasClassroom()) {
             config.router.goClassCourse();

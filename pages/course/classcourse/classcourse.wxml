@@ -18,7 +18,7 @@
 			<view class="cu-item">
 				<view class="content padding-tb-sm">
 					<view>
-						<text class="cuIcon-favor text-blue margin-right-xs"></text> 班级课程
+						<text class="cuIcon-calendar text-blue margin-right-xs"></text> 班级课程
 						<view class="cu-tag round bg-green light margin-left-xs">{{myCourses.length}}</view>
 					</view> 
 				</view>

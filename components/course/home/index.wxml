@@ -2,6 +2,18 @@
 
 <view class="card nextcourse">
 	<text class="card-title nextcourse-title">最近课程</text>
+	<!--数据加载占位效果开始-->
+	<view wx:if="{{showCourseLoadding&&!courseDate.hasCourse}}" class="ant-skeleton ant-skeleton-active padding">
+		<view class="ant-skeleton-content">
+			<view class="ant-skeleton-title" style="width: 38%;"></view>
+			<view class="ant-skeleton-paragraph">
+				<view class="ant-skeleton-item"></view>
+				<view class="ant-skeleton-item"></view>
+				<view class="ant-skeleton-item" style="width: 61%;"></view>
+			</view>
+		</view>
+	</view>
+	<!--数据加载占位效果结束-->
 
 	<view wx:if="{{courseDate.hasCourse}}" class="card-content nextcourse-content">
 		<view class="course-date-wrap">
@@ -21,10 +33,12 @@
 		</view>
 	</view>
 
-	<view wx:else class="card-content card-content-tip">最近没有课~~</view>
+	<view wx:if="{{showNoneCourseTip}}" class="card-content card-content-tip" >最近没有课程~~</view>
+
+	
 
 
-	<view class="cu-bar bg-white solid-top">
-		<view class="action margin-0 flex-sub" bindtap="actionTap" data-key="goCourseList">查看课程表</view>
+	<view class="cu-bar bg-white solid-top" hover-class="tap-hover">
+		<view class="action margin-0 flex-sub"  bindtap="actionTap" data-key="goCourseList" >查看课程表</view>
 	</view>
 </view>

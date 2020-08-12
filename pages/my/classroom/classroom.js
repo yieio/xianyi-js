@@ -9,14 +9,36 @@ let app = getApp();
 create.Page(store,{
   use:['userInfo','hasUserInfo','isShowCreateClassDialog','isShowChangeClassDialog'],
 
-  classActionTap:function(e){
+  /**
+   * 初始化页面私有数据
+   * @param options 
+   */
+  initData:function(options){
+    let _t = this;
+
+    _t.setData({
+      classArrary:[{classNumber:"2019PTMBA4",name:"扬帆四班"},{classNumber:"2019PTMBA5",name:"草原五班"},{classNumber:"2019PTMBA6",name:"深圳六班"}],
+      classValue:'',
+      classIndex:-1, 
+    });
+
+  },
+
+  actionTap:function(e){
     let key = e.currentTarget.dataset.key;
     let _t = this;
-    let _td = _t.store.data; 
+    let _tsd = _t.store.data; 
     if(key=="createClass"){ 
-      _td.isShowCreateClassDialog = true; 
+      _tsd.isShowCreateClassDialog = true; 
     }else if(key=="changeClass"){
-      _td.isShowChangeClassDialog = true; 
+      _tsd.isShowChangeClassDialog = true; 
+    }else if(key=="selectClassItem"){ 
+      let dataset = e.currentTarget.dataset; 
+      _t.setData({ 
+        classIndex:dataset.index,
+        classValue:dataset.value
+      });
+
     }
   },
 
@@ -110,6 +132,44 @@ create.Page(store,{
   },
 
   /**
+   * 获取组织列表
+   */
+  getOrganizations: function(name) {
+    var _t = this;
+    var _td = _t.data;
+    wx.request({
+      url: app.api.organizations,
+      method: "GET",
+      dataType: "json",
+      success: function(result) {
+        console.log(result);
+        if (result.data.type != 200) {
+          wx.showToast({
+            title: '班级列表获取失败',
+            icon: 'none'
+          })
+          return;
+        }
+
+        var cs = result.data.data.classNumbers;
+        if (cs.length > 0) {
+          _t.setData({
+            classArrary: cs
+          });
+        }
+
+        for (var i = 0; i < _td.classArrary.length; i++) {
+          if (_td.classArrary[i].name == _td.classValue) {
+            _t.setData({
+              classIndex: i
+            });
+          }
+        }
+      }
+    });
+  },
+
+  /**
    * 更换/加入班集体
    * @param e 
    */
@@ -167,7 +227,9 @@ create.Page(store,{
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    let _t = this;
+    _t.initData(options);
+    _t.getOrganizations(); 
   },
 
   /**

@@ -42,8 +42,15 @@ create.Page(store,{
     if(key=="showAllClassmate"){   
       var isShow = !_td.isShowAllClassmate;
       _t.setData({isShowAllClassmate:isShow}); 
-    }else if(key="goProfile"){
+    }else if(key=="goProfile"){
       config.router.goProfile(e,e.currentTarget.id);
+    }else if(key=="classNumber"){
+      //复制班级编号
+      wx.setClipboardData({
+        data: _td.userInfo.classNumber,
+        success (res) { 
+        }
+      }) 
     }
 
   },

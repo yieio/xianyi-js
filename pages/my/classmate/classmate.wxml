@@ -9,7 +9,7 @@
 		<view wx:else class="card-content clearfix">
 			<block wx:for="{{classmates}}" wx:for-index="idx" wx:for-item="cmate" wx:key="unique">
 				<block wx:if="{{idx<15}}">
-					<view id="{{cmate.userId}}" bindtap="actionTap" key="goProfile" class="classmate-item-wrap ">
+					<view id="{{cmate.userId}}" bindtap="actionTap" data-key="goProfile" class="classmate-item-wrap ">
 						<view class="classmate-item-header">
 							<image src='{{cmate.avatarUrl}}'></image>
 						</view>
@@ -30,13 +30,13 @@
 				</block>
 			</block>
 		</view>
-		<view class="cu-bar bg-white">
-			<view wx:if="{{classmates.length>15}}" class="action margin-0 flex-sub" bindtap="actionTap" data-key="showAllClassmate">{{isShowAllClassmate?'收起':'查看全部同学'}}</view>
+		<view class="cu-bar bg-white" >
+			<view wx:if="{{classmates.length>15}}" class="action margin-0 flex-sub"  hover-class="tap-hover-trans" bindtap="actionTap" data-key="showAllClassmate">{{isShowAllClassmate?'收起':'查看全部同学'}}</view>
 		</view>
 	</view>
 
 	<view class="cu-list menu card-menu margin-bottom-xl">
-		<view class="cu-item" bindtap="menuTap" data-key="classNumber">
+		<view class="cu-item" hover-class="tap-hover"  bindtap="actionTap" data-key="classNumber">
 			<view class="content">
 				<text class="cuIcon-newshot text-green"></text>
 				<text class="text-grey">{{userInfo.className}}</text>
@@ -46,7 +46,7 @@
 			</view>
 		</view>
 
-		<view class="cu-item arrow">
+		<view class="cu-item arrow"  hover-class="tap-hover">
 			<button class="cu-btn content" open-type="share">
 				<text class="cuIcon-share text-cyan"></text>
 				<text class="text-grey">邀请同学加入</text>

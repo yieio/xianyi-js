@@ -89,10 +89,10 @@
   align-items: center;
 }
 
-.my-avatar-wrap image {
-  width: 140rpx;
-  height: 140rpx;
-  border-radius: 50%;
+.cu-avatar.xxl {
+	width: 140rpx;
+	height: 140rpx;
+	font-size: 2.5em;
 }
 
 .my-label-wrap {
@@ -103,4 +103,11 @@
 .hide{
   display: none;
 }
- 
+
+.tap-hover { 
+  background-color: #f7f7f7 !important;
+}
+
+.tap-hover-trans {
+   transform: translate(2rpx, 2rpx) !important;
+}

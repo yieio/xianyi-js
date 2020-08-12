@@ -5,7 +5,7 @@ import config from '../../../config.js';
 import store from '../../../store/index'
 
 create.Component(store,{
-  use:['userInfo','hasUserInfo','courseDate','latestCourse','classNumber'],
+  use:['userInfo','hasUserInfo','courseDate','latestCourse','classNumber','showNoneCourseTip','showCourseLoadding'],
   /**
    * 组件的属性列表
    */

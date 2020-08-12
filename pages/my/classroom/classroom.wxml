@@ -9,13 +9,13 @@
 		</view>
 
 		<view class="cu-bar bg-white">
-			<view wx:if="{{!userInfo.className}}" class="action margin-0 flex-sub solids-right" bindtap="classActionTap" data-key="createClass">新建班级</view>
-			<view class="action margin-0 flex-sub  text-green" bindtap="classActionTap" data-key="changeClass">加入班级</view>
+			<view wx:if="{{!userInfo.className}}" class="action margin-0 flex-sub solids-right" hover-class="tap-hover-trans" bindtap="actionTap" data-key="createClass">新建班级</view>
+			<view class="action margin-0 flex-sub  text-green" hover-class="tap-hover-trans" bindtap="actionTap" data-key="changeClass">加入班级</view>
 		</view>
 	</view>
 
 	<view wx:if="{{userInfo.className}}" class="cu-list menu card-menu margin-top-x margin-bottom-x shadow-lg radius">
-		<view class="cu-item" bindtap="menuTap" data-key="classNumber">
+		<view class="cu-item" bindtap="menuTap" hover-class="tap-hover" data-key="classNumber">
 			<view class="content">
 				<text class="cuIcon-newshot text-green"></text>
 				<text class="text-grey">班级编号</text>
@@ -25,8 +25,7 @@
 			</view>
 		</view>
 
-		<view class="cu-item arrow">
-
+		<view class="cu-item arrow"  hover-class="tap-hover"> 
 			<button class="cu-btn content" open-type="share">
 				<text class="cuIcon-share text-cyan"></text>
 				<text class="text-grey">邀请同学加入</text>
@@ -51,7 +50,11 @@
 				<view class="padding" style="text-align:left;">
 					<view class="cu-form-group">
 						<view class="title">班级编号</view>
-						<input id="classNumber" name="classNumber" type="number" placeholder="输入班级编号"></input>
+						<input id="classNumber" name="classNumber" type="number" placeholder="输入班级编号" value="{{classValue}}"></input>
+					</view>
+<view><text class="text-gray text-df" style="line-height: 80rpx;padding: 1rpx 30rpx;">可选班集体：</text></view>
+					<view style="text-align:center;" class="bg-white padding-top-sm padding-bottom-lg"> 
+					 <view class="cu-tag round margin-top-sm padding {{classIndex==index?'bg-green':''}}" wx:for="{{classArrary}}" wx:for-item="cl" wx:key="index" data-value="{{cl.classNumber}}" data-key="selectClassItem" data-index="{{index}}" bindtap="actionTap">{{cl.classNumber}}-{{cl.name}}</view> 
 					</view>
 				</view>
 			</view>
@@ -72,6 +75,7 @@
 					</view>
 
 				</view>
+				
 				<view class="padding" style="text-align:left;">
 					<view class="cu-form-group">
 						<view class="title">班级名称</view>
