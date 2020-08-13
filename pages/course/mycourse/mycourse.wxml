@@ -11,28 +11,36 @@
 		</view>
 	</view>
 
-	<!--选修课程列表开始--> 
+	<!--选修课程列表开始-->
 	<view style="margin-top:130rpx;">
 		<view class="cu-list menu card-menu margin-top">
 			<view class="cu-item" wx:for="{{myCourses}}" wx:for-item="course" wx:for-index="idx" wx:key="unique" id="{{course.id}}">
 				<view class="content padding-tb-sm">
 					<view>
 						<text class="cuIcon-favor text-blue margin-right-xs"></text> {{course.name}}
-            </view>
-					<view class="text-gray text-sm" style="line-height:1.5"> 
-          <view class="margin-top-xs">{{course.teacher}}</view>
+					</view>
+					<view class="text-gray text-sm" style="line-height:1.5">
+						<view class="margin-top-xs">{{course.teacher}}</view>
 						<view class="">开课：{{course.startTime}}</view>
 						<view class="">结课：{{course.endTime}}</view>
 					</view>
 				</view>
 				<view class="action">
 					<button class="cu-btn line-gray round" bindtap="actionTap" data-key="goMyCourseInfo" data-courseid="{{course.id}}">设置</button>
-				</view> 
+				</view>
 			</view>
- 
+		</view>
+
+		<view wx:if="{{myCourses.length<=0}}" style="text-align:center;margin-top:50%">
+			<view class="text-xsl">
+				<text class="cuIcon-bad text-gray"></text>
+			</view>
+			<view>
+				<text class="text-df text-gray">没有选修课程</text>
+			</view>
 		</view>
 	</view>
- 
+
 	<!--选修课程列表结束-->
 
 	<!--弹窗-->
@@ -60,7 +68,7 @@
 					<view class="cu-form-group">
 						<view class="title">课室名</view>
 						<input id="classRoom" name="classRoom" placeholder="输入课室名"></input>
-					</view> 
+					</view>
 					<view class="cu-form-group">
 						<view class="title">开课日期</view>
 						<picker mode="date" name="courseDate" id="courseDate" value="{{courseDate}}" start="2020-01-01" bindchange="pickerDataChange">
@@ -71,7 +79,7 @@
 
 					<view class="cu-form-group">
 						<view class="title">开始时间</view>
-						<picker name="startTime" id="startTime"   mode="time" value="{{startTime}}" start="08:00" end="23:00" bindchange="pickerDataChange">
+						<picker name="startTime" id="startTime" mode="time" value="{{startTime}}" start="08:00" end="23:00" bindchange="pickerDataChange">
 							<input class="" value="{{startTime}}" placeholder="开始时间" disabled="true" />
 						</picker>
 
@@ -79,7 +87,7 @@
 
 					<view class="cu-form-group">
 						<view class="title">结束时间</view>
-						<picker name="endTime" id="endTime"  mode="time" value="{{endTime}}" start="08:30" end="23:00" bindchange="pickerDataChange">
+						<picker name="endTime" id="endTime" mode="time" value="{{endTime}}" start="08:30" end="23:00" bindchange="pickerDataChange">
 							<input class="" value="{{endTime}}" placeholder="截止时间" disabled="true" />
 						</picker>
 

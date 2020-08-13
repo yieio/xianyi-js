@@ -3,10 +3,10 @@
 <!--我的基本信息卡片开始-->
 <view class="card">
 	<view wx:if="{{hasUserInfo}}" class="card-content card-my-wrap">
-		<view class="my-avatar-wrap">  
-			 <view class="cu-avatar round xxl iamge-border" style="background-image:url({{userInfo.avatarUrl}});" bindtap='actionTap' data-key="goProfile">
-    <view class="cu-tag badge bg-blue cuIcon-settings"></view>
-  </view>
+		<view class="my-avatar-wrap">
+			<view class="cu-avatar round xxl iamge-border" style="background-image:url({{userInfo.avatarUrl}});" bindtap='actionTap' data-key="goProfile">
+				<view class="cu-tag badge bg-green cuIcon-edit" style="width:38rpx;height:38rpx;font-size:28rpx; "></view>
+			</view>
 
 
 			<text class="userinfo-nickname">{{userInfo.nickName}}</text>
@@ -24,7 +24,7 @@
 
 	<!--登录界面开始-->
 	<view class="card-content card-my-wrap" wx:else="{{canIUse}}">
-		<view class="my-avatar-wrap">			
+		<view class="my-avatar-wrap">
 			<image class="userinfo-avatar" src="/imgs/logo.png"></image>
 			<text class="userinfo-nickname card-content-tip">请登录，加入班集体</text>
 		</view>
@@ -41,7 +41,7 @@
 
 <!--我页面菜单列表开始-->
 <view class="cu-list menu card-menu margin-top">
-	<view class="cu-item" hover-class="tap-hover" bindtap="menuTap"  data-key="classroom">
+	<view class="cu-item" hover-class="tap-hover" bindtap="menuTap" data-key="classroom">
 		<view class="content">
 			<text class="cuIcon-group_fill text-green"></text>
 			<text class="text-grey">班集体</text>
@@ -64,6 +64,19 @@
 		</view>
 	</view>
 
+	<view class="cu-item" hover-class="tap-hover" bindtap="menuTap" data-key="randomDate">
+		<view class="content">
+			<text class="cuIcon-wefill text-purple"></text>
+			<text class="text-grey">约饭</text>
+		</view>
+		<view class="action">
+		<view class="cu-tag round bg-red light">0</view>
+
+		</view>
+	</view>
+</view>
+	<view class="cu-list menu card-menu margin-top">
+
 	<view class="cu-item arrow" hover-class="tap-hover" bindtap="menuTap" data-key="classCourse">
 		<view class="content">
 			<text class="cuIcon-calendar text-green"></text>
@@ -85,7 +98,7 @@
 	</view>
 </view>
 
-<view class="cu-list menu card-menu margin-top">
+<view class="cu-list menu card-menu margin-tb">
 	<view class="cu-item arrow">
 		<button class="cu-btn content" open-type="feedback">
 			<text class="cuIcon-writefill text-cyan"></text>
@@ -94,6 +107,7 @@
 	</view>
 </view>
 <!--我页面菜单列表结束-->
+
 
 
 <!--弹窗-->

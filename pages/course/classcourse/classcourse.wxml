@@ -33,7 +33,7 @@
 
 	<!--选修课程列表开始--> 
 	<view style="margin-top:232rpx;">
-		<view class="cu-list menu card-menu margin-top">
+		<view  class="cu-list menu card-menu margin-top">
 			<view class="cu-item" wx:for="{{myCourses}}" wx:for-item="course" wx:for-index="idx" wx:key="unique" id="{{course.id}}">
 				<view class="content padding-tb-sm">
 					<view>
@@ -51,7 +51,18 @@
 			</view>
  
 		</view>
+
+		<view wx:if="{{myCourses.length<=0}}" style="text-align:center;margin-top:50%">
+			<view class="text-xsl">
+				<text class="cuIcon-bad text-gray"></text>
+			</view>
+			<view>
+				<text class="text-df text-gray">没有班级课程</text>
+			</view>
+		</view>
 	</view>
+
+	
  
 	<!--选修课程列表结束-->
 

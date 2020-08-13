@@ -1,0 +1,66 @@
+<!--pages/my/randomDate/randomDate.wxml-->
+<view class="container">
+	<scroll-view scroll-x class="bg-white nav flex text-center fixed">
+		<view class="flex-sub cu-item {{0==tabCur?'text-green cur':''}}" bindtap="actionTap" data-key="tabSelect" data-index="0">
+			<text class="cuIcon-wefill"></text> 我约的
+		</view>
+		<view class="flex-sub cu-item {{1==tabCur?'text-green cur':''}}" bindtap="actionTap" data-key="tabSelect" data-index="1">
+			<text class=" cuIcon-evaluate_fill"></text> 约我的<view class="cu-tag sm round bg-red light">0</view>
+		</view>
+	</scroll-view>
+	<view class="nav-height" style="height:90rpx;"></view>
+
+	<block wx:if="{{0==tabCur}}">
+	<view class="card">
+		<view class="padding" style="text-align:center">
+			<view class="text-xsl"><text class="cuIcon-wefill text-purple"></text></view>
+		</view>
+
+		<view class="card-content card-content-tip">点击 【请人吃饭】 后可以选择日期匿名随机给同学发出约饭邀请，对方接受后可以看到彼此。吃饭我们是认真的，请守约哦^_^</view>
+
+		<view class="cu-bar bg-white solid-top" hover-class="tap-hover" bindtap="actionTap" data-key="randomDate">
+			<view class="action margin-0 flex-sub text-green">请人吃饭</view>
+		</view>
+	</view>
+
+	<date-list id="appointmentList"></date-list>
+	<!--弹窗-->
+	<!--约饭弹窗开始-->
+	<view class="cu-modal bottom-modal {{isShowRandomDateDialog?'show':''}}">
+		<form bindsubmit="randomDateFormSubmit">
+			<view class="cu-dialog" style="height:100vh;">
+				<view class="cu-bar bg-white">
+					<view class="action text-grey" bindtap="actionTap" data-key="hideRandomDateDialog">取消</view>
+					<view class="action title">请人吃饭</view>
+					<view class="action text-grey" style="margin-right:30rpx;">
+						<button class="cu-btn bg-green" form-type="submit">确认约</button>
+					</view>
+				</view>
+				<view class="padding" style="text-align:left;">
+
+					<view>
+						<text class="text-gray text-df" style="line-height: 80rpx;padding: 1rpx 30rpx;">选择日期：</text>
+					</view>
+					<view class="bg-white padding padding-bottom-xs padding-top-lg">
+						<view class="cu-tag round padding {{dateIndex==index?'bg-green':''}}" wx:for="{{dateList}}" wx:for-item="dt" wx:key="index" data-key="selectDate" data-index="{{index}}" bindtap="actionTap">{{dt}}</view>
+					</view>
+
+					<view class="bg-white padding  padding-bottom-lg">
+						<view class="cu-tag round margin-top-sm padding {{timeIndex==index?'bg-green':''}}" wx:for="{{timeList}}" wx:for-item="dt" wx:key="index" data-key="selectTime" data-index="{{index}}" bindtap="actionTap">{{dt}}</view>
+					</view>
+
+					<view>
+						<text class="text-gray text-df" style="line-height: 80rpx;padding: 1rpx 30rpx;">{{dateDesc}}</text>
+					</view>
+
+				</view>
+			</view>
+		</form>
+	</view>
+	<!--约饭弹窗结束-->
+	<!--弹窗结束-->
+</block>
+ 
+	<inviter-list wx:if="{{1==tabCur}}" id="inviterList"></inviter-list> 
+
+</view>

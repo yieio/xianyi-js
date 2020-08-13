@@ -111,3 +111,7 @@
 .tap-hover-trans {
    transform: translate(2rpx, 2rpx) !important;
 }
+
+.radius-xs{
+  border-radius: 20rpx;
+}

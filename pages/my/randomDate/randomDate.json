@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "inviter-list": "/components/randomDate/inviteList/inviteList",
+    "date-list": "/components/randomDate/list/list"
+  },
+  "navigationBarTitleText": "约饭" 
+}

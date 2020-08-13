@@ -1,6 +1,5 @@
 // pages/course/home/index.js
-import create from '../../../utils/create'
-import util from '../../../utils/util.js';
+import create from '../../../utils/create' 
 import config from '../../../config.js';
 import store from '../../../store/index'
 

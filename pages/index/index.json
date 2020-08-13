@@ -1,5 +1,5 @@
 {
-  "usingComponents": {
+  "usingComponents": { 
     "latest-course": "/components/course/home/index",
     "my-page": "/components/my/home/index"
   },

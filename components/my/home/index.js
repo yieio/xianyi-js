@@ -151,6 +151,12 @@ create.Component(store, {
             config.router.goClassCourse();
           }
         }
+      }else if(key=="randomDate"){
+        if(_t.isLogin()){
+          if (_t.hasClassroom()) {
+            config.router.goRandomDate();
+          }
+        }
       }
     },
 

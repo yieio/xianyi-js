@@ -140,6 +140,13 @@ var router = {
     })
   },
 
+  //去约饭页面
+  goRandomDate:function(){
+    wx.navigateTo({
+      url: '/pages/my/randomDate/randomDate',
+    }) 
+  },
+
 
 }
 

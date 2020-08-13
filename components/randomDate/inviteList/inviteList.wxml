@@ -1,0 +1,29 @@
+<!--components/randomDate/list/inviteList.wxml-->
+<!--约我的列表组件-->
+<!--约我的列表开始-->
+<view class="cu-bar bg-white solid-bottom margin" style="margin-bottom:0;">
+	<view class="action">
+		<text class="cuIcon-titles text-orange "></text> {{randomDateTitle}}
+	</view>
+</view>
+<view class="cu-list menu-avatar comment margin" style="margin-top:0">
+	<view class="cu-item solid-bottom" wx:for="{{inviters}}" wx:key="index" wx:for-item="appt">
+		<!-- <view class="cu-avatar radius-xs round" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Morgana.png);"></view> -->
+		<view class="cu-avatar radius-xs bg-cyan" style="width:72rpx;height:72rpx;">
+			<text class="xl">C</text>
+		</view>
+		<view class="content">
+			<view class="text-grey">{{appt.title}}</view>
+			<view class="text-gray text-content text-df">
+				{{appt.content}}
+			</view>
+			<view class="margin-top-sm flex justify-between">
+				<view class="text-gray text-df">2018年12月4日</view>
+				<view class="text-xxl">
+					<text class="cuIcon-comment text-green  margin-left-sm"></text>
+				</view>
+			</view>
+		</view>
+	</view>
+</view>
+<!--约我的列表结束-->

@@ -1,7 +1,6 @@
 // pages/my/classroom/classroom.js
 import create from '../../../utils/create'
-import store from '../../../store/index'
-import util from '../../../utils/util.js';
+import store from '../../../store/index' 
 import config from '../../../config.js';
 
 let app = getApp();

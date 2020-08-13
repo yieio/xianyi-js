@@ -20,6 +20,10 @@ export default {
 
     classmates:[],
     subClassmates:[],
+
+    appointments:[],
+    inviters:[],
+    randomDateTitle:"我约的",
     
     
     logs: [],

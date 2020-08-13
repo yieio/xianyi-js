@@ -1,7 +1,11 @@
 <!--index.wxml-->
 <view class="container">
-	<latest-course  wx:if="{{curPage=='course'}}" id="latestCourseComponent"></latest-course>
-	<my-page  wx:if="{{curPage=='my'}}"></my-page>
+	<latest-course wx:if="{{curPage=='course'}}" id="latestCourseComponent"></latest-course>
+	<my-page wx:if="{{curPage=='my'}}"></my-page>
+
+	<!--底部导航占位开始-->
+	<view class='cu-tabbar-height'></view>
+	<!--底部导航占位结束-->
 
 	<view class="cu-bar tabbar bg-white shadow foot">
 		<view class="action" bindtap="navChange" data-cur="course">
