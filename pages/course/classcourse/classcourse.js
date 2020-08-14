@@ -80,7 +80,7 @@ create.Page(store, {
             duration: 2000
           });
           //跳转去首页
-          config.router.goIndex(_t, _td.classNumber);
+          config.router.goIndex(_td.classNumber);
           return;
         }
         if (result.data.type != 200) {
@@ -259,7 +259,7 @@ create.Page(store, {
       });
     } else if (key == "goMyCourseInfo") {
       let courseId = e.currentTarget.dataset.courseid;
-      config.router.goClassCourseInfo(e, courseId);
+      config.router.goClassCourseInfo(courseId);
     } else if (key == "uploadClassCourse") {
       _t.uploadClassCourse();
     }
@@ -283,7 +283,7 @@ create.Page(store, {
         duration: 2000
       });
 
-      config.router.goIndex(_t, '');
+      config.router.goIndex('');
     }
 
   },

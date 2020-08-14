@@ -23,7 +23,7 @@ export default {
 
     appointments:[],
     inviters:[],
-    randomDateTitle:"我约的",
+    randomDateTitle:"我约的", 
     
     
     logs: [],

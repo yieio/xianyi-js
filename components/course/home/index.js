@@ -45,7 +45,7 @@ create.Component(store,{
           });
 
         }else{
-          config.router.goCourseList(e,classNumber,schoolTerm,courseDate);   
+          config.router.goCourseList(classNumber,schoolTerm,courseDate);   
         } 
       }
       

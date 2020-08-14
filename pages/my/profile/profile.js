@@ -7,7 +7,7 @@ import config from '../../../config.js';
 let app = getApp();
 
 create.Page(store,{
-  use:['userInfo','hasUserInfo'],
+  use:['userInfo','hasUserInfo','isShowEditProfileDialog'],
 
   initData:function(options){
     let _t = this;
@@ -32,7 +32,7 @@ create.Page(store,{
     }
 
     _t.setData({
-      isShowEditProfileDialog:false
+      isShowEditProfileDialog:_tsd.isShowEditProfileDialog
     });
   },
 
@@ -219,6 +219,11 @@ create.Page(store,{
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
+    let _td = this;
+     return {
+      title: '同学信息',
+      path: '/pages/my/profile/profile?userId=' + _td.userInfo.userId
+     }
 
   }
 })

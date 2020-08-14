@@ -7,7 +7,7 @@ import config from '../../../config.js';
 let app = getApp();
 
 create.Page(store, {
-  use: ['userInfo', 'hasUserInfo', 'courseDate','appointments','randomDateTitle'],
+  use: ['userInfo', 'hasUserInfo', 'courseDate','appointments','inviters','randomDateTitle'],
 
   /**
    * 页面的初始数据
@@ -106,6 +106,9 @@ create.Page(store, {
    * 格式化约饭信息
    */
   formatAppointment: function(app, iscreater) {
+    app.appointDate = util.formatDateTime(app.appointDate,10);
+
+
     if (iscreater) {
       if (app.appointmentStatus == 1) {
         //等待回应
@@ -203,7 +206,7 @@ create.Page(store, {
             duration: 2000
           });
           //跳转去首页
-          config.router.goIndex(_t, _td.classNumber);
+          config.router.goIndex(_td.classNumber);
           return;
         }
 
@@ -257,7 +260,7 @@ create.Page(store, {
             duration: 2000
           });
           //跳转去首页
-          config.router.goIndex(_t, _td.classNumber);
+          config.router.goIndex(_td.classNumber);
           return;
         }
 

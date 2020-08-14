@@ -17,7 +17,8 @@ create.Component(store, {
     'isShowAddClassDialog',
     'classmates',
     'subClassmates',
-    'classNumber'
+    'classNumber',
+    'inviters'
   ],
   /**
    * 组件的属性列表
@@ -129,6 +130,7 @@ create.Component(store, {
      */
     menuTap: function (e) {
       let _t = this;
+      let _tsd = _t.store.data;
       let key = e.currentTarget.dataset.key;
       if (key == "classroom") {
         if (_t.isLogin()) {
@@ -154,7 +156,18 @@ create.Component(store, {
       }else if(key=="randomDate"){
         if(_t.isLogin()){
           if (_t.hasClassroom()) {
-            config.router.goRandomDate();
+            if(!_tsd.userInfo.realName||!_tsd.userInfo.phoneNumber){
+              wx.showToast({
+                title: '需要填写真实姓名和手机号码',
+                icon: 'none',
+                duration: 2000
+              });
+              _tsd.isShowEditProfileDialog = true;
+              config.router.goProfile(_tsd.userInfo.userId); 
+            }else{
+              config.router.goRandomDate(); 
+            }
+            
           }
         }
       }
@@ -170,7 +183,7 @@ create.Component(store, {
       var _tsd = _t.store.data;
       let key = e.currentTarget.dataset.key;
       if (key == "goProfile") {
-        config.router.goProfile(e, _tsd.userInfo.userId);
+        config.router.goProfile(_tsd.userInfo.userId);
       } else if (key == "hideModal") {
         _tsd.isShowAddClassDialog = false;
       } else if (key == "goClassroom") {

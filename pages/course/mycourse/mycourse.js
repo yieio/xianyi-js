@@ -80,7 +80,7 @@ create.Page(store,{
             duration: 2000
           });
          //跳转去首页
-         config.router.goIndex(_t,_td.classNumber); 
+         config.router.goIndex(_td.classNumber); 
          return;
         }
         if (result.data.type != 200) {
@@ -212,9 +212,8 @@ create.Page(store,{
     }else if(key=="hideAddMyCourseDialog"){
       _t.setData({isShowAddMyCourseDialog:false});
     }else if(key=="goMyCourseInfo"){
-      console.log(e);
       let courseId = e.currentTarget.dataset.courseid;
-      config.router.goMyCourseInfo(e,courseId);
+      config.router.goMyCourseInfo(courseId);
     }
 
   },
@@ -235,7 +234,7 @@ create.Page(store,{
         duration: 2000
       });
 
-      config.router.goIndex(_t,'');
+      config.router.goIndex('');
     }
 
   },

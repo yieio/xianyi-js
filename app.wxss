@@ -104,6 +104,10 @@
   display: none;
 }
 
+.show{
+  display:block !important;
+}
+
 .tap-hover { 
   background-color: #f7f7f7 !important;
 }

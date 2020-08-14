@@ -1,6 +1,30 @@
 <!--index.wxml-->
 <view class="container">
-	<latest-course wx:if="{{curPage=='course'}}" id="latestCourseComponent"></latest-course>
+<add-tips name="测试" custom/>
+	<block wx:if="{{curPage=='course'}}">
+		<latest-course id="latestCourseComponent"></latest-course>
+
+		<view wx:if="{{userInfo.classNumber}}" class="cu-list menu card-menu margin-bottom-xl">
+			<view class="cu-item" hover-class="tap-hover" bindtap="actionTap" data-key="classNumber">
+				<view class="content">
+					<text class="cuIcon-newshot text-green"></text>
+					<text class="text-grey">{{userInfo.className}}</text>
+				</view>
+				<view class="action">
+					<text class="text-grey text-sm">{{userInfo.classNumber}}</text>
+				</view>
+			</view>
+
+			<view class="cu-item arrow" hover-class="tap-hover">
+				<button class="cu-btn content" open-type="share">
+					<text class="cuIcon-share text-cyan"></text>
+					<text class="text-grey">分享给同学</text>
+				</button>
+			</view>
+
+		</view>
+	</block>
+
 	<my-page wx:if="{{curPage=='my'}}"></my-page>
 
 	<!--底部导航占位开始-->

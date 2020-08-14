@@ -70,7 +70,7 @@
 			<text class="text-grey">约饭</text>
 		</view>
 		<view class="action">
-		<view class="cu-tag round bg-red light">0</view>
+		<view  class="cu-tag round {{inviters.length>0?'bg-red':'bg-grey'}} light">{{inviters.length}}</view>
 
 		</view>
 	</view>

@@ -1,16 +1,17 @@
 <!--components/randomDate/list/inviteList.wxml-->
 <!--约我的列表组件-->
 <!--约我的列表开始-->
+<block wx:if="{{!isShowNoneBlock}}">
 <view class="cu-bar bg-white solid-bottom margin" style="margin-bottom:0;">
 	<view class="action">
 		<text class="cuIcon-titles text-orange "></text> {{randomDateTitle}}
 	</view>
 </view>
 <view class="cu-list menu-avatar comment margin" style="margin-top:0">
-	<view class="cu-item solid-bottom" wx:for="{{inviters}}" wx:key="index" wx:for-item="appt">
-		<!-- <view class="cu-avatar radius-xs round" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Morgana.png);"></view> -->
-		<view class="cu-avatar radius-xs bg-cyan" style="width:72rpx;height:72rpx;">
-			<text class="xl">C</text>
+	<view class="cu-item solid-bottom" wx:for="{{inviters}}" wx:key="index" wx:for-item="appt" bindtap="actionTap" data-index="{{index}}" hover-class="tap-hover" data-key="opAppointment">
+		<view wx:if="{{appt.appointmentStatus==10}}" class="cu-avatar radius-xs round" style="background-image:url({{appt.createUserAvatar}});" catchtap="actionTap" data-key="goProfile" data-userid="{{appt.createUserId}}"></view>
+		<view wx:else class="cu-avatar radius-xs bg-cyan" style="width:72rpx;height:72rpx;">
+			<text class="xl">匿</text>
 		</view>
 		<view class="content">
 			<view class="text-grey">{{appt.title}}</view>
@@ -18,7 +19,7 @@
 				{{appt.content}}
 			</view>
 			<view class="margin-top-sm flex justify-between">
-				<view class="text-gray text-df">2018年12月4日</view>
+				<view class="text-gray text-df">{{appt.appointDate}}</view>
 				<view class="text-xxl">
 					<text class="cuIcon-comment text-green  margin-left-sm"></text>
 				</view>
@@ -26,4 +27,38 @@
 		</view>
 	</view>
 </view>
+</block>
+
+<view class="{{isShowNoneBlock?'show':''}}" style="text-align:center;margin-top:50%;align-items: center; display:none;">
+	<view class="text-xsl">
+		<text class="cuIcon-bad text-gray"></text>
+	</view>
+	<view>
+		<text class="text-df text-gray">还没有人约</text>
+	</view>
+</view>
 <!--约我的列表结束-->
+
+<!--操作弹窗开始-->
+<view class="cu-modal bottom-modal {{isShowOpAppointmentDialog?'show':''}}" bindtap="actionTap" data-key="hideOpAppointmentDialog">
+	<view class="cu-dialog" catchtap="actionTap" data-key="noneAction">
+		<view class="cu-bar bg-white justify-end">
+			<view class="content">{{oppt.title}}</view>
+			<view class="action" bindtap="actionTap" data-key="hideOpAppointmentDialog">
+				<text class="cuIcon-close text-red"></text>
+			</view>
+		</view>
+		<view class="padding-xl">
+			{{oppt.content}}
+		</view>
+		<view class="cu-bar bg-white">
+			<block wx:if="{{oppt.appointmentStatus==1}}">
+				<view class="action margin-0 flex-sub solid-right" data-id="{{oppt.id}}" catchtap="actionTap" data-key="rejectAppointment">匿名拒绝</view>
+				<view class="action margin-0 flex-sub  text-green" data-id="{{oppt.id}}" catchtap="actionTap" data-key="acceptAppointment">接受邀约</view>
+			</block>
+
+		</view>
+	</view>
+
+</view>
+<!--操作弹窗结束-->

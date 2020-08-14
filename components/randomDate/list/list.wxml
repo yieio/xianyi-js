@@ -7,11 +7,11 @@
 	</view>
 </view>
 <view class="cu-list menu-avatar comment margin" style="margin-top:0">
+	<view class="cu-item solid-bottom" wx:for="{{appointments}}" wx:key="index" wx:for-item="appt" bindtap="actionTap" data-index="{{index}}" hover-class="tap-hover" data-key="opAppointment">
 
-	<view class="cu-item solid-bottom" wx:for="{{appointments}}" wx:key="index" wx:for-item="appt">
-		<!-- <view class="cu-avatar radius-xs round" style="background-image:url(https://ossweb-img.qq.com/images/lol/img/champion/Morgana.png);"></view> -->
-		<view class="cu-avatar radius-xs bg-cyan" style="width:72rpx;height:72rpx;">
-			<text class="xl">C</text>
+		<view wx:if="{{appt.appointmentStatus==10}}" class="cu-avatar radius-xs round" style="background-image:url({{appt.mateUserAvatar}});" catchtap="actionTap" data-key="goProfile" data-userid="{{appt.mateUserId}}"></view>
+		<view wx:else class="cu-avatar radius-xs bg-cyan" style="width:72rpx;height:72rpx;">
+			<text class="xl">匿</text>
 		</view>
 		<view class="content">
 			<view class="text-grey">{{appt.title}}</view>
@@ -19,7 +19,7 @@
 				{{appt.content}}
 			</view>
 			<view class="margin-top-sm flex justify-between">
-				<view class="text-gray text-df">2018年12月4日</view>
+				<view class="text-gray text-df">{{appt.appointDate}}</view>
 				<view class="text-xxl">
 					<text class="cuIcon-comment text-green  margin-left-sm"></text>
 				</view>
@@ -28,3 +28,35 @@
 	</view>
 </view>
 <!--约饭列表结束-->
+
+<!--操作弹窗开始-->
+<view class="cu-modal bottom-modal {{isShowOpAppointmentDialog?'show':''}}" bindtap="actionTap" data-key="hideOpAppointmentDialog">
+	<view class="cu-dialog" catchtap="actionTap" data-key="noneAction">
+		<view class="cu-bar bg-white justify-end">
+			<view class="content">{{oppt.title}}</view>
+			<view class="action" bindtap="actionTap" data-key="hideOpAppointmentDialog">
+				<text class="cuIcon-close text-red"></text>
+			</view>
+		</view>
+		<view class="padding-xl">
+			{{oppt.content}}
+
+		</view>
+		<view class="cu-bar bg-white">
+			<view class="action margin-0 flex-sub" wx:if="{{oppt.appointmentStatus==1}}">
+				等待截止时间：{{oppt.endTime}}</view>
+
+			<view wx:if="{{oppt.appointmentStatus==40||oppt.appointmentStatus==13}}" class="action margin-0 flex-sub" data-id="{{oppt.id}}" catchtap="actionTap" data-key="cancelAppointment">
+				取消约饭
+			</view>
+
+			<block wx:if="{{oppt.appointmentStatus==42}}">
+				<view class="action margin-0 flex-sub solid-right" data-id="{{oppt.id}}" catchtap="actionTap" data-key="cancelAppointment">没吃成</view>
+				<view class="action margin-0 flex-sub  text-green" data-id="{{oppt.id}}" catchtap="actionTap" data-key="finishAppointment">吃完了</view>
+			</block>
+
+		</view>
+	</view>
+
+</view>
+<!--操作弹窗结束-->

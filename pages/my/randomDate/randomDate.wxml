@@ -5,7 +5,7 @@
 			<text class="cuIcon-wefill"></text> 我约的
 		</view>
 		<view class="flex-sub cu-item {{1==tabCur?'text-green cur':''}}" bindtap="actionTap" data-key="tabSelect" data-index="1">
-			<text class=" cuIcon-evaluate_fill"></text> 约我的<view class="cu-tag sm round bg-red light">0</view>
+			<text class=" cuIcon-evaluate_fill"></text> 约我的<view wx:if="{{inviters.length>0}}" class="cu-tag sm round bg-red light">{{inviters.length}}</view>
 		</view>
 	</scroll-view>
 	<view class="nav-height" style="height:90rpx;"></view>

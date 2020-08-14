@@ -36,7 +36,7 @@ var router = {
   /**
    * 跳转到首页
    */
-  goIndex:function(e,classNumber){
+  goIndex:function(classNumber){
     classNumber = classNumber ||'';
     wx.navigateTo({
       url: '/pages/index/index?classNumber='+classNumber 
@@ -47,7 +47,7 @@ var router = {
   /**
    * 查看课程表
    */
-  goCourseList: function (e, classNumber, schoolTerm,courseDate) {
+  goCourseList: function (classNumber, schoolTerm,courseDate) {
     let _classNumber = classNumber  || '';
     let _schoolTerm = schoolTerm;
     let _courseDate = courseDate  || '';
@@ -60,9 +60,9 @@ var router = {
 
   /**
    * 我的选修课页面
-   * @param  e 
+   * 
    */
-  goMyCourse:function(e){
+  goMyCourse:function(){
     wx.navigateTo({
       url: '/pages/course/mycourse/mycourse'
     })
@@ -70,10 +70,10 @@ var router = {
 
   /**
    * 设置我的选修课程信息页面
-   * @param {*} e 
+   * 
    * @param {课程id} courseId 
    */
-  goMyCourseInfo:function(e,courseId){
+  goMyCourseInfo:function(courseId){
     wx.navigateTo({
       url: '/pages/course/mycourse/courseinfo?courseId=' + courseId
     }) 
@@ -81,9 +81,9 @@ var router = {
 
   /**
    * 班级课程表页面
-   * @param  e 
+   * 
    */
-  goClassCourse:function(e){
+  goClassCourse:function(){
     wx.navigateTo({
       url: '/pages/course/classcourse/classcourse'
     })
@@ -91,36 +91,17 @@ var router = {
 
   /**
    * 设置班级课程表信息页面
-   * @param {*} e 
+   *
    * @param {课程id} courseId 
    */
-  goClassCourseInfo:function(e,courseId){
+  goClassCourseInfo:function(courseId){
     wx.navigateTo({
       url: '/pages/course/classcourse/courseinfo?courseId=' + courseId
     }) 
   },
-
-
-  /**
-   * 完善个人信息点击
-   */
-  goEditProfile: function (e, id) {
-    let _id = id;
-    if (!_id) {
-      _id = e.currentTarget.id;
-    }
-    wx.navigateTo({
-      url: '/pages/profile/profile?userId=' + _id
-    })
-  },
-
   //去班集体页面
-  goProfile: function (e, id) {
+  goProfile: function (id) {
     let _id = id;
-    if (!_id) {
-      _id = e.currentTarget.id;
-    }
-
     wx.navigateTo({
       url: '/pages/my/profile/profile?userId=' + _id,
     })
