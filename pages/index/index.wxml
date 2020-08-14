@@ -1,6 +1,6 @@
 <!--index.wxml-->
 <view class="container">
-<add-tips name="测试" custom/>
+<add-tips name="测试"/>
 	<block wx:if="{{curPage=='course'}}">
 		<latest-course id="latestCourseComponent"></latest-course>
 
