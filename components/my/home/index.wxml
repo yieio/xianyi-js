@@ -17,8 +17,8 @@
 			<view class="cu-tag round bg-olive light margin-top-xs">{{userInfo.genderName}}</view>
 			<view class="cu-tag round bg-blue light margin-top-xs">{{userInfo.province}}{{userInfo.city}}</view>
 			<view wx:if="{{userInfo.className}}" class="cu-tag round bg-purple light margin-top-xs">{{userInfo.className}}</view>
-			<view class="cu-tag round bg-cyan light margin-top-xs">约饭{{userInfo.dateCount}}次</view>
-			<view class="cu-tag round bg-cyan light margin-top-xs">被约{{userInfo.callDateCount}}次</view>
+			<view class="cu-tag round bg-cyan light margin-top-xs">约饭{{appointCount.dateCount}}次</view>
+			<view class="cu-tag round bg-cyan light margin-top-xs">被约{{appointCount.callDateCount}}次</view>
 		</view>
 	</view>
 
@@ -70,7 +70,7 @@
 			<text class="text-grey">约饭</text>
 		</view>
 		<view class="action">
-		<view  class="cu-tag round {{inviters.length>0?'bg-red':'bg-grey'}} light">{{inviters.length}}</view>
+		<view  class="cu-tag round {{appointCount.inviteCount>0?'bg-red':'bg-grey'}} light">{{appointCount.inviteCount}}</view>
 
 		</view>
 	</view>

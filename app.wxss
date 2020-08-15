@@ -119,3 +119,9 @@
 .radius-xs{
   border-radius: 20rpx;
 }
+
+.cu-form-group input{
+  height:2.5rem;
+  min-height:2.5rem;
+  line-height:2.5rem
+}

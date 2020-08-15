@@ -6,14 +6,14 @@
 		<view class="action">
 			<text class="cuIcon-titles text-green"></text>
 			<text class="text-xl">{{className||classNumber||"我的课程表"}}</text>
-		</view> 
-	</view>
-		<view class="bg-white padding padding-top-xs shadow ">
-			<view wx:if="{{courseStartDate}}" class="cu-tag round bg-green light">开课时间：{{courseStartDate}}</view>
-			<view wx:if="{{courseEndDate}}" class="cu-tag round bg-red light">结课时间：{{courseEndDate}}</view>
 		</view>
+	</view>
+	<view wx:if="{{courseStartDate||courseEndDate}}" class="bg-white padding padding-top-xs shadow ">
+		<view wx:if="{{courseStartDate}}" class="cu-tag round bg-green light">开课时间：{{courseStartDate}}</view>
+		<view wx:if="{{courseEndDate}}" class="cu-tag round bg-red light">结课时间：{{courseEndDate}}</view>
+	</view>
 
-	<scroll-view scroll-y="true" style="height:{{scrollViewHeight}}px" scroll-into-view="{{scrollToViewId}}">
+	<scroll-view wx:if="{{courses.length>0}}" scroll-y="true" style="height:{{scrollViewHeight}}px" scroll-into-view="{{scrollToViewId}}">
 
 		<view class="cu-timeline" wx:for="{{courses}}" wx:for-item="cDate" wx:for-index="idx" wx:key="unique" id="date{{idx}}">
 			<!-- <view class="cu-time">{{cDate.date}} {{cDate.gap}} {{cDate.week}}</view> -->
@@ -34,8 +34,16 @@
 
 
 			</view>
-		</view>
-
+		</view> 
 	</scroll-view>
+
+		<view wx:if="{{isShowNoneData}}" style="text-align:center;margin-top:50%">
+			<view class="text-xsl">
+				<text class="cuIcon-bad text-gray"></text>
+			</view>
+			<view>
+				<text class="text-df text-gray">没有课程</text>
+			</view>
+		</view>
 
 </view>

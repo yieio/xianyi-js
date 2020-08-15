@@ -1,7 +1,7 @@
 // pages/my/randomDate/randomDate.js
 import create from '../../../utils/create'
 import store from '../../../store/index'
-import util from '../../../utils/util'
+import services from '../../../services/services'
 import config from '../../../config.js';
 
 let app = getApp();
@@ -102,54 +102,7 @@ create.Page(store, {
     });
   },
 
-  /**
-   * 格式化约饭信息
-   */
-  formatAppointment: function(app, iscreater) {
-    app.appointDate = util.formatDateTime(app.appointDate,10);
-
-
-    if (iscreater) {
-      if (app.appointmentStatus == 1) {
-        //等待回应
-        app.title = "约饭邀请已发出";
-        app.msg = app.content;
-        app.endTime = util.formatTime(app.expiredTime);
-      } else if (app.appointmentStatus == 10) {
-        //对方接受邀约
-        app.title = "约饭成功";
-        app.msg = app.content;
-      } else if (app.appointmentStatus == 13) {
-        //对方拒绝邀约
-        app.title = "约饭失败";
-        app.msg = app.content;
-      } else if (app.appointmentStatus == 40) {
-        //约饭过期没人回应
-        app.title = "约饭过期未回应";
-        app.msg = app.content;
-      } else if (app.appointmentStatus == 42) {
-        //已经过了约会时间
-        app.title = "已过约会时间";
-        app.msg = app.content;
-      }
-    } else {
-      if (app.appointmentStatus == 1) {
-        //等待回应
-        app.title = "有人请你吃饭";
-        app.msg = app.content;
-        app.hasInviter = true;
-        app.showAnimation = true;
-      } else if (app.appointmentStatus == 10) {
-        //对方接受邀约
-        app.title = "与人有约";
-        app.msg = app.content;
-        app.hasInviter = true;
-      } else {
-        app.hasInviter = false;
-      }
-    } 
-    return app;
-  },
+   
 
   /**
    * 确定约饭
@@ -221,7 +174,7 @@ create.Page(store, {
 
         console.log(resultData.data.appointment);
 
-        var ap = _t.formatAppointment(resultData.data.appointment, true);
+        var ap = services.formatAppointment(resultData.data.appointment, true);
 
         _t.setData({
           isShowRandomDateDialog: false
@@ -276,7 +229,7 @@ create.Page(store, {
         let appoints = [];
         if (apps.length > 0) {
           for(let i=0;i<apps.length;i++){
-            let creater = _t.formatAppointment(apps[i], true);
+            let creater = services.formatAppointment(apps[i], true);
             appoints.push(creater); 
           } 
         }
@@ -287,10 +240,8 @@ create.Page(store, {
         var inviters = [];
         if (apps.length > 0) {
           for (var i = 0; i < apps.length; i++) {
-            var creater = _t.formatAppointment(apps[i], false);
-            if (creater.hasInviter) {
+            var creater = services.formatAppointment(apps[i], false); 
               inviters.push(creater);
-            }
           }
 
           
@@ -344,7 +295,13 @@ create.Page(store, {
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
+    let _t = this; 
 
+    _t.getAppointments();
+
+    setTimeout(() => {
+      wx.stopPullDownRefresh(); 
+    }, 500); 
   },
 
   /**
@@ -357,7 +314,7 @@ create.Page(store, {
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  // onShareAppMessage: function () {
 
-  }
+  // }
 })

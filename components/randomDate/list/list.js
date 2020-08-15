@@ -1,6 +1,7 @@
 // components/my/randomDate/list/list.js
 import create from '../../../utils/create'
 import config from '../../../config.js';
+import services from '../../../services/services.js'
 import store from '../../../store/index'
 
 let app = getApp();
@@ -35,20 +36,13 @@ create.Component(store, {
 
     /**
      * 取消约饭
+     * @param id 
      */
-    cancelAppointment: function (id) {
-      var _t = this;
-      var _td = _t.data;
+    cancelAppointment:function(id){
+      let _t = this;
+      let _td = _t.data;
       let _tsd = _t.store.data;
-
-      wx.request({
-        url: app.api.cancelAppointment + "?id=" + id,
-        method: "POST",
-        header: {
-          'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
-        },
-        dataType: "json",
-        success: function (result) {
+      let success = result =>{
           if (result.data.type == 401) {
             wx.showToast({
               title: '您需要先登录',
@@ -83,62 +77,58 @@ create.Component(store, {
             title: '取消约饭成功',
             icon: 'success',
             duration: 2000
-          });
+          }); 
+      }
 
-        }
-      })
+      let token = app.globalData.userToken.accessToken;
+      services.cancelAppointment(token,id,success); 
     },
 
-
     /**
-     * 吃完成
-     * @param {约饭记录id} id
+     * 完成约饭
+     * @param  id 
      */
-    finishAppointment: function(id) {
-      var _t = this;
-      var _td = _t.data;
+    finishAppointment:function(id){
+      let _t = this;
+      let _td = _t.data;
       let _tsd = _t.store.data;
-      wx.request({
-        url: app.api.finishAppointment + "?id=" + id,
-        method: "POST",
-        header: {
-          'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
-        },
-        dataType: "json",
-        success: function(result) {
-          console.log(result);
-          if (result.data.type == 401) {
-            wx.showToast({
-              title: '您需要先登录',
-              icon: 'none',
-              duration: 2000
-            });
-            //跳转去首页
-            config.router.goIndex('');
-            return;
-          }
-          if (result.data.type != 200) {
-            wx.showToast({
-              title: result.data.content,
-              icon: "none"
-            })
-            return;
-          }
-  
-          _t.setData({
-            isShowOpAppointmentDialog: false
-          });
 
-          for (let i = 0; i < _tsd.appointments.length; i++) {
-            let item = _tsd.appointments[i];
-            if (item.id == id) {
-              _tsd.appointments.splice(i, 1);
-              break;
-            }
-          }
-  
+      let success = function(result) {
+        console.log(result);
+        if (result.data.type == 401) {
+          wx.showToast({
+            title: '您需要先登录',
+            icon: 'none',
+            duration: 2000
+          });
+          //跳转去首页
+          config.router.goIndex('');
+          return;
         }
-      })
+        if (result.data.type != 200) {
+          wx.showToast({
+            title: result.data.content,
+            icon: "none"
+          })
+          return;
+        }
+
+        _t.setData({
+          isShowOpAppointmentDialog: false
+        });
+
+        for (let i = 0; i < _tsd.appointments.length; i++) {
+          let item = _tsd.appointments[i];
+          if (item.id == id) {
+            _tsd.appointments.splice(i, 1);
+            break;
+          }
+        }
+
+      }
+
+      let token = app.globalData.userToken.accessToken;
+      services.finishAppointment(token,id,success); 
     },
 
 
@@ -165,6 +155,7 @@ create.Component(store, {
         });
       } else if (key == "cancelAppointment") {
         let id = dataset.id;
+        console.log(id);
         _t.cancelAppointment(id);
       }else if(key=="finishAppointment"){
         let id = dataset.id;

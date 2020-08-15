@@ -9,7 +9,7 @@
 		</view>
 
 		<view class="cu-bar bg-white">
-			<view wx:if="{{!userInfo.className}}" class="action margin-0 flex-sub solids-right" hover-class="tap-hover-trans" bindtap="actionTap" data-key="createClass">新建班级</view>
+			<view wx:if="{{!userInfo.className||userInfo.userId==1}}" class="action margin-0 flex-sub solids-right" hover-class="tap-hover-trans" bindtap="actionTap" data-key="createClass">新建班级</view>
 			<view class="action margin-0 flex-sub  text-green" hover-class="tap-hover-trans" bindtap="actionTap" data-key="changeClass">加入班级</view>
 		</view>
 	</view>
@@ -41,7 +41,7 @@
 		<form bindsubmit="changeClassroomFormSubmit">
 			<view class="cu-dialog" style="height:100vh;">
 				<view class="cu-bar bg-white">
-					<view class="action text-grey" bindtap="hideModal">取消</view>
+					<view class="action text-grey" bindtap="actionTap" data-key="hideChangeClassDialog">取消</view>
 					<view class="action title">加入班集体</view>
 					<view class="action text-grey" style="margin-right:30rpx;">
 						<button class="cu-btn bg-green" form-type="submit">加入</button>
@@ -70,7 +70,7 @@
 			<view class="cu-dialog" style="height:100vh;">
 				<view class="cu-bar bg-white">
 
-					<view class="action text-grey" bindtap="hideModal">取消</view>
+					<view class="action text-grey" bindtap="actionTap" data-key="hideCreateClassDialog">取消</view>
 					<view class="action title">新建班集体</view>
 					<view class="action text-grey" style="margin-right:30rpx;">
 						<button class="cu-btn bg-green" form-type="submit">新建</button>
@@ -78,15 +78,20 @@
 
 				</view>
 
-				<view class="padding" style="text-align:left;">
+				<view class="padding" style="text-align:left;"> 
 					<view class="cu-form-group">
 						<view class="title">班级名称</view>
 						<input id="name" name="name" placeholder="输入班级名称"></input>
-					</view>
+					</view> 
 					<view class="cu-form-group">
 						<view class="title">入学年份</view>
 						<input id="startYear" name="startYear" type="number" placeholder="输入入学年份"></input>
 					</view>
+					<view class="cu-form-group">
+						<view class="title">班级编号</view>
+						<input id="classNumber" name="classNumber" placeholder="不填将自动生成"></input>
+					</view>
+					<view class="text-gray text-df" style="padding: 1rpx 30rpx;">班级编号需要唯一，例如：2019PTMBA4</view>
 				</view>
 			</view>
 		</form>

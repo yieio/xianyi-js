@@ -9,7 +9,7 @@
 <view class="cu-list menu-avatar comment margin" style="margin-top:0">
 	<view class="cu-item solid-bottom" wx:for="{{appointments}}" wx:key="index" wx:for-item="appt" bindtap="actionTap" data-index="{{index}}" hover-class="tap-hover" data-key="opAppointment">
 
-		<view wx:if="{{appt.appointmentStatus==10}}" class="cu-avatar radius-xs round" style="background-image:url({{appt.mateUserAvatar}});" catchtap="actionTap" data-key="goProfile" data-userid="{{appt.mateUserId}}"></view>
+		<view wx:if="{{appt.mateUserId}}" class="cu-avatar radius-xs round" style="background-image:url({{appt.mateUserAvatar}});" catchtap="actionTap" data-key="goProfile" data-userid="{{appt.mateUserId}}"></view>
 		<view wx:else class="cu-avatar radius-xs bg-cyan" style="width:72rpx;height:72rpx;">
 			<text class="xl">匿</text>
 		</view>

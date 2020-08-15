@@ -2,6 +2,7 @@
 import create from '../../../utils/create'
 import config from '../../../config.js';
 import store from '../../../store/index'
+import services from '../../../services/services.js'
 import util from '../../../utils/util'
 
 let app = getApp();
@@ -33,52 +34,101 @@ create.Component(store, {
       });
 
     },
+ 
 
     /**
-     * 格式化约饭信息
+     * 取消约饭
+     * @param id 
      */
-    formatAppointment: function (app, iscreater) {
-      app.appointDate = util.formatDateTime(app.appointDate, 10);
-      if (iscreater) {
-        if (app.appointmentStatus == 1) {
-          //等待回应
-          app.title = "约饭邀请已发出";
-          app.msg = app.content;
-          app.endTime = util.formatTime(app.expiredTime);
-        } else if (app.appointmentStatus == 10) {
-          //对方接受邀约
-          app.title = "约饭成功";
-          app.msg = app.content;
-        } else if (app.appointmentStatus == 13) {
-          //对方拒绝邀约
-          app.title = "约饭失败";
-          app.msg = app.content;
-        } else if (app.appointmentStatus == 40) {
-          //约饭过期没人回应
-          app.title = "约饭过期未回应";
-          app.msg = app.content;
-        } else if (app.appointmentStatus == 42) {
-          //已经过了约会时间
-          app.title = "已过约会时间";
-          app.msg = app.content;
+    cancelAppointment:function(id){
+      let _t = this; 
+      let _tsd = _t.store.data;
+      let success = function (result) {
+        if (result.data.type == 401) {
+          wx.showToast({
+            title: '您需要先登录',
+            icon: 'none',
+            duration: 2000
+          });
+          //跳转去首页
+          config.router.goIndex('');
+          return;
         }
-      } else {
-        if (app.appointmentStatus == 1) {
-          //等待回应
-          app.title = "有人请你吃饭";
-          app.msg = app.content;
-          app.hasInviter = true;
-          app.showAnimation = true;
-        } else if (app.appointmentStatus == 10) {
-          //对方接受邀约
-          app.title = "与人有约";
-          app.msg = app.content;
-          app.hasInviter = true;
-        } else {
-          app.hasInviter = false;
+        if (result.data.type != 200) {
+          wx.showToast({
+            title: result.data.content,
+            icon: "none"
+          })
+          return;
+        }
+
+        _t.setData({
+          isShowOpAppointmentDialog: false
+        });
+
+        for (let i = 0; i < _tsd.inviters.length; i++) {
+          let item = _tsd.inviters[i];
+          if (item.id == id) {
+            _tsd.inviters.splice(i, 1);
+            break;
+          }
+        }
+
+        wx.showToast({
+          title: '取消约饭成功',
+          icon: 'success',
+          duration: 2000
+        });
+
+      }
+
+      let token = app.globalData.userToken.accessToken;
+      services.cancelAppointment(token,id,success); 
+    },
+
+    /**
+     * 完成约饭
+     * @param  id 
+     */
+    finishAppointment:function(id){
+      let _t = this; 
+      let _tsd = _t.store.data;
+
+      let success = function(result) {
+        console.log(result);
+        if (result.data.type == 401) {
+          wx.showToast({
+            title: '您需要先登录',
+            icon: 'none',
+            duration: 2000
+          });
+          //跳转去首页
+          config.router.goIndex('');
+          return;
+        }
+        if (result.data.type != 200) {
+          wx.showToast({
+            title: result.data.content,
+            icon: "none"
+          })
+          return;
+        }
+
+        _t.setData({
+          isShowOpAppointmentDialog: false
+        });
+
+        for (let i = 0; i < _tsd.inviters.length; i++) {
+          let item = _tsd.inviters[i];
+          if (item.id == id) {
+            _tsd.inviters.splice(i, 1);
+            break;
+          }
         }
       }
-      return app;
+
+      let token = app.globalData.userToken.accessToken;
+      services.finishAppointment(token,id,success); 
     },
 
     /**
@@ -172,7 +222,7 @@ create.Component(store, {
           for (var i = 0; i < inviters.length; i++) {
             var item = inviters[i];
             if (item.id == app.id) {
-              inviters[i] = _t.formatAppointment(app, false);
+              inviters[i] = services.formatAppointment(app, false);
               break;
             }
           }
@@ -213,6 +263,12 @@ create.Component(store, {
       } else if (key == "acceptAppointment") {
         let id = dataset.id;
         _t.acceptAppointment(id);
+      }else if (key == "cancelAppointment") {
+        let id = dataset.id;
+        _t.cancelAppointment(id);
+      }else if(key=="finishAppointment"){
+        let id = dataset.id;
+        _t.finishAppointment(id);
       }else if(key=="goProfile"){
         let userid = dataset.userid;
         config.router.goProfile(userid);

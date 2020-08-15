@@ -2,6 +2,7 @@
 import create from '../../../utils/create'
 import store from '../../../store/index' 
 import config from '../../../config.js';
+import services from '../../../services/services' 
 
 let app = getApp();
 
@@ -14,7 +15,7 @@ create.Page(store,{
   /**
    * 页面的初始数据
    */
-  use:['userInfo','hasUserInfo','classmates'],
+  use:['userInfo','hasUserInfo','classmates','subClassmates'],
 
   /**
    * 初始化页面私有数据
@@ -54,16 +55,54 @@ create.Page(store,{
     }
 
   },
+
+  /**
+   * 获取同学
+   */
+  getClassmates: function () {
+    var _t = this;
+    var _td = _t.store.data;
+    let success = result=>{
+      if(result.statusCode == 401){
+        //wx.setStorageSync('userToken', null);
+        return;
+      }
+
+      if (result.data.type != 200) {
+        wx.showToast({
+          title: '获取同学信息失败',
+          icon: 'none',
+          duration: 2000
+        });
+        return;
+      }
+
+      var cs = result.data.data.classmates;
+      _td.classmates = cs;
+      let sub = 3;
+      if (cs.length > sub) {
+        _td.subClassmates = [];
+        for (let i = 0; i < sub; i++) {
+          _td.subClassmates.push(cs[i]);
+        }
+
+      } else {
+        _td.subClassmates = cs;
+      }
+    }
+    services.getClassmates(success);
+  },
  
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let _t = this;
-    //let _td = _t.data;
-    //let _tsd = _t.store.data;
+    let _t = this; 
     _t.initData();
 
+    if(app.globalData.userToken){
+      _t.getClassmates();
+    } 
   },
 
   /**
@@ -113,11 +152,11 @@ create.Page(store,{
    */
   onShareAppMessage: function () {
     let _t = this;
-    let _td = _t.store.data; 
+    let _tsd = _t.store.data; 
     
     return {
-      title:_td.userInfo.nickName+'邀请你加入班集体',
-      path:'/pages/index/index?classNumber='+_td.userInfo.classNumber 
+      title:_tsd.userInfo.nickName+'邀请你加入班集体',
+      path:'/pages/index/index?classNumber='+_tsd.userInfo.classNumber+'&className='+_tsd.userInfo.className
     };
 
   }

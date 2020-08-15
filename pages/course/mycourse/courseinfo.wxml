@@ -14,7 +14,7 @@
 					</view>
 				</view>
 				<view class="action">
-					<button class="cu-btn line-gray round" bindtap="actionTap" data-key="showEditMyCourseDialog">编辑</button>
+					<button class="cu-btn line-grey round" bindtap="actionTap" data-key="showEditMyCourseDialog">编辑</button>
 				</view>
 			</view>
 
@@ -49,7 +49,7 @@
 					</view>
 				</view>
 			 	<view class="action">
-					<button class="cu-btn sm line-red round" bindtap="actionTap" data-key="deleteMyCourse">删除</button>
+					<button class="cu-btn sm line-red round" bindtap="actionTap" data-key="deleteMyCourse" data-id="{{course.id}}">删除</button>
 				</view>
 			</view>
 		</view>

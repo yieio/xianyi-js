@@ -1,6 +1,5 @@
 <!--pages/my/profile/profile.wxml-->
 <view class="container">
-
 	<view class="card"> 
 		<text class="cuIcon-edit text-gray fr margin-right" wx:if="{{canEdit}}" bindtap="actionTap" data-key="editProfile" style="font-size:44rpx;"></text>
 		<view class="card-content card-my-wrap">
@@ -53,6 +52,7 @@
 						<button class="cu-btn bg-green" form-type="submit">保存</button>
 					</view>
 				</view>
+				<scroll-view scroll-y="true" style="height:{{scrollViewHeight}}px">
 				<view class="padding" style="text-align:left;">
 					<view class="cu-form-group">
 						<view class="title">姓名</view>
@@ -83,6 +83,7 @@
 						<textarea id="mySource" name="mySource" value="{{userInfo.mySource}}" placeholder="可共享的资源" maxlength="-1"></textarea>
 					</view>
 				</view>
+				</scroll-view>
 			</view>
 		</form>
 	</view>

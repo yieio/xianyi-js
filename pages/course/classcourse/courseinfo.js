@@ -252,8 +252,7 @@ create.Page(store, {
         id: courseId
       },
       dataType: "json",
-      success: function (result) {
-        console.log(result);
+      success: function (result) { 
         if (result.data.type == 401) {
           wx.showToast({
             title: '您需要先登录',
@@ -265,8 +264,9 @@ create.Page(store, {
           return;
         }
         if (result.data.type != 200) {
+          let title = result.data.content || "删除失败";
           wx.showToast({
-            title: '数据请求失败',
+            title: title,
             icon: 'none',
             duration: 2000
           });
@@ -420,7 +420,7 @@ create.Page(store, {
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  // onShareAppMessage: function () {
 
-  }
+  // }
 })

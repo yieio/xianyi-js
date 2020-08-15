@@ -26,7 +26,7 @@
 					</view>
 				</view>
 				<view class="action">
-					<button class="cu-btn line-gray round" bindtap="actionTap" data-key="goMyCourseInfo" data-courseid="{{course.id}}">设置</button>
+					<button class="cu-btn line-grey round" bindtap="actionTap" data-key="goMyCourseInfo" data-courseid="{{course.id}}">设置</button>
 				</view>
 			</view>
 		</view>

@@ -6,40 +6,52 @@ import config from '../../../config.js';
 
 let app = getApp();
 
-create.Page(store,{
-  use:['userInfo','hasUserInfo','isShowEditProfileDialog'],
+create.Page(store, {
+  use: ['userInfo', 'hasUserInfo', 'isShowEditProfileDialog'],
 
-  initData:function(options){
+  initData: function (options) {
     let _t = this;
     let _td = _t.data;
     let _tsd = _t.store.data;
 
     let userId = options.userId;
+    let title = "我的信息";
 
-    if(userId != _tsd.userInfo.userId){
-      _t.setData({ 
-        canEdit:false,
-        userInfo:{}
+    if (userId != _tsd.userInfo.userId) {
+      _t.setData({
+        canEdit: false,
+        userInfo: {}
       })
+      title = '同学信息';
       wx.setNavigationBarTitle({
-        title: '同学信息',
+        title: title,
       })
-    }else{ 
-      _t.setData({ 
-        canEdit:true,
-        userInfo:_tsd.userInfo
+    } else {
+      _t.setData({
+        canEdit: true,
+        userInfo: _tsd.userInfo
       })
     }
 
     _t.setData({
-      isShowEditProfileDialog:_tsd.isShowEditProfileDialog
+      title: title,
+      userId: userId,
+    });
+
+    // 先取出页面高度 windowHeight
+    wx.getSystemInfo({
+      success: function (res) {
+        _t.setData({
+          scrollViewHeight: res.windowHeight - 60
+        });
+      }
     });
   },
 
   /**
    * 获取同学档案信息
    */
-  getProfile: function(userId) {
+  getProfile: function (userId) {
     var _t = this;
     wx.request({
       url: config.api.classmateProfile + "?userid=" + userId,
@@ -48,7 +60,7 @@ create.Page(store,{
         'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
       },
       dataType: "json",
-      success: function(result) { 
+      success: function (result) {
         if (result.data.type != 200) {
           wx.showToast({
             title: '获取同学资料失败',
@@ -59,10 +71,10 @@ create.Page(store,{
         }
 
         var cp = result.data.data.classmateProfile;
-        cp.genderName = util.getGenderName(cp.gender); 
+        cp.genderName = util.getGenderName(cp.gender);
         _t.setData({
           userInfo: cp
-        }); 
+        });
       }
     });
 
@@ -71,7 +83,7 @@ create.Page(store,{
   /**
    * 保存用户资料
    */
-  profileFormSubmit: function(e) {
+  profileFormSubmit: function (e) {
     //姓名，手机号，不能为空
     var formData = e.detail.value;
     let _t = this;
@@ -98,7 +110,7 @@ create.Page(store,{
     };
 
     formData.userId = _tsd.userInfo.userId;
-    
+
 
     //发起接口调用,保存用户信息
     wx.request({
@@ -111,15 +123,16 @@ create.Page(store,{
       success: function (result) {
         console.log(result);
         if (result.data.type == 200) {
-          var _data = result.data.data; 
+          var _data = result.data.data;
           _td.userInfo = _data.userInfo;
           _td.userInfo.genderName = util.getGenderName(_data.userInfo.gender);
           _tsd.userInfo = _td.userInfo;
           _t.setData({
-            userInfo : _td.userInfo,
-            isShowEditProfileDialog:false
+            userInfo: _td.userInfo
           });
-          
+
+          _tsd.isShowEditProfileDialog = false;
+
 
           //跳转到首页
           wx.showToast({
@@ -142,23 +155,20 @@ create.Page(store,{
    * 处理页面点击事件
    * @param  e 
    */
-  actionTap:function(e){
+  actionTap: function (e) {
     let _t = this;
+    let _tsd = _t.store.data;
     let key = e.currentTarget.dataset.key;
     console.log(e);
 
-    if(key=="editProfile"){
-      _t.setData({
-        isShowEditProfileDialog:true
-      });
+    if (key == "editProfile") {
+      _tsd.isShowEditProfileDialog = true;
 
-    }else if(key=="hideEditProfileDialog"){
-      _t.setData({
-        isShowEditProfileDialog:false
-      });
+    } else if (key == "hideEditProfileDialog") {
+      _tsd.isShowEditProfileDialog = false;
     }
   },
- 
+
 
   /**
    * 生命周期函数--监听页面加载
@@ -166,7 +176,7 @@ create.Page(store,{
   onLoad: function (options) {
     let _t = this;
     _t.initData(options);
-    if(app.globalData.userToken){
+    if (app.globalData.userToken) {
       _t.getProfile(options.userId);
 
     }
@@ -219,11 +229,13 @@ create.Page(store,{
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-    let _td = this;
-     return {
-      title: '同学信息',
-      path: '/pages/my/profile/profile?userId=' + _td.userInfo.userId
-     }
+    let _t = this;
+    let _td = _t.data;
+    let title = _td.title || '同学信息';
+    return {
+      title: title,
+      path: '/pages/my/profile/profile?userId=' + _td.userId
+    }
 
   }
 })

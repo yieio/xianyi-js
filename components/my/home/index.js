@@ -18,7 +18,7 @@ create.Component(store, {
     'classmates',
     'subClassmates',
     'classNumber',
-    'inviters'
+    'appointCount',
   ],
   /**
    * 组件的属性列表
@@ -62,7 +62,8 @@ create.Component(store, {
       let userInfo = e.detail.userInfo;
       userInfo.genderName = util.getGenderName(userInfo.gender);
       //从入口进来带了classNumber 参数，自动加入该班级
-      userInfo.classNumber = _tsd.classNumber || '';
+      userInfo.classNumber = _tsd.indexClassInfo.classNumber || '';
+      userInfo.className =  _tsd.indexClassInfo.className || '';
 
       //_tsd.userInfo = userInfo;
       //_tsd.hasUserInfo = true;
@@ -163,7 +164,10 @@ create.Component(store, {
                 duration: 2000
               });
               _tsd.isShowEditProfileDialog = true;
-              config.router.goProfile(_tsd.userInfo.userId); 
+              setTimeout(() => {
+                config.router.goProfile(_tsd.userInfo.userId); 
+              }, 1500);
+              
             }else{
               config.router.goRandomDate(); 
             }

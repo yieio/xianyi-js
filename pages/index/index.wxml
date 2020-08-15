@@ -1,17 +1,17 @@
 <!--index.wxml-->
 <view class="container">
-<add-tips name="测试"/>
+	<add-tips name="闲倚" />
 	<block wx:if="{{curPage=='course'}}">
 		<latest-course id="latestCourseComponent"></latest-course>
 
-		<view wx:if="{{userInfo.classNumber}}" class="cu-list menu card-menu margin-bottom-xl">
-			<view class="cu-item" hover-class="tap-hover" bindtap="actionTap" data-key="classNumber">
+		<view wx:if="{{indexClassInfo.classNumber}}" class="cu-list menu card-menu margin-bottom-xl">
+			<view class="cu-item arrow" hover-class="tap-hover" bindtap="actionTap" data-key="changeClassNumber">
 				<view class="content">
 					<text class="cuIcon-newshot text-green"></text>
-					<text class="text-grey">{{userInfo.className}}</text>
+					<text class="text-grey">{{indexClassInfo.className}}</text>
 				</view>
 				<view class="action">
-					<text class="text-grey text-sm">{{userInfo.classNumber}}</text>
+					<text class="text-grey text-sm">{{indexClassInfo.classNumber}}</text>
 				</view>
 			</view>
 
@@ -46,4 +46,28 @@
 			<view class="{{curPage=='my'?'text-green':'text-gray'}}">我</view>
 		</view>
 	</view>
+
+	<!--更换/加入班级班级弹窗-->
+	<view class="cu-modal bottom-modal {{isShowSwitchClassDialog?'show':''}}" bindtap="actionTap" data-key="hideSwitchClassDialog">
+
+		<view class="cu-dialog" style="height:60vh;">
+
+			<view class="cu-bar bg-white justify-end">
+				<view class="content">查看其它班级课程</view>
+				<view class="action" bindtap="actionTap" data-key="hideSwitchClassDialog">
+					<text class="cuIcon-close text-red"></text>
+				</view>
+			</view>
+			<view class="" style="text-align:left;">
+				<view>
+					<text class="text-gray text-df" style="line-height: 80rpx;padding: 1rpx 30rpx;">可选班集体：</text>
+				</view>
+				<view style="text-align:center;" class="bg-white padding-top-sm padding-bottom-lg">
+					<view class="cu-tag round margin-top-sm padding {{classIndex==index?'bg-green':''}}" wx:for="{{classArrary}}" wx:for-item="cl" wx:key="index" data-value="{{cl.classNumber}}" data-key="selectClassItem" data-index="{{index}}" catchtap="actionTap">{{cl.classNumber}}-{{cl.name}}</view>
+				</view>
+			</view>
+		</view>
+
+	</view>
+	<!--更换/加入班级班级弹窗-->
 </view>

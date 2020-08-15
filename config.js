@@ -8,6 +8,7 @@ var config = {
 var api = {
   login: config.host + "/Identity/LoginByWeApp",
   signup: config.host + "/Identity/UpdateUserInfoByWeApp",
+  refreshToken:config.host + "/Identity/token",
   latestCourse: config.host + "/study/GetLatestCourse",
   classCourse: config.host + "/study/GetClassCourse",
   makeAppointment: config.host + "/Study/MakeAppointment",
@@ -28,11 +29,12 @@ var api = {
   deleteMyCourseDate: config.host + "/study/deleteMyCourse",
   updateMyCourse: config.host + "/study/UpdateMyCourse",
   uploadClassCourse:config.host+"/study/UploadClassCourse",
+  getAppointmentCount:config.host+"/study/GetAppointmentCount"
 }
 
 module.exports.api = api;
 
-var router = {
+var router = { 
   /**
    * 跳转到首页
    */

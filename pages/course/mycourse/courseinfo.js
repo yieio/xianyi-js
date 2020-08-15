@@ -77,6 +77,10 @@ create.Page(store, {
       _t.setData({
         isShowAddMyCourseDateDialog: false
       });
+    }else if(key=="deleteMyCourse"){
+      let courseId = e.currentTarget.dataset.id;
+      _t.deleteMyCourseDate(courseId);
+
     }
   },
 
@@ -235,12 +239,11 @@ create.Page(store, {
   /**
    * 删除选修课程日期
    */
-  deleteMyCourseDate: function (e) {
-    var courseId = e.currentTarget.dataset.id;
+  deleteMyCourseDate: function (courseId) { 
     var _t = this;
     var _td = _t.data;
     wx.request({
-      url: app.api.deleteMyCourseDate,
+      url: config.api.deleteMyCourseDate,
       method: "GET",
       header: {
         'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
@@ -250,16 +253,17 @@ create.Page(store, {
       },
       dataType: "json",
       success: function (result) {
-        console.log(result);
-        if (result.data.type == 401) {
-          wx.redirectTo({
-            url: '/pages/signup/signup',
-          })
-          return;
-        }
         if (result.data.type != 200) {
+          let title = result.data.content||"删除失败";
+          wx.showToast({
+            title: title,
+            icon: 'none',
+            duration: 2000
+          });
           return;
         }
+
+        
         var courseId = result.data.data.id;
         for (var i = 0; i < _td.myCourseDates.length; i++) {
           var item = _td.myCourseDates[i];
@@ -407,7 +411,7 @@ create.Page(store, {
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
+  // onShareAppMessage: function () {
 
-  }
+  // }
 })

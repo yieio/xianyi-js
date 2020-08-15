@@ -20,5 +20,6 @@
     "navigationBarTitleText": "闲倚",
     "navigationBarTextStyle": "black"
   },
+  "resizable": true,
   "sitemapLocation": "sitemap.json"
 }

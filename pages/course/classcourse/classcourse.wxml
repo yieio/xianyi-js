@@ -10,7 +10,7 @@
 
 				</view>
 				<view class="action">
-					<button class="cu-btn line-gray round" bindtap="actionTap" data-key="uploadClassCourse">上传</button>
+					<button class="cu-btn line-grey round" bindtap="actionTap" data-key="uploadClassCourse">上传</button>
 				</view>
 			</view>
 
@@ -46,7 +46,7 @@
 					</view>
 				</view>
 				<view class="action">
-					<button class="cu-btn line-gray round" bindtap="actionTap" data-key="goMyCourseInfo" data-courseid="{{course.id}}">设置</button>
+					<button class="cu-btn line-grey round" bindtap="actionTap" data-key="goMyCourseInfo" data-courseid="{{course.id}}">设置</button>
 				</view> 
 			</view>
  

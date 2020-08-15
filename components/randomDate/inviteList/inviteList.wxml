@@ -9,7 +9,7 @@
 </view>
 <view class="cu-list menu-avatar comment margin" style="margin-top:0">
 	<view class="cu-item solid-bottom" wx:for="{{inviters}}" wx:key="index" wx:for-item="appt" bindtap="actionTap" data-index="{{index}}" hover-class="tap-hover" data-key="opAppointment">
-		<view wx:if="{{appt.appointmentStatus==10}}" class="cu-avatar radius-xs round" style="background-image:url({{appt.createUserAvatar}});" catchtap="actionTap" data-key="goProfile" data-userid="{{appt.createUserId}}"></view>
+		<view wx:if="{{appt.createUserId}}" class="cu-avatar radius-xs round" style="background-image:url({{appt.createUserAvatar}});" catchtap="actionTap" data-key="goProfile" data-userid="{{appt.createUserId}}"></view>
 		<view wx:else class="cu-avatar radius-xs bg-cyan" style="width:72rpx;height:72rpx;">
 			<text class="xl">匿</text>
 		</view>
@@ -55,6 +55,11 @@
 			<block wx:if="{{oppt.appointmentStatus==1}}">
 				<view class="action margin-0 flex-sub solid-right" data-id="{{oppt.id}}" catchtap="actionTap" data-key="rejectAppointment">匿名拒绝</view>
 				<view class="action margin-0 flex-sub  text-green" data-id="{{oppt.id}}" catchtap="actionTap" data-key="acceptAppointment">接受邀约</view>
+			</block>
+
+			<block wx:if="{{oppt.appointmentStatus==42}}">
+				<view class="action margin-0 flex-sub solid-right" data-id="{{oppt.id}}" catchtap="actionTap" data-key="cancelAppointment">没吃成</view>
+				<view class="action margin-0 flex-sub  text-green" data-id="{{oppt.id}}" catchtap="actionTap" data-key="finishAppointment">吃完了</view>
 			</block>
 
 		</view>

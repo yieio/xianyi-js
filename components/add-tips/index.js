@@ -38,7 +38,7 @@ Component({
         })
       }, this.data.delay * 1000)
       this.duraTimer = setTimeout(() => {
-        this.shrink();
+        this.hidden();
       }, (this.data.duration + this.data.delay) * 1000)
     },
     detached: function() {

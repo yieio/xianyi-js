@@ -7,7 +7,7 @@ import config from '../../../config.js';
 let app = getApp();
 
 create.Page(store, {
-  use: ['userInfo', 'hasUserInfo', 'latestCourse'],
+  use: ['userInfo', 'hasUserInfo', 'latestCourse','indexClassInfo'],
 
 
   /**
@@ -19,7 +19,8 @@ create.Page(store, {
     let _tsd = _t.store.data;
     //记录班级这个参数，给后面加入班级做准备
     if(options.classNumber){
-      _tsd.classNumber = options.classNumber;
+      _tsd.indexClassInfo.classNumber = options.classNumber;
+      _tsd.indexClassInfo.className = options.className;
     }
 
     // 先取出页面高度 windowHeight
@@ -39,7 +40,9 @@ create.Page(store, {
       schoolTerm: options.schoolTerm,
       courseDate: options.courseDate,
       courseStartDate: '',
-      courseEndDate: ''
+      courseEndDate: '',
+      courses:[],
+      isShowNoneData:false,
     });
   },
 
@@ -72,6 +75,10 @@ create.Page(store, {
           }
 
           if (cs.length <= 0) {
+            _t.setData({
+              courses: [],
+              isShowNoneData:true
+            })
             return;
           }
 
@@ -206,7 +213,7 @@ create.Page(store, {
     var _t = this;
     var _td = _t.data;
     return {
-      title: "课程表",
+      title: _td.className+"课程表",
       path: '/pages/course/list/list?classNumber='+ _td.classNumber 
       + '&schoolTerm=' + _td.schoolTerm 
       + '&courseDate=' + _td.courseDate 
