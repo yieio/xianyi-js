@@ -11,7 +11,7 @@ var api = {
   refreshToken:config.host + "/Identity/token",
   latestCourse: config.host + "/study/GetLatestCourse",
   classCourse: config.host + "/study/GetClassCourse",
-  makeAppointment: config.host + "/Study/MakeAppointment",
+  makeAppointment: config.host + "/Study/MakeAppointment", 
   getAppointments: config.host + "/Study/GetAppointments",
   cancelAppointment: config.host + "/Study/CancelAppointment",
   rejectAppointment: config.host + "/Study/rejectAppointment",
@@ -28,7 +28,10 @@ var api = {
   addMyCourse: config.host + "/study/AddMyCourse",
   deleteMyCourseDate: config.host + "/study/deleteMyCourse",
   updateMyCourse: config.host + "/study/UpdateMyCourse",
+  updateClassCourse: config.host + "/study/updateClassCourse",
   uploadClassCourse:config.host+"/study/UploadClassCourse",
+  addClassCourse: config.host + "/study/AddClassCourse",
+  deleteClassCourseDate: config.host + "/study/deleteClassCourse",
   getAppointmentCount:config.host+"/study/GetAppointmentCount"
 }
 

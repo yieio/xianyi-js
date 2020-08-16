@@ -153,9 +153,9 @@ create.Page(store,{
   onShareAppMessage: function () {
     let _t = this;
     let _tsd = _t.store.data; 
-    
+    let name = _tsd.userInfo.realName || _tsd.userInfo.nickName ||"";
     return {
-      title:_tsd.userInfo.nickName+'邀请你加入班集体',
+      title: name +'邀请你加入班集体',
       path:'/pages/index/index?classNumber='+_tsd.userInfo.classNumber+'&className='+_tsd.userInfo.className
     };
 

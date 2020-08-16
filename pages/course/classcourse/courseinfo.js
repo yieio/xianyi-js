@@ -6,7 +6,7 @@ import util from '../../../utils/util.js';
 const app = getApp();
 
 create.Page(store, {
-  use:['userInfo'],
+  use: ['userInfo'],
 
   /**
    * 页面的初始数据
@@ -59,7 +59,7 @@ create.Page(store, {
     let _t = this;
     let _td = _t.data;
     let _tsd = _t.store.data;
-    let key = e.currentTarget.dataset.key; 
+    let key = e.currentTarget.dataset.key;
     if (key == "showEditMyCourseDialog") {
       _t.setData({
         isShowEditMyCourseDialog: true
@@ -76,8 +76,8 @@ create.Page(store, {
       _t.setData({
         isShowAddMyCourseDateDialog: false
       });
-    } else if(key=="deleteMyCourse"){
-      var courseId = e.currentTarget.dataset.courseid; 
+    } else if (key == "deleteMyCourse") {
+      var courseId = e.currentTarget.dataset.courseid;
       _t.deleteMyCourseDate(courseId)
     }
   },
@@ -101,7 +101,7 @@ create.Page(store, {
    * 获取选修课信息及课程日期安排
    * @param {int} courseId 
    */
-  getMyCourseDate: function (courseId,classNumber) {
+  getMyCourseDate: function (courseId, classNumber) {
     var _t = this;
     var _td = _t.data;
     wx.request({
@@ -112,7 +112,7 @@ create.Page(store, {
       },
       data: {
         id: courseId,
-        classNumber:classNumber
+        classNumber: classNumber
       },
       dataType: "json",
       success: function (result) {
@@ -165,7 +165,7 @@ create.Page(store, {
     var _t = this;
     var _td = _t.data;
     let _tsd = _t.store.data;
-    var formData = e.detail.value; 
+    var formData = e.detail.value;
 
     formData.classRoom = formData.classRoom.replace(/^\s*|\s*$/g, "");
     if (formData.classRoom.length < 1) {
@@ -199,38 +199,45 @@ create.Page(store, {
 
     //发起接口调用,保存用户信息
     wx.request({
-      url: app.api.addMyCourse,
+      url: config.api.addClassCourse,
       method: "POST",
       header: {
         'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
       },
       data: formData,
       success: function (result) {
-        console.log(result);
-        if (result.data.type == 200) {
-          var _data = result.data.data;
-          //添加返回的数据到
-          var course = _t.formatCourseDateInfo(_data.course);
-
-          _td.myCourseDates.unshift(course);
-          _t.setData({
-            myCourseDates: _td.myCourseDates,
-            isShowAddMyCourseDateDialog:false
-          });
-
-           
+        if (result.statusCode == 403) {
           wx.showToast({
-            title: '保存成功',
-            icon: 'success',
-            duration: 2000
-          });
-        } else {
-          wx.showToast({
-            title: '保存失败',
+            title: '无权限进行此操作',
             icon: 'none',
             duration: 2000
           });
+          return;
         }
+
+        if (result.data.type != 200) {
+          let title = result.data.content || "添加课程失败";
+          wx.showToast({
+            title: title,
+            icon: 'none',
+            duration: 2000
+          });
+          return;
+        }
+        var _data = result.data.data;
+        //添加返回的数据到
+        var course = _t.formatCourseDateInfo(_data.course);
+        _td.myCourseDates.unshift(course);
+        _t.setData({
+          myCourseDates: _td.myCourseDates,
+          isShowAddMyCourseDateDialog: false
+        });
+        wx.showToast({
+          title: '添加课程成功',
+          icon: 'success',
+          duration: 2000
+        });
+
       }
     })
   },
@@ -239,11 +246,11 @@ create.Page(store, {
    * 删除选修课程日期
    */
   deleteMyCourseDate: function (courseId) {
-    
+
     var _t = this;
     var _td = _t.data;
     wx.request({
-      url: app.api.deleteMyCourseDate,
+      url: app.api.deleteClassCourseDate,
       method: "GET",
       header: {
         'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
@@ -252,8 +259,8 @@ create.Page(store, {
         id: courseId
       },
       dataType: "json",
-      success: function (result) { 
-        if (result.data.type == 401) {
+      success: function (result) {
+        if (result.statusCode == 401) {
           wx.showToast({
             title: '您需要先登录',
             icon: 'none',
@@ -263,6 +270,17 @@ create.Page(store, {
           config.router.goIndex(_td.classNumber);
           return;
         }
+
+        if (result.statusCode == 403) {
+          wx.showToast({
+            title: '无权限进行此操作',
+            icon: 'none',
+            duration: 2000
+          });
+          return;
+        }
+
+
         if (result.data.type != 200) {
           let title = result.data.content || "删除失败";
           wx.showToast({
@@ -286,7 +304,7 @@ create.Page(store, {
     });
 
   },
- 
+
   /**
    * 提交课程名和老师姓名的修改
    */
@@ -330,35 +348,45 @@ create.Page(store, {
 
     //发起接口调用,保存用户信息
     wx.request({
-      url: app.api.updateMyCourse,
+      url: config.api.updateClassCourse,
       method: "POST",
       header: {
         'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
       },
       data: formData,
       success: function (result) {
-        console.log(result);
-        if (result.data.type == 200) {
-          //var _data = result.data.data; 
+        if (result.statusCode == 403) {
           wx.showToast({
-            title: '保存成功',
-            icon: 'success',
-            duration: 2000
-          });
-          _td.myCourseInfo.name = formData.name;
-          _td.myCourseInfo.teacher = formData.teacher;
-
-          _t.setData({
-            myCourseInfo:_td.myCourseInfo,
-            isShowEditMyCourseDialog:false
-          });
-        } else {
-          wx.showToast({
-            title: '保存失败',
+            title: '无权限进行此操作',
             icon: 'none',
             duration: 2000
           });
+          return;
         }
+
+        if (result.data.type != 200) {
+          let title = result.data.content || "添加课程失败";
+          wx.showToast({
+            title: title,
+            icon: 'none',
+            duration: 2000
+          });
+          return;
+        }
+
+        wx.showToast({
+          title: '保存成功',
+          icon: 'success',
+          duration: 2000
+        });
+        _td.myCourseInfo.name = formData.name;
+        _td.myCourseInfo.teacher = formData.teacher;
+
+        _t.setData({
+          myCourseInfo: _td.myCourseInfo,
+          isShowEditMyCourseDialog: false
+        });
+
       }
     })
   },
@@ -370,8 +398,8 @@ create.Page(store, {
     let _t = this;
     let _tsd = _t.store.data;
 
-    _t.initData(options); 
-    _t.getMyCourseDate(options.courseId,_tsd.userInfo.classNumber);
+    _t.initData(options);
+    _t.getMyCourseDate(options.courseId, _tsd.userInfo.classNumber);
 
   },
 

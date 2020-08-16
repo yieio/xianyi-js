@@ -159,42 +159,54 @@ create.Page(store, {
     formData.endTime = formData.courseDate + " " + formData.endTime;
     formData.classNumber = _tsd.userInfo.classNumber;
 
-    //发起接口调用,保存用户信息
+    //发起接口调用,保存班级
     wx.request({
-      url: app.api.addMyCourse,
+      url: config.api.addClassCourse,
       method: "POST",
       header: {
         'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
       },
       data: formData,
-      success: function (result) { 
-        if (result.data.type == 200) {
-          var _data = result.data.data;
-          //添加返回的数据到
-          var course = _data.course;
-          course.startTime = util.formatDateTime(course.startTime);
-          course.endTime = util.formatDateTime(course.endTime);
-          _td.myCourses.unshift(course);
-          _t.setData({
-            myCourses: _td.myCourses
-          });
-
-          //切换隐藏添加面板
-          _t.setData({
-            isShowAddMyCourseDialog: false
-          });
+      success: function (result) {
+        if (result.statusCode == 403) {
           wx.showToast({
-            title: '保存成功',
-            icon: 'success',
-            duration: 2000
-          });
-        } else {
-          wx.showToast({
-            title: '保存失败',
+            title: '无权限进行此操作',
             icon: 'none',
             duration: 2000
           });
+          return;
         }
+
+        if (result.data.type != 200) {
+          let title = result.data.content || "添加课程失败";
+          wx.showToast({
+            title: title,
+            icon: 'none',
+            duration: 2000
+          });
+          return;
+        }
+
+        var _data = result.data.data;
+        //添加返回的数据到
+        var course = _data.course;
+        course.startTime = util.formatDateTime(course.startTime);
+        course.endTime = util.formatDateTime(course.endTime);
+        _td.myCourses.unshift(course);
+        _t.setData({
+          myCourses: _td.myCourses
+        });
+
+        //切换隐藏添加面板
+        _t.setData({
+          isShowAddMyCourseDialog: false
+        });
+        wx.showToast({
+          title: '保存成功',
+          icon: 'success',
+          duration: 2000
+        });
+
       }
     })
   },
@@ -205,7 +217,7 @@ create.Page(store, {
     wx.chooseMessageFile({
       count: 1,
       type: 'file',
-      success(res) {        
+      success(res) {
         const tempFilePaths = res.tempFiles
         console.log(config.api.uploadClassCourse);
         console.log(res);
@@ -219,7 +231,16 @@ create.Page(store, {
           formData: {
             'classNumber': _tsd.userInfo.classNumber
           },
-          success (result){ 
+          success(result) {
+            if (result.statusCode == 403) {
+              wx.showToast({
+                title: '无权限进行此操作',
+                icon: 'none',
+                duration: 2000
+              });
+              return;
+            }
+
             if (result.statusCode == 200) {
               wx.showToast({
                 title: '课程上传成功',
@@ -227,9 +248,9 @@ create.Page(store, {
                 duration: 2000
               });
               _t.getClassCourse(_tsd.userInfo.classNumber);
-            }else{
+            } else {
               wx.showToast({
-                title: '课程上传失败'+result.content,
+                title: '课程上传失败' + result.content,
                 icon: 'none',
                 duration: 2000
               });

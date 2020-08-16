@@ -15,10 +15,11 @@ create.Page(store, {
    */
   initData: function (options) {
     let _t = this;
+    let _tsd = _t.store.data;
 
     _t.setData({
       classArrary: [],
-      classValue: '',
+      classValue: _tsd.userInfo.classNumber,
       classIndex: -1,
     });
 
@@ -31,6 +32,7 @@ create.Page(store, {
     if (key == "createClass") {
       _tsd.isShowCreateClassDialog = true;
     } else if (key == "changeClass") {
+      _t.getOrganizations();
       _tsd.isShowChangeClassDialog = true;
     } else if (key == "selectClassItem") {
       let dataset = e.currentTarget.dataset;
@@ -136,6 +138,7 @@ create.Page(store, {
   getOrganizations: function () {
     var _t = this;
     var _td = _t.data;
+    let _tsd = _t.store.data;
     let success =  function (result) {
       console.log(result);
       if (result.data.type != 200) {
@@ -147,7 +150,7 @@ create.Page(store, {
         return;
       }
 
-      var cs = result.data.data.classNumbers;
+      var cs = result.data.data.classes;
       if (cs.length > 0) {
         _t.setData({
           classArrary: cs
@@ -155,15 +158,16 @@ create.Page(store, {
       }
 
       for (var i = 0; i < _td.classArrary.length; i++) {
-        if (_td.classArrary[i].name == _td.classValue) {
+        if (_td.classArrary[i].classNumber == _td.classValue) {
           _t.setData({
             classIndex: i
           });
         }
       }
     };
+    let classNumber = _tsd.userInfo.classNumber || _tsd.indexClassInfo.classNumber;
 
-    services.getOrganizations(success); 
+    services.getOrganizations(classNumber,1,success); 
   },
 
   /**
@@ -225,8 +229,7 @@ create.Page(store, {
    */
   onLoad: function (options) {
     let _t = this;
-    _t.initData(options);
-    _t.getOrganizations();
+    _t.initData(options); 
   },
 
   /**
@@ -277,11 +280,15 @@ create.Page(store, {
   onShareAppMessage: function () {
     let _t = this;
     let _tsd = _t.store.data;
-    let className = _tsd.userInfo.className ||"班集体";
+    let className = _tsd.userInfo.className || "";
+    let nickName = _tsd.userInfo.realName || _tsd.userInfo.nickName || '';
+    let classNumber = _tsd.userInfo.classNumber || "";
+
+    let cname = className || "班集体";
 
     return {
-      title: _tsd.userInfo.nickName + '邀请你加入'+className,
-      path: '/pages/index/index?classNumber=' + _tsd.userInfo.classNumber+"&className="+className
+      title: nickName + '邀请你加入'+cname,
+      path: '/pages/index/index?classNumber=' + classNumber +"&className="+className
     };
 
   }

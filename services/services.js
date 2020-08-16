@@ -120,10 +120,13 @@ var services = {
 
   /**
    * 获取组织列表
+   * @param {*} classNumber 
+   * @param {Int 是否获取同级全部班级} isAll 
+   * @param {*} success 
    */
-  getOrganizations: function (success) { 
+  getOrganizations: function (classNumber,isAll,success) { 
     wx.request({
-      url: config.api.organizations,
+      url: config.api.organizations+"?classNumber="+classNumber+"&isAll="+isAll,
       method: "GET",
       dataType: "json",
       success:success
