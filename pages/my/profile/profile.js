@@ -57,7 +57,7 @@ create.Page(store, {
       url: config.api.classmateProfile + "?userid=" + userId,
       method: "GET",
       header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
       },
       dataType: "json",
       success: function (result) {
@@ -117,7 +117,7 @@ create.Page(store, {
       url: app.api.editProfile,
       method: "POST",
       header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
       },
       data: formData,
       success: function (result) {
@@ -175,8 +175,9 @@ create.Page(store, {
    */
   onLoad: function (options) {
     let _t = this;
+    let _tsd = _t.store.data;
     _t.initData(options);
-    if (app.globalData.userToken) {
+    if (_tsd.userToken) {
       _t.getProfile(options.userId);
 
     }

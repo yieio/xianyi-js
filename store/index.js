@@ -1,7 +1,10 @@
 export default {
   data: {
-    userInfo: {},
-    hasUserInfo: false,
+    userTokenKey:'userToken',
+    userToken:null,
+
+    userInfo: null,
+    hasUserInfo: false, 
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
 
     selectPage:"course",//首页tab选中项  
@@ -31,5 +34,5 @@ export default {
   },
   //无脑全部更新，组件或页面不需要声明 use
   //updateAll: true,
-  debug: false
+  debug: true
 }

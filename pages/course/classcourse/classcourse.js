@@ -64,11 +64,12 @@ create.Page(store, {
   getClassCourse: function (classNumber) {
     var _t = this;
     var _td = _t.data;
+    let _tsd = _t.store.data;
     wx.request({
       url: app.api.getMyCourse + "?classNumber=" + classNumber,
       method: "GET",
       header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
       },
       dataType: "json",
       success: function (result) {
@@ -164,7 +165,7 @@ create.Page(store, {
       url: config.api.addClassCourse,
       method: "POST",
       header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
       },
       data: formData,
       success: function (result) {
@@ -218,13 +219,11 @@ create.Page(store, {
       count: 1,
       type: 'file',
       success(res) {
-        const tempFilePaths = res.tempFiles
-        console.log(config.api.uploadClassCourse);
-        console.log(res);
+        const tempFilePaths = res.tempFiles 
         wx.uploadFile({
           url: config.api.uploadClassCourse,
           header: {
-            'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+            'Authorization': 'Bearer ' + _tsd.userToken.accessToken
           },
           filePath: tempFilePaths[0].path,
           name: 'file',
@@ -295,7 +294,7 @@ create.Page(store, {
     _t.initData(options);
 
     //判断登录情况，已登录获取用户选修课程
-    if (app.globalData.userToken) {
+    if (_tsd.userToken) {
       _t.getClassCourse(_tsd.userInfo.classNumber);
     } else {
       wx.showToast({

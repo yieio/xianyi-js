@@ -193,7 +193,7 @@ create.Page(store, {
    */
   getClassmates: function () {
     var _t = this;
-    var _td = _t.store.data;
+    var _tsd = _t.store.data;
     let success = result => {
       if (result.statusCode == 401) {
         return;
@@ -204,19 +204,19 @@ create.Page(store, {
       }
 
       var cs = result.data.data.classmates;
-      _td.classmates = cs;
+      _tsd.classmates = cs;
       let sub = 3;
       if (cs.length > sub) {
-        _td.subClassmates = [];
+        _tsd.subClassmates = [];
         for (let i = 0; i < sub; i++) {
-          _td.subClassmates.push(cs[i]);
+          _tsd.subClassmates.push(cs[i]);
         }
 
       } else {
-        _td.subClassmates = cs;
+        _tsd.subClassmates = cs;
       }
     }
-    let token = app.globalData.userToken.accessToken;
+    let token = _tsd.userToken.accessToken;
     services.getClassmates(token, success);
   },
 
@@ -230,7 +230,7 @@ create.Page(store, {
       url: config.api.getAppointmentCount,
       method: "GET",
       header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
       },
       dataType: "json",
       success: function (result) {
@@ -285,8 +285,8 @@ create.Page(store, {
             if (result.data.type == 200) {
               var _data = result.data.data;
               //记录用户token
-              app.globalData.userToken = _data.token;
-              wx.setStorageSync('userToken', _data.token);
+              _tsd.userToken = _data.token;
+              wx.setStorageSync(_tsd.userTokenKey, _data.token);
 
               if (_data.userInfo.nickName) {
                 let ui = _data.userInfo;
@@ -336,9 +336,7 @@ create.Page(store, {
               // 可以将 res 发送给后台解码出 unionId
               if (!res.userInfo) {
                 return;
-              }
-
-              //app.globalData.userInfo = res.userInfo;
+              } 
               //请求登录
               _t.login(res.userInfo);
             }
@@ -352,7 +350,7 @@ create.Page(store, {
   },
 
   /**
-   * 监控用户数据的变化，写入app.globalData和storeage
+   * 监控用户数据的变化 
    * @param  e 
    */
   userInfoChangeHandler: function (e) {
@@ -362,7 +360,7 @@ create.Page(store, {
       //首次登录后，刷新最近课程
       let classNumber = _tsd.userInfo.classNumber || _tsd.indexClassInfo.classNumber;
       _t.getLatestCourse(classNumber, _tsd.userInfo.userId);
-      if (app.globalData.userToken && _tsd.userInfo.classNumber) {
+      if (_tsd.userToken && _tsd.userInfo.classNumber) {
         _t.getClassmates();
       }
 
@@ -372,37 +370,26 @@ create.Page(store, {
       }
     }
 
-    if (e.userInfo) {
-      app.globalData.userInfo = e.userInfo;
-      //wx.setStorageSync('userInfo', app.globalData.userInfo);
-    } else {
-      let keys = Object.keys(e);
-      let isChange = false;
-      for (let i = 0; i < keys.length; i++) {
-        //监听班级变动重新获取用户数据
-        if (keys[i].indexOf("userInfo.classNumber") == 0) {
-          console.log("userInfo.classNumber=>");
-          _t.getLatestCourse(_tsd.userInfo.classNumber, _tsd.userInfo.userId);
-          if (app.globalData.userToken && _tsd.userInfo.classNumber) {
-            _t.getClassmates();
-          }
+    let keys = Object.keys(e);
+    for (let i = 0; i < keys.length; i++) {
+      //监听班级变动重新获取用户数据
+      if (keys[i].indexOf("userInfo.classNumber") == 0) {
+        console.log("userInfo.classNumber=>");
+        _t.getLatestCourse(_tsd.userInfo.classNumber, _tsd.userInfo.userId);
+        if (_tsd.userToken && _tsd.userInfo.classNumber) {
+          _t.getClassmates();
+        }
 
-          if (_tsd.userInfo.classNumber) {
-            _tsd.indexClassInfo.classNumber = _tsd.userInfo.classNumber;
-          }
-        } else if (keys[i].indexOf("userInfo.className") == 0) {
-          if (_tsd.userInfo.className) {
-            _tsd.indexClassInfo.className = _tsd.userInfo.className;
-          }
+        if (_tsd.userInfo.classNumber) {
+          _tsd.indexClassInfo.classNumber = _tsd.userInfo.classNumber;
         }
-        if (keys[i].indexOf("userInfo") == 0) {
-          isChange = true;
+      } else if (keys[i].indexOf("userInfo.className") == 0) {
+        if (_tsd.userInfo.className) {
+          _tsd.indexClassInfo.className = _tsd.userInfo.className;
         }
-      }
-      if (isChange) {
-        app.globalData.userInfo = _tsd.userInfo;
       }
     }
+
 
   },
 
@@ -420,12 +407,10 @@ create.Page(store, {
       _tsd.selectPage = options.curPage;
     }
 
-    //监控用户数据的变化，写入app.globalData和storeage
+    //监控用户数据的变化
     _t.store.onChange(_t.userInfoChangeHandler);
 
-    if (app.globalData.userInfo) {
-      _tsd.userInfo = app.globalData.userInfo;
-      _tsd.hasUserInfo = true;
+    if (_tsd.hasUserInfo) { 
       if (_tsd.userInfo.classNumber) {
         _tsd.indexClassInfo.classNumber = _tsd.userInfo.classNumber;
         _tsd.indexClassInfo.className = _tsd.userInfo.className;
@@ -446,7 +431,8 @@ create.Page(store, {
    */
   onShow: function () {
     let _t = this;
-    if (app.globalData.userToken) {
+    let _tsd = _t.store.data;
+    if (_tsd.userToken) {
       _t.getAppointmentCount();
     }
   },
@@ -458,7 +444,7 @@ create.Page(store, {
     let _t = this;
     let _tsd = _t.store.data;
     _t.getWxSetting();
-    if (app.globalData.userToken && _tsd.userInfo.classNumber) {
+    if (_tsd.userToken && _tsd.userInfo.classNumber) {
       _t.getClassmates();
       _t.getAppointmentCount();
     }
@@ -484,9 +470,9 @@ create.Page(store, {
     let _t = this;
     let _tsd = _t.store.data;
     let _td = _t.data;
-    let classNumber = _tsd.indexClassInfo.classNumber || _tsd.userInfo.classNumber||"";
-    let className = _tsd.indexClassInfo.className || _tsd.userInfo.className ||"";
-    let title = _td.curPage == "course" ? className + '最近课程' : "邀请你加入" + className; 
+    let classNumber = _tsd.indexClassInfo.classNumber || _tsd.userInfo.classNumber || "";
+    let className = _tsd.indexClassInfo.className || _tsd.userInfo.className || "";
+    let title = _td.curPage == "course" ? className + '最近课程' : "邀请你加入" + className;
 
     return {
       title: title,
@@ -506,7 +492,7 @@ create.Page(store, {
 
     return {
       title: className + '最近课程',
-      query: 'classNumber=' + classNumber + "&className=" + className+ "&curPage=course"
+      query: 'classNumber=' + classNumber + "&className=" + className + "&curPage=course"
     };
 
   }

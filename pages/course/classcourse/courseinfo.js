@@ -2,6 +2,7 @@ import create from '../../../utils/create'
 import store from '../../../store/index'
 import config from '../../../config.js';
 import util from '../../../utils/util.js';
+import services from '../../../services/services'
 
 const app = getApp();
 
@@ -104,57 +105,34 @@ create.Page(store, {
   getMyCourseDate: function (courseId, classNumber) {
     var _t = this;
     var _td = _t.data;
-    wx.request({
-      url: app.api.getMyCourseDate,
-      method: "GET",
-      header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
-      },
-      data: {
-        id: courseId,
-        classNumber: classNumber
-      },
-      dataType: "json",
-      success: function (result) {
-        console.log(result);
-        if (result.data.type == 401) {
-          wx.showToast({
-            title: '您需要先登录',
-            icon: 'none',
-            duration: 2000
-          });
-          //跳转去首页
-          config.router.goIndex(_td.classNumber);
-          return;
-        }
-        if (result.data.type != 200) {
-          wx.showToast({
-            title: '数据请求失败',
-            icon: 'none',
-            duration: 2000
-          });
-          return;
-        }
+    let _tsd = _t.store.data;
 
-        var cs = result.data.data.courses;
-        if (cs.length < 0) {
-          return;
-        }
-
-        for (var i = 0; i < cs.length; i++) {
-          cs[i] = _t.formatCourseDateInfo(cs[i]);
-        }
-        var editCourse = {
-          name: cs[0].name,
-          teacher: cs[0].teacher,
-        }
-        _t.setData({
-          myCourseDates: cs,
-          myCourseInfo: cs[0],
-          myCourseInfoEdit: editCourse,
-        });
+    let success = function (result) { 
+      var cs = result.data.data.courses;
+      if (cs.length < 0) {
+        return;
       }
-    });
+
+      for (var i = 0; i < cs.length; i++) {
+        cs[i] = _t.formatCourseDateInfo(cs[i]);
+      }
+      var editCourse = {
+        name: cs[0].name,
+        teacher: cs[0].teacher,
+      }
+      _t.setData({
+        myCourseDates: cs,
+        myCourseInfo: cs[0],
+        myCourseInfoEdit: editCourse,
+      });
+    };
+
+    let data =  {
+      id: courseId,
+      classNumber: classNumber
+    };
+
+    services.getMyCourseDate({data,success});
   },
 
   /**
@@ -197,49 +175,26 @@ create.Page(store, {
     formData.teacher = _td.myCourseInfo.teacher;
     formData.classNumber = _tsd.userInfo.classNumber;
 
-    //发起接口调用,保存用户信息
-    wx.request({
-      url: config.api.addClassCourse,
-      method: "POST",
-      header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
-      },
+    let success = function (result) {
+      var _data = result.data.data;
+      //添加返回的数据到
+      var course = _t.formatCourseDateInfo(_data.course);
+      _td.myCourseDates.unshift(course);
+      _t.setData({
+        myCourseDates: _td.myCourseDates,
+        isShowAddMyCourseDateDialog: false
+      });
+      wx.showToast({
+        title: '添加课程成功',
+        icon: 'success',
+        duration: 2000
+      });
+
+    };
+    services.addClassCourse({
       data: formData,
-      success: function (result) {
-        if (result.statusCode == 403) {
-          wx.showToast({
-            title: '无权限进行此操作',
-            icon: 'none',
-            duration: 2000
-          });
-          return;
-        }
-
-        if (result.data.type != 200) {
-          let title = result.data.content || "添加课程失败";
-          wx.showToast({
-            title: title,
-            icon: 'none',
-            duration: 2000
-          });
-          return;
-        }
-        var _data = result.data.data;
-        //添加返回的数据到
-        var course = _t.formatCourseDateInfo(_data.course);
-        _td.myCourseDates.unshift(course);
-        _t.setData({
-          myCourseDates: _td.myCourseDates,
-          isShowAddMyCourseDateDialog: false
-        });
-        wx.showToast({
-          title: '添加课程成功',
-          icon: 'success',
-          duration: 2000
-        });
-
-      }
-    })
+      success
+    });
   },
 
   /**
@@ -249,60 +204,27 @@ create.Page(store, {
 
     var _t = this;
     var _td = _t.data;
-    wx.request({
-      url: app.api.deleteClassCourseDate,
-      method: "GET",
-      header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
-      },
-      data: {
-        id: courseId
-      },
-      dataType: "json",
-      success: function (result) {
-        if (result.statusCode == 401) {
-          wx.showToast({
-            title: '您需要先登录',
-            icon: 'none',
-            duration: 2000
-          });
-          //跳转去首页
-          config.router.goIndex(_td.classNumber);
-          return;
-        }
 
-        if (result.statusCode == 403) {
-          wx.showToast({
-            title: '无权限进行此操作',
-            icon: 'none',
-            duration: 2000
-          });
-          return;
-        }
-
-
-        if (result.data.type != 200) {
-          let title = result.data.content || "删除失败";
-          wx.showToast({
-            title: title,
-            icon: 'none',
-            duration: 2000
-          });
-          return;
-        }
-        var courseId = result.data.data.id;
-        for (var i = 0; i < _td.myCourseDates.length; i++) {
-          var item = _td.myCourseDates[i];
-          if (item.id == courseId) {
-            _td.myCourseDates.splice(i, 1);
-            _t.setData({
-              myCourseDates: _td.myCourseDates
-            })
-          }
+    let success = result => { 
+      var courseId = result.data.data.id;
+      for (var i = 0; i < _td.myCourseDates.length; i++) {
+        var item = _td.myCourseDates[i];
+        if (item.id == courseId) {
+          _td.myCourseDates.splice(i, 1);
+          _t.setData({
+            myCourseDates: _td.myCourseDates
+          })
         }
       }
-    });
 
+    }
+
+    services.deleteClassCourse({
+      success: success,
+      data: {
+        id: courseId
+      }
+    });
   },
 
   /**
@@ -347,48 +269,25 @@ create.Page(store, {
     formData.id = _td.myCourseInfo.id;
 
     //发起接口调用,保存用户信息
-    wx.request({
-      url: config.api.updateClassCourse,
-      method: "POST",
-      header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
-      },
+    let success = function (result) {
+      wx.showToast({
+        title: '保存成功',
+        icon: 'success',
+        duration: 2000
+      });
+      _td.myCourseInfo.name = formData.name;
+      _td.myCourseInfo.teacher = formData.teacher;
+
+      _t.setData({
+        myCourseInfo: _td.myCourseInfo,
+        isShowEditMyCourseDialog: false
+      });
+
+    }
+    services.updateClassCourse({
       data: formData,
-      success: function (result) {
-        if (result.statusCode == 403) {
-          wx.showToast({
-            title: '无权限进行此操作',
-            icon: 'none',
-            duration: 2000
-          });
-          return;
-        }
-
-        if (result.data.type != 200) {
-          let title = result.data.content || "添加课程失败";
-          wx.showToast({
-            title: title,
-            icon: 'none',
-            duration: 2000
-          });
-          return;
-        }
-
-        wx.showToast({
-          title: '保存成功',
-          icon: 'success',
-          duration: 2000
-        });
-        _td.myCourseInfo.name = formData.name;
-        _td.myCourseInfo.teacher = formData.teacher;
-
-        _t.setData({
-          myCourseInfo: _td.myCourseInfo,
-          isShowEditMyCourseDialog: false
-        });
-
-      }
-    })
+      success: success
+    });
   },
 
   /**
@@ -400,7 +299,6 @@ create.Page(store, {
 
     _t.initData(options);
     _t.getMyCourseDate(options.courseId, _tsd.userInfo.classNumber);
-
   },
 
   /**

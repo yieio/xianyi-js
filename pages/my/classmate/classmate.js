@@ -100,7 +100,7 @@ create.Page(store,{
     let _t = this; 
     _t.initData();
 
-    if(app.globalData.userToken){
+    if(_tsd.userToken){
       _t.getClassmates();
     } 
   },

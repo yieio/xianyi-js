@@ -42,25 +42,7 @@ create.Component(store, {
       let _t = this;
       let _td = _t.data;
       let _tsd = _t.store.data;
-      let success = result =>{
-          if (result.data.type == 401) {
-            wx.showToast({
-              title: '您需要先登录',
-              icon: 'none',
-              duration: 2000
-            });
-            //跳转去首页
-            config.router.goIndex('');
-            return;
-          }
-          if (result.data.type != 200) {
-            wx.showToast({
-              title: result.data.content,
-              icon: "none"
-            })
-            return;
-          }
-
+      let success = result =>{ 
           _t.setData({
             isShowOpAppointmentDialog: false
           });
@@ -79,9 +61,8 @@ create.Component(store, {
             duration: 2000
           }); 
       }
-
-      let token = app.globalData.userToken.accessToken;
-      services.cancelAppointment(token,id,success); 
+ 
+      services.cancelAppointment({data:{id},success}); 
     },
 
     /**
@@ -93,26 +74,7 @@ create.Component(store, {
       let _td = _t.data;
       let _tsd = _t.store.data;
 
-      let success = function(result) {
-        console.log(result);
-        if (result.data.type == 401) {
-          wx.showToast({
-            title: '您需要先登录',
-            icon: 'none',
-            duration: 2000
-          });
-          //跳转去首页
-          config.router.goIndex('');
-          return;
-        }
-        if (result.data.type != 200) {
-          wx.showToast({
-            title: result.data.content,
-            icon: "none"
-          })
-          return;
-        }
-
+      let success = function(result) { 
         _t.setData({
           isShowOpAppointmentDialog: false
         });
@@ -125,10 +87,8 @@ create.Component(store, {
           }
         }
 
-      }
-
-      let token = app.globalData.userToken.accessToken;
-      services.finishAppointment(token,id,success); 
+      } 
+      services.finishAppointment({data:{id},success}); 
     },
 
 

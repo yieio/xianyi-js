@@ -68,7 +68,7 @@ create.Page(store,{
       url: app.api.getMyCourse,
       method: "GET",
       header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
       },
       dataType: "json",
       success: function(result) {
@@ -161,10 +161,10 @@ create.Page(store,{
 
     //发起接口调用,保存用户信息
     wx.request({
-      url: app.api.addMyCourse,
+      url: config.api.addMyCourse,
       method: "POST",
       header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
       },
       data: formData,
       success: function (result) {
@@ -222,10 +222,11 @@ create.Page(store,{
    */
   onLoad: function (options) {
     let _t = this; 
+    let _tsd = _t.store.data;
     _t.initData(options);
 
     //判断登录情况，已登录获取用户选修课程
-    if (app.globalData.userToken) {
+    if (_tsd.userToken) {
       _t.getMyCourse(); 
     }else{
       wx.showToast({

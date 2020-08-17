@@ -43,25 +43,7 @@ create.Component(store, {
     cancelAppointment:function(id){
       let _t = this; 
       let _tsd = _t.store.data;
-      let success = function (result) {
-        if (result.data.type == 401) {
-          wx.showToast({
-            title: '您需要先登录',
-            icon: 'none',
-            duration: 2000
-          });
-          //跳转去首页
-          config.router.goIndex('');
-          return;
-        }
-        if (result.data.type != 200) {
-          wx.showToast({
-            title: result.data.content,
-            icon: "none"
-          })
-          return;
-        }
-
+      let success = function (result) { 
         _t.setData({
           isShowOpAppointmentDialog: false
         });
@@ -81,9 +63,7 @@ create.Component(store, {
         });
 
       }
-
-      let token = app.globalData.userToken.accessToken;
-      services.cancelAppointment(token,id,success); 
+      services.cancelAppointment({data:{id},success}); 
     },
 
     /**
@@ -94,26 +74,7 @@ create.Component(store, {
       let _t = this; 
       let _tsd = _t.store.data;
 
-      let success = function(result) {
-        console.log(result);
-        if (result.data.type == 401) {
-          wx.showToast({
-            title: '您需要先登录',
-            icon: 'none',
-            duration: 2000
-          });
-          //跳转去首页
-          config.router.goIndex('');
-          return;
-        }
-        if (result.data.type != 200) {
-          wx.showToast({
-            title: result.data.content,
-            icon: "none"
-          })
-          return;
-        }
-
+      let success = function(result) { 
         _t.setData({
           isShowOpAppointmentDialog: false
         });
@@ -126,9 +87,8 @@ create.Component(store, {
           }
         }
       }
-
-      let token = app.globalData.userToken.accessToken;
-      services.finishAppointment(token,id,success); 
+ 
+      services.finishAppointment({data:{id},success}); 
     },
 
     /**
@@ -139,10 +99,10 @@ create.Component(store, {
       var _td = _t.data;
       let _tsd = _t.store.data;
       wx.request({
-        url: app.api.rejectAppointment + "?id=" + id,
+        url: config.api.rejectAppointment + "?id=" + id,
         method: "POST",
         header: {
-          'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+          'Authorization': 'Bearer ' + _tsd.userToken.accessToken
         },
         dataType: "json",
         success: function (result) {
@@ -192,10 +152,10 @@ create.Component(store, {
       var _td = _t.data;
       let _tsd = _t.store.data;
       wx.request({
-        url: app.api.acceptAppointment + "?id=" + id,
+        url: config.api.acceptAppointment + "?id=" + id,
         method: "POST",
         header: {
-          'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+          'Authorization': 'Bearer ' + a_tsd.userToken.accessToken
         },
         dataType: "json",
         success: function (result) {

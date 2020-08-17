@@ -101,7 +101,7 @@ create.Page(store, {
       url: config.api.createClassroom,
       method: "POST",
       header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
       },
       data: formData,
       success: function (result) {
@@ -194,7 +194,7 @@ create.Page(store, {
       url: config.api.changeClassroom + "?classNumber=" + formData.classNumber,
       method: "POST",
       header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
       },
       success: function (result) {
         console.log(result);

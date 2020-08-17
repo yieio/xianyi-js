@@ -106,11 +106,12 @@ create.Page(store, {
   getMyCourseDate: function (courseId) {
     var _t = this;
     var _td = _t.data; 
+    let _tsd = _t.store.data;
     wx.request({
-      url: app.api.getMyCourseDate,
+      url: config.api.getMyCourseDate,
       method: "GET",
       header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
       },
       data: {
         id: courseId
@@ -200,10 +201,10 @@ create.Page(store, {
 
     //发起接口调用,保存用户信息
     wx.request({
-      url: app.api.addMyCourse,
+      url: config.api.addMyCourse,
       method: "POST",
       header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
       },
       data: formData,
       success: function (result) {
@@ -246,7 +247,7 @@ create.Page(store, {
       url: config.api.deleteMyCourseDate,
       method: "GET",
       header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
       },
       data: {
         id: courseId
@@ -285,6 +286,7 @@ create.Page(store, {
   editCourseFormSubmit: function (e) {
     var _t = this;
     var _td = _t.data;
+    let _tsd = _t.store.data;
 
     var formData = e.detail.value;
 
@@ -322,10 +324,10 @@ create.Page(store, {
 
     //发起接口调用,保存用户信息
     wx.request({
-      url: app.api.updateMyCourse,
+      url: config.api.updateMyCourse,
       method: "POST",
       header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
       },
       data: formData,
       success: function (result) {

@@ -1,22 +1,24 @@
 //app.js
 import config from 'config.js';
 import services from './services/services';
+import store from './store/index'
 
 App({
-  onLaunch: function () {
+  onLaunch: function () { 
     let _t = this;
+    let _tsd = store.data;
 
-    var userToken = wx.getStorageSync('userToken') || null;
+    var userToken = wx.getStorageSync(_tsd.userTokenKey) || null;
     if (userToken && userToken.accessToken.length > 0) {
 
-      _t.globalData.userToken = userToken;
+      _tsd.userToken = userToken;
 
       let success = result => {
         if (result.data.type == 200) {
-          _t.globalData.userToken = result.data.data;
+          _tsd.userToken = result.data.data;
           wx.setStorage({
-            data: _t.globalData.userToken,
-            key: 'userToken',
+            data: _tsd.userToken,
+            key: _tsd.userTokenKey,
           })
         }
       };
@@ -34,8 +36,7 @@ App({
   globalData: {
     userInfo: null,
     userToken: null,
-    //标记首次访问，显示收藏
-    firstView: 0
+    userTokenKey:"userToken",
   },
 
 

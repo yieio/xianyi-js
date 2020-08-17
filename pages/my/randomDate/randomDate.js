@@ -142,10 +142,10 @@ create.Page(store, {
     console.log(postData);
 
     wx.request({
-      url: app.api.makeAppointment,
+      url: config.api.makeAppointment,
       method: "POST",
       header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
       },
       dataType: "json",
       data: postData,
@@ -200,7 +200,7 @@ create.Page(store, {
       url: app.api.getAppointments,
       method: "GET",
       header: {
-        'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
       },
       dataType: "json",
       success: function(result) {

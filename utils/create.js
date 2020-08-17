@@ -8,7 +8,7 @@ import obaa from './obaa'
 import { getPath, needUpdate, fixPath, getUsing } from './path'
 
 
-function create(store, option) {
+function create(store, option) { 
   if (arguments.length === 2) {
     if (!store.instances) {
       store.instances = {}
@@ -73,7 +73,9 @@ function create(store, option) {
       onUnload && onUnload.call(this, e)
     }
 
-    Page(option)
+    Page(option);
+
+    
   } else {
     store.lifetimes = store.lifetimes || {}
     const ready = store.lifetimes.ready || store.ready
@@ -101,7 +103,8 @@ function create(store, option) {
 }
 
 create.Page = function (store, option) {
-  create(store, option)
+  create(store, option);
+  
 }
 
 create.Component = function (store, option) {

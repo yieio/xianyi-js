@@ -40,13 +40,15 @@ create.Component(store, {
      * @param  e 
      */
     getUserInfo: function (e) {
+      let _t = this;
+      let _tsd = _t.store.data;
       //拒绝授权的时候
       if (!e.detail.userInfo) {
         return;
       }
 
       //获取到了用户信息，提交到服务器，这里可能有之前登录失败的情况需要处理
-      if (!app.globalData.userToken) {
+      if (!_tsd.userToken) {
         //弹窗让用户重试
         wx.showToast({
           title: '服务请求失败，请重新进入小程序',
@@ -54,10 +56,7 @@ create.Component(store, {
           duration: 2000
         });
         return;
-      }
-
-      let _t = this;
-      let _tsd = _t.store.data;
+      } 
 
       let userInfo = e.detail.userInfo;
       userInfo.genderName = util.getGenderName(userInfo.gender);
@@ -72,7 +71,7 @@ create.Component(store, {
         url: app.api.signup,
         method: "POST",
         header: {
-          'Authorization': 'Bearer ' + app.globalData.userToken.accessToken
+          'Authorization': 'Bearer ' + _tsd.userToken.accessToken
         },
         data: userInfo,
         success: function (result) {
@@ -113,7 +112,7 @@ create.Component(store, {
     isLogin: function () {
       let _t = this;
       let _tsd = _t.store.data;
-      let result = !app.globalData.userToken || !_tsd.userInfo || !_tsd.userInfo.nickName;
+      let result = !_tsd.userToken || !_tsd.userInfo || !_tsd.userInfo.nickName;
       if (result) {
         wx.showToast({
           title: '您需要先登录',
@@ -200,9 +199,9 @@ create.Component(store, {
   lifetimes: {
     attached: function () {
       let _t = this;
-      let _td = _t.store.data;
-      if (_td.userInfo.hasUserInfo && !_td.userInfo.classNumber) {
-        _td.isShowAddClassDialog = true;
+      let _tsd = _t.store.data;
+      if (_tsd.userInfo.hasUserInfo && !_tsd.userInfo.classNumber) {
+        _tsd.isShowAddClassDialog = true;
       }
     },
     detached: function () {

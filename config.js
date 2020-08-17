@@ -1,7 +1,7 @@
 var config = {
   //host: "https://rice.yieio.com/api"
-  host: "https://xy.yieio.com/api"
-  //host: "http://192.168.1.195:7001/api"
+  //host: "https://xy.yieio.com/api"
+  host: "http://192.168.1.195:7001/api"
   //host: "http://192.168.31.182:5000/api"
 }
 
