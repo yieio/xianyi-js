@@ -1,0 +1,12 @@
+{
+  "name": "xianyi-js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/yieio/xianyi-js.git",
+  "author": "yieio <youdaoping@ddybw.com>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "axios-miniprogram-adapter": "^0.3.2"
+  }
+}
