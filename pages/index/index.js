@@ -12,7 +12,6 @@ create.Page(store, {
     'userInfo',
     'hasUserInfo',
     'canIUse',
-    'selectPage',
     'showNoneCourseTip',
     'showCourseLoadding',
     'indexClassInfo',
@@ -32,12 +31,7 @@ create.Page(store, {
     });
 
   },
-  computed: {
-    curPage() {
-      return this.selectPage ? this.selectPage : "course";
-    }
-  },
-
+  
   /**
    * 页面事件处理
    * @param  e 
@@ -80,18 +74,7 @@ create.Page(store, {
 
   },
 
-  /**
-   * 方法块
-   * 切换底部导航
-   */
-  navChange: function (e) {
-    let title = e.currentTarget.dataset.cur == "my" ? "我" : "闲倚";
-    wx.setNavigationBarTitle({
-      title: title
-    });
-    this.store.set(this.store.data, 'selectPage', e.currentTarget.dataset.cur);
-  },
-
+    
   /**
    * 获取组织列表
    */
@@ -188,74 +171,7 @@ create.Page(store, {
     });
   },
 
-  /**
-   * 获取同学
-   */
-  getClassmates: function () {
-    var _t = this;
-    var _tsd = _t.store.data;
-    let success = result => {
-      if (result.statusCode == 401) {
-        return;
-      }
-
-      if (result.data.type != 200) {
-        return;
-      }
-
-      var cs = result.data.data.classmates;
-      _tsd.classmates = cs;
-      let sub = 3;
-      if (cs.length > sub) {
-        _tsd.subClassmates = [];
-        for (let i = 0; i < sub; i++) {
-          _tsd.subClassmates.push(cs[i]);
-        }
-
-      } else {
-        _tsd.subClassmates = cs;
-      }
-    }
-    let token = _tsd.userToken.accessToken;
-    services.getClassmates(token, success);
-  },
-
-  /**
-   * 获取约饭统计数据
-   */
-  getAppointmentCount: function () {
-    var _t = this;
-    var _tsd = _t.store.data;
-    wx.request({
-      url: config.api.getAppointmentCount,
-      method: "GET",
-      header: {
-        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-      },
-      dataType: "json",
-      success: function (result) {
-        console.log("getAppointmentCount=>")
-        console.log(result);
-        if (result.statusCode == 401) {
-          //wx.setStorageSync('userToken', null);
-          return;
-        }
-
-
-        if (result.data.type != 200) {
-          wx.showToast({
-            title: '后端服务请求失败2',
-            icon: 'none',
-            duration: 2000
-          });
-          return;
-        }
-        let rdata = result.data.data;
-        _tsd.appointCount = rdata;
-      }
-    });
-
-  },
+  
 
   /**
    * 调用服务端登录，会自动注册登记到服务端
@@ -360,9 +276,6 @@ create.Page(store, {
       //首次登录后，刷新最近课程
       let classNumber = _tsd.userInfo.classNumber || _tsd.indexClassInfo.classNumber;
       _t.getLatestCourse(classNumber, _tsd.userInfo.userId);
-      if (_tsd.userToken && _tsd.userInfo.classNumber) {
-        _t.getClassmates();
-      }
 
       if (_tsd.userInfo.classNumber) {
         _tsd.indexClassInfo.classNumber = _tsd.userInfo.classNumber;
@@ -376,10 +289,7 @@ create.Page(store, {
       if (keys[i].indexOf("userInfo.classNumber") == 0) {
         console.log("userInfo.classNumber=>");
         _t.getLatestCourse(_tsd.userInfo.classNumber, _tsd.userInfo.userId);
-        if (_tsd.userToken && _tsd.userInfo.classNumber) {
-          _t.getClassmates();
-        }
-
+        
         if (_tsd.userInfo.classNumber) {
           _tsd.indexClassInfo.classNumber = _tsd.userInfo.classNumber;
         }
@@ -396,6 +306,7 @@ create.Page(store, {
   onLoad: function (options) {
     let _t = this;
     let _tsd = _t.store.data;
+    //console.log("options.classNumber",unescape(decodeURI(options.className).replace(/\\u/gi, '%u')));
 
     if (options.classNumber) {
       _tsd.indexClassInfo.classNumber = options.classNumber;
@@ -403,9 +314,7 @@ create.Page(store, {
     if (options.className) {
       _tsd.indexClassInfo.className = options.className;
     }
-    if (options.curPage) {
-      _tsd.selectPage = options.curPage;
-    }
+     
 
     //监控用户数据的变化
     _t.store.onChange(_t.userInfoChangeHandler);
@@ -429,12 +338,7 @@ create.Page(store, {
   /**
    * 每次显示刷新
    */
-  onShow: function () {
-    let _t = this;
-    let _tsd = _t.store.data;
-    if (_tsd.userToken) {
-      _t.getAppointmentCount();
-    }
+  onShow: function () { 
   },
 
   /**
@@ -444,11 +348,7 @@ create.Page(store, {
     let _t = this;
     let _tsd = _t.store.data;
     _t.getWxSetting();
-    if (_tsd.userToken && _tsd.userInfo.classNumber) {
-      _t.getClassmates();
-      _t.getAppointmentCount();
-    }
-
+   
     //首次登录后，刷新最近课程
     let classNumber = _tsd.indexClassInfo.classNumber || _tsd.userInfo.classNumber;
     let userId = _tsd.userInfo.userId || 0;
@@ -457,8 +357,7 @@ create.Page(store, {
     }
 
     setTimeout(() => {
-      wx.stopPullDownRefresh();
-
+      wx.stopPullDownRefresh(); 
     }, 500);
 
   },
@@ -472,11 +371,11 @@ create.Page(store, {
     let _td = _t.data;
     let classNumber = _tsd.indexClassInfo.classNumber || _tsd.userInfo.classNumber || "";
     let className = _tsd.indexClassInfo.className || _tsd.userInfo.className || "";
-    let title = _td.curPage == "course" ? className + '最近课程' : "邀请你加入" + className;
+    let title =  className + '最近课程' ;
 
     return {
       title: title,
-      path: '/pages/index/index?classNumber=' + classNumber + "&className=" + className + "&curPage=" + _td.curPage
+      path: '/pages/index/index?classNumber=' + classNumber + "&className=" + className
     };
 
   },
@@ -492,7 +391,7 @@ create.Page(store, {
 
     return {
       title: className + '最近课程',
-      query: 'classNumber=' + classNumber + "&className=" + className + "&curPage=course"
+      query: 'classNumber=' + classNumber + "&className=" + className 
     };
 
   }

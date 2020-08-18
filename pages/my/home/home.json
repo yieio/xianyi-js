@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "my-page": "/components/my/home/index"
+  },
+  "enablePullDownRefresh": true,
+  "navigationBarTitleText": "我"
+}

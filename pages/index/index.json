@@ -1,7 +1,6 @@
 {
   "usingComponents": { 
-    "latest-course": "/components/course/home/index",
-    "my-page": "/components/my/home/index",
+    "latest-course": "/components/course/home/index", 
     "add-tips": "/components/add-tips/index"
   },
   "enablePullDownRefresh": true

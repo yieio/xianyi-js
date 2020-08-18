@@ -1,18 +1,33 @@
 {
   "pages": [
-    
     "pages/index/index",
     "pages/my/classroom/classroom",
     "pages/my/classmate/classmate",
     "pages/my/profile/profile",
     "pages/my/randomDate/randomDate",
-    "pages/course/list/list",    
+    "pages/course/list/list",
     "pages/course/classcourse/classcourse",
     "pages/course/classcourse/courseinfo",
     "pages/course/mycourse/mycourse",
-    "pages/course/mycourse/courseinfo"
-    
+    "pages/course/mycourse/courseinfo",
+    "pages/my/home/home"
   ],
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "闲倚",
+        "iconPath": "imgs/xianyi-icon.png",
+        "selectedIconPath": "imgs/xianyi-icon-cur.png"
+      },
+      {
+        "pagePath": "pages/my/home/home",
+        "text": "我",
+        "iconPath": "imgs/my-icon.png",
+        "selectedIconPath": "imgs/my-icon-cur.png"
+      }
+    ]
+  },
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#ffffff",

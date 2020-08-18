@@ -14,7 +14,12 @@ var services = {
    * 403-无权限
    * @param {*} resp 
    */
-  handleCatchError: function (resp) {
+  handleCatchError: function (resp,request) {
+    
+    if(!resp){
+      console.log("handleCatchError",resp,request);
+      return;
+    }
     if (resp.status == 401) {
       //跳转去首页，清除token
       let _tsd = store.data;
@@ -78,6 +83,35 @@ var services = {
       config.headers['Authorization'] = 'Bearer ' + token;
       return config;
     })
+  },
+
+  /**
+   * 获取约饭数据
+   */
+  getAppointmentCount:function({data,success}){
+    let _t = this;
+    const ins = axios.create();
+
+    if (_t.checkUserTokenIsNull()) {
+      return;
+    } else {
+      _t.setAuthorization(ins);
+    }
+
+    ins.request({
+      url: config.api.getAppointmentCount,
+      params: data,
+      method: 'GET'
+    }).then(resp => { 
+      _t.handleFailMessage(resp,"");
+      success(resp);
+    }).catch(({
+      request,
+      response
+    }) => { 
+      _t.handleCatchError(response,request);
+    });
+
   },
 
   /**
@@ -344,8 +378,6 @@ var services = {
    * 获取同学
    */
   getClassmates: function ({data,success}) {
-     
-
     let _t = this;
     const ins = axios.create();
 
@@ -363,9 +395,9 @@ var services = {
       _t.handleFailMessage(resp, "获取班级同学失败"); 
       success(resp);
     }).catch(({ 
-      response
+      response,request
     }) => { 
-      _t.handleCatchError(response);
+      _t.handleCatchError(response,request);
     });
   },
 
@@ -383,9 +415,6 @@ var services = {
       success: success
     });
   },
-
-
-
 }
 
 export default services;

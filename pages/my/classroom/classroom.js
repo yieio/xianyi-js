@@ -31,8 +31,7 @@ create.Page(store, {
     let _tsd = _t.store.data;
     if (key == "createClass") {
       _tsd.isShowCreateClassDialog = true;
-    } else if (key == "changeClass") {
-      _t.getOrganizations();
+    } else if (key == "changeClass") { 
       _tsd.isShowChangeClassDialog = true;
     } else if (key == "selectClassItem") {
       let dataset = e.currentTarget.dataset;
@@ -176,7 +175,7 @@ create.Page(store, {
    */
   changeClassroomFormSubmit: function (e) {
     var _t = this;
-    var _td = _t.store.data;
+    var _tsd = _t.store.data;
     var formData = e.detail.value;
 
     formData.classNumber = formData.classNumber.replace(/\s/g, "");
@@ -206,11 +205,11 @@ create.Page(store, {
             duration: 2000
           });
 
-          _td.isShowChangeClassDialog = false;
+          _tsd.isShowChangeClassDialog = false;
           if (_data&&_data.classInfo) {
             //处理返回的数据
-            _td.userInfo.classNumber = _data.classInfo.classNumber;
-            _td.userInfo.className = _data.classInfo.name;
+            _tsd.userInfo.classNumber = _data.classInfo.classNumber;
+            _tsd.userInfo.className = _data.classInfo.name;
           } 
         } else {
           wx.showToast({
@@ -229,7 +228,8 @@ create.Page(store, {
    */
   onLoad: function (options) {
     let _t = this;
-    _t.initData(options); 
+    _t.initData(options);
+    _t.getOrganizations();
   },
 
   /**

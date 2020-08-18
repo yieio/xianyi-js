@@ -1,0 +1,4 @@
+<!--pages/my/home/home.wxml-->
+<view class="container">
+<my-page></my-page>
+</view>

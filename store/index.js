@@ -7,7 +7,6 @@ export default {
     hasUserInfo: false, 
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
 
-    selectPage:"course",//首页tab选中项  
     indexClassInfo:{classNumber:'',className:''}, 
 
     courseDate: {hasCourse: false},
