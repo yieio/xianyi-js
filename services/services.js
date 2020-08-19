@@ -62,7 +62,7 @@ var services = {
    * @param {*} msg 
    */
   handleFailMessage: function (result, msg) {
-    console.log("handleFailMessage",result.data.type,msg);
+    //console.log("handleFailMessage",result.data.type,msg);
     if (result.data.type != 200) {
       let title = result.data.content || msg;
       wx.showToast({
@@ -356,9 +356,10 @@ var services = {
       }  
     }).catch(({
       request,
-      response
+      response,
+      stack
     }) => {
-      console.log('捕获到了异常=>', request, response);
+      console.log('捕获到了异常=>', request, response,stack);
       _t.handleCatchError(response);
     });
 

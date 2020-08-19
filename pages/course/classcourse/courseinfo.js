@@ -13,9 +13,7 @@ create.Page(store, {
    * 页面的初始数据
    */
   initData: function (options) {
-    let _t = this;
-    let _td = _t.data;
-
+    let _t = this; 
     _t.setData({
       isShowEditMyCourseDialog: false,
       isShowAddMyCourseDateDialog: false,
@@ -206,7 +204,7 @@ create.Page(store, {
 
     var _t = this;
     var _td = _t.data;
-    let _tsd = _t.store.dataset;
+    let _tsd = _t.store.data;
 
     let success = result => { 
       var courseId = result.data.data.id;

@@ -86,10 +86,9 @@ create.Page(store,{
     let _t = this; 
     let _tsd = _t.store.data;
     _t.initData();
-
-    if(_tsd.hasUserInfo && _tsd.userInfo.classNumber){
+    if(_tsd.classmates.length<=0){
       _t.getClassmates();
-    } 
+    }
   },
 
   /**
@@ -124,6 +123,15 @@ create.Page(store,{
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
+    let _t = this; 
+    let _tsd = _t.store.data;
+    setTimeout(() => {
+      wx.stopPullDownRefresh()
+    }, 500);
+
+    if(_tsd.hasUserInfo && _tsd.userInfo.classNumber){
+      _t.getClassmates();
+    } 
 
   },
 

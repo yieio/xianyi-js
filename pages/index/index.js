@@ -104,10 +104,16 @@ create.Page(store, {
         }
       }
     };
-    let classNumber = _tsd.userInfo.classNumber || _tsd.indexClassInfo.classNumber; 
-    let data = {classNumber,isAll:1};
+    let classNumber = _tsd.userInfo.classNumber || _tsd.indexClassInfo.classNumber;
+    let data = {
+      classNumber,
+      isAll: 1
+    };
 
-    services.getOrganizations({data, success});
+    services.getOrganizations({
+      data,
+      success
+    });
   },
 
   /**
@@ -157,17 +163,21 @@ create.Page(store, {
       }
     };
 
-    let data ={
+    let data = {
       classNumber: classNumber,
       userId: userId
     };
 
     //完成事件处理
-    let complete = resp=>{
+    let complete = resp => {
       _tsd.showCourseLoadding = false;
     };
 
-    services.getLatestCourse({data,success,complete}); 
+    services.getLatestCourse({
+      data,
+      success,
+      complete
+    });
   },
 
 
@@ -184,7 +194,7 @@ create.Page(store, {
     wx.login({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        console.log("res.code=>",res) 
+        console.log("res.code=>", res)
         if (!res.code) {
           return;
         }
@@ -202,7 +212,7 @@ create.Page(store, {
 
             _tsd.userInfo = ui;
             _tsd.hasUserInfo = true; //这个值改变后，监控会自动获取数去做后续请求 
-          } else { 
+          } else {
             if (!_tsd.indexClassInfo.classNumber) {
               wx.switchTab({
                 url: '/pages/my/home/home'
@@ -215,7 +225,10 @@ create.Page(store, {
           }
         };
 
-        services.login({data:userInfo,success}); 
+        services.login({
+          data: userInfo,
+          success
+        });
       }
     })
 
@@ -286,7 +299,7 @@ create.Page(store, {
       }
     }
   },
- 
+
   onLoad: function (options) {
     let _t = this;
     let _tsd = _t.store.data;
@@ -303,11 +316,11 @@ create.Page(store, {
     _t.store.onChange(_t.userInfoChangeHandler);
 
     if (_tsd.hasUserInfo) {
-      console.log("_tsd.hasUserInfo",_tsd.hasUserInfo);
+      console.log("_tsd.hasUserInfo", _tsd.hasUserInfo);
       if (_tsd.userInfo.classNumber) {
         _tsd.indexClassInfo.classNumber = _tsd.userInfo.classNumber;
         _tsd.indexClassInfo.className = _tsd.userInfo.className;
-      } 
+      }
     } else {
       _t.getWxSetting();
       if (_tsd.indexClassInfo.classNumber) {
@@ -326,12 +339,18 @@ create.Page(store, {
     let _tsd = _t.store.data;
 
     //刷新最近课程
-    let classNumber = _tsd.indexClassInfo.classNumber || _tsd.userInfo.classNumber;
-    let userId = _tsd.userInfo.userId || 0;
+    let classNumber = _tsd.indexClassInfo.classNumber;
+    let userId = 0;
+    if (_tsd.userInfo) {
+      if (!classNumber && _tsd.userInfo.classNumber) {
+        classNumber = _tsd.userInfo.classNumber;
+      }
+      userId = _tsd.userInfo.userId || 0; 
+    }
+
     if (classNumber || userId) {
       _t.getLatestCourse(classNumber, userId);
     }
-    
   },
 
   /**
@@ -340,19 +359,19 @@ create.Page(store, {
   onPullDownRefresh: function () {
     let _t = this;
     let _tsd = _t.store.data;
-    _t.getWxSetting();
-
-    //首次登录后，刷新最近课程
-    let classNumber = _tsd.indexClassInfo.classNumber || _tsd.userInfo.classNumber;
-    let userId = _tsd.userInfo.userId || 0;
-    if (classNumber || userId) {
-      _t.getLatestCourse(classNumber, userId);
-    }
 
     setTimeout(() => {
       wx.stopPullDownRefresh();
     }, 500);
 
+    _t.getWxSetting();
+
+    //首次登录后，刷新最近课程
+    let classNumber =  _tsd.userInfo.classNumber|| _tsd.indexClassInfo.classNumber;
+    let userId = _tsd.userInfo.userId || 0;
+    if (classNumber || userId) {
+      _t.getLatestCourse(classNumber, userId);
+    } 
   },
 
   /**
