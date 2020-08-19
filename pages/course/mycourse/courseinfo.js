@@ -3,11 +3,12 @@ import create from '../../../utils/create'
 import store from '../../../store/index'
 import config from '../../../config.js';
 import util from '../../../utils/util.js';
+import services from '../../../services/services';
 
 const app = getApp();
 
 create.Page(store, {
-  use:['userInfo'],
+  use: ['userInfo','isMyCourseEdit'],
 
   /**
    * 页面的初始数据
@@ -77,7 +78,7 @@ create.Page(store, {
       _t.setData({
         isShowAddMyCourseDateDialog: false
       });
-    }else if(key=="deleteMyCourse"){
+    } else if (key == "deleteMyCourse") {
       let courseId = e.currentTarget.dataset.id;
       _t.deleteMyCourseDate(courseId);
 
@@ -105,40 +106,11 @@ create.Page(store, {
    */
   getMyCourseDate: function (courseId) {
     var _t = this;
-    var _td = _t.data; 
+    var _td = _t.data;
     let _tsd = _t.store.data;
-    wx.request({
-      url: config.api.getMyCourseDate,
-      method: "GET",
-      header: {
-        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-      },
-      data: {
-        id: courseId
-      },
-      dataType: "json",
-      success: function (result) {
-        console.log(result);
-        if (result.data.type == 401) {
-          wx.showToast({
-            title: '您需要先登录',
-            icon: 'none',
-            duration: 2000
-          });
-          //跳转去首页
-          config.router.goIndex(_td.classNumber);
-          return;
-        }
-        if (result.data.type != 200) {
-          wx.showToast({
-            title: '数据请求失败',
-            icon: 'none',
-            duration: 2000
-          });
-          return;
-        }
 
-        var cs = result.data.data.courses;
+    let success = result =>{
+      var cs = result.data.data.courses;
         if (cs.length < 0) {
           return;
         }
@@ -155,8 +127,10 @@ create.Page(store, {
           myCourseInfo: cs[0],
           myCourseInfoEdit: editCourse,
         });
-      }
-    });
+    };
+
+    let data = {id:courseId};
+    services.getMyCourseDate({data,success});
   },
 
   /**
@@ -167,7 +141,7 @@ create.Page(store, {
     var _t = this;
     var _td = _t.data;
     let _tsd = _t.store.data;
-    var formData = e.detail.value; 
+    var formData = e.detail.value;
 
     formData.classRoom = formData.classRoom.replace(/^\s*|\s*$/g, "");
     if (formData.classRoom.length < 1) {
@@ -199,87 +173,58 @@ create.Page(store, {
     formData.teacher = _td.myCourseInfo.teacher;
     formData.classNumber = _tsd.userInfo.classNumber;
 
-    //发起接口调用,保存用户信息
-    wx.request({
-      url: config.api.addMyCourse,
-      method: "POST",
-      header: {
-        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-      },
-      data: formData,
-      success: function (result) {
-        console.log(result);
-        if (result.data.type == 200) {
-          var _data = result.data.data;
-          //添加返回的数据到
-          var course = _t.formatCourseDateInfo(_data.course);
+    let success = result => {
+      var _data = result.data.data;
+      //添加返回的数据到
+      var course = _t.formatCourseDateInfo(_data.course);
 
-          _td.myCourseDates.unshift(course);
-          _t.setData({
-            myCourseDates: _td.myCourseDates,
-            isShowAddMyCourseDateDialog:false
-          });
+      _td.myCourseDates.unshift(course);
+      _t.setData({
+        myCourseDates: _td.myCourseDates,
+        isShowAddMyCourseDateDialog: false
+      });
+      _tsd.isMyCourseEdit = true;
 
-           
-          wx.showToast({
-            title: '保存成功',
-            icon: 'success',
-            duration: 2000
-          });
-        } else {
-          wx.showToast({
-            title: '保存失败',
-            icon: 'none',
-            duration: 2000
-          });
-        }
-      }
-    })
+      wx.showToast({
+        title: '保存成功',
+        icon: 'success',
+        duration: 2000
+      });
+    }
+
+    let data = formData;
+    services.addMyCourse({data,success}); 
   },
 
   /**
    * 删除选修课程日期
    */
-  deleteMyCourseDate: function (courseId) { 
+  deleteMyCourseDate: function (courseId) {
     var _t = this;
     var _td = _t.data;
-    wx.request({
-      url: config.api.deleteMyCourseDate,
-      method: "GET",
-      header: {
-        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-      },
-      data: {
-        id: courseId
-      },
-      dataType: "json",
-      success: function (result) {
-        if (result.data.type != 200) {
-          let title = result.data.content||"删除失败";
-          wx.showToast({
-            title: title,
-            icon: 'none',
-            duration: 2000
-          });
-          return;
-        }
-
-        
-        var courseId = result.data.data.id;
-        for (var i = 0; i < _td.myCourseDates.length; i++) {
-          var item = _td.myCourseDates[i];
-          if (item.id == courseId) {
-            _td.myCourseDates.splice(i, 1);
-            _t.setData({
-              myCourseDates: _td.myCourseDates
-            })
-          }
+    let _tsd = _t.store.data;
+    let success = result => {
+      var courseId = result.data.data.id;
+      _tsd.isMyCourseEdit = true;
+      for (var i = 0; i < _td.myCourseDates.length; i++) {
+        var item = _td.myCourseDates[i];
+        if (item.id == courseId) {
+          _td.myCourseDates.splice(i, 1);
+          _t.setData({
+            myCourseDates: _td.myCourseDates
+          }); 
         }
       }
+    };
+    let data = {
+      id: courseId
+    };
+    services.deleteMyCourseDate({
+      data,
+      success
     });
-
   },
- 
+
   /**
    * 提交课程名和老师姓名的修改
    */
@@ -322,50 +267,37 @@ create.Page(store, {
 
     formData.id = _td.myCourseInfo.id;
 
-    //发起接口调用,保存用户信息
-    wx.request({
-      url: config.api.updateMyCourse,
-      method: "POST",
-      header: {
-        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-      },
-      data: formData,
-      success: function (result) {
-        console.log(result);
-        if (result.data.type == 200) {
-          //var _data = result.data.data; 
-          wx.showToast({
-            title: '保存成功',
-            icon: 'success',
-            duration: 2000
-          });
-          _td.myCourseInfo.name = formData.name;
-          _td.myCourseInfo.teacher = formData.teacher;
+    let success = result =>{
+      wx.showToast({
+        title: '保存成功',
+        icon: 'success',
+        duration: 2000
+      });
+      _td.myCourseInfo.name = formData.name;
+      _td.myCourseInfo.teacher = formData.teacher;
 
-          _t.setData({
-            myCourseInfo:_td.myCourseInfo,
-            isShowEditMyCourseDialog:false
-          });
-        } else {
-          wx.showToast({
-            title: '保存失败',
-            icon: 'none',
-            duration: 2000
-          });
-        }
-      }
-    })
+      _t.setData({
+        myCourseInfo: _td.myCourseInfo,
+        isShowEditMyCourseDialog: false
+      });
+
+      _tsd.isMyCourseEdit = true;
+    }
+    let data = formData;
+
+    services.updateMyCourse({data,success}); 
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let _t = this; 
+    let _t = this;
     _t.initData(options);
-   
-    _t.getMyCourseDate(options.courseId);
 
+    if(options.courseId){
+      _t.getMyCourseDate(options.courseId); 
+    }
   },
 
   /**

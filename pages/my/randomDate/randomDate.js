@@ -7,7 +7,7 @@ import config from '../../../config.js';
 let app = getApp();
 
 create.Page(store, {
-  use: ['userInfo', 'hasUserInfo', 'courseDate','appointments','inviters','randomDateTitle'],
+  use: ['userInfo', 'hasUserInfo', 'courseDate', 'appointments', 'inviters', 'randomDateTitle'],
 
   /**
    * 页面的初始数据
@@ -18,7 +18,7 @@ create.Page(store, {
 
 
     _t.setData({
-      tabCur :0,
+      tabCur: 0,
       isShowRandomDateDialog: false,
 
       dateList: ["今天", "明天", "后天", "最近课程那一天"],
@@ -56,13 +56,13 @@ create.Page(store, {
     } else if (key == "selectTime") {
       let index = e.currentTarget.dataset.index;
       _t.selectTime(index);
-    }else if(key=="tabSelect"){
-      let _index = e.currentTarget.dataset.index; 
+    } else if (key == "tabSelect") {
+      let _index = e.currentTarget.dataset.index;
       _t.setData({
-        tabCur:_index
+        tabCur: _index
       });
 
-      _tsd.randomDateTitle=_index==1?"约我的":"我约的";
+      _tsd.randomDateTitle = _index == 1 ? "约我的" : "我约的";
     }
 
   },
@@ -102,7 +102,7 @@ create.Page(store, {
     });
   },
 
-   
+
 
   /**
    * 确定约饭
@@ -123,7 +123,7 @@ create.Page(store, {
     appointmentDate = [year, month, day].join('/') + " 00:00:00";
 
     if (_td.dateIndex == 3) {
-      if(!_tsd.courseDate.date){
+      if (!_tsd.courseDate.date) {
         wx.showToast({
           title: '最近无课程，请选择其他日期',
           icon: 'none',
@@ -139,117 +139,56 @@ create.Page(store, {
       timeType: _td.timeIndex
     };
 
-    console.log(postData);
+    let success = result => {
+      var ap = services.formatAppointment(result.data.data.appointment, true);
+      _t.setData({
+        isShowRandomDateDialog: false
+      });
+      _tsd.appointments.push(ap);
+      wx.showToast({
+        title: resultData.content,
+        icon: 'success',
+      })
+    }
 
-    wx.request({
-      url: config.api.makeAppointment,
-      method: "POST",
-      header: {
-        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-      },
-      dataType: "json",
+    services.makeAppointment({
       data: postData,
-      success: function (result) {
-        console.log(result);
-        var resultData = result.data;
-        if (resultData.type == 401) {
-          wx.showToast({
-            title: '您需要先登录',
-            icon: 'none',
-            duration: 2000
-          });
-          //跳转去首页
-          config.router.goIndex(_td.classNumber);
-          return;
-        }
-
-
-        if (resultData.type != 200) {
-          wx.showToast({
-            title: resultData.content,
-            icon: 'none',
-          })
-          return;
-        }
-
-        console.log(resultData.data.appointment);
-
-        var ap = services.formatAppointment(resultData.data.appointment, true);
-
-        _t.setData({
-          isShowRandomDateDialog: false
-        });
-
-        _tsd.appointments.push(ap),
-
-        wx.showToast({
-          title: resultData.content,
-          icon: 'success',
-        })
-      }
+      success
     });
   },
 
   /**
    * 获取约饭
    */
-  getAppointments: function() {
+  getAppointments: function () {
     var _t = this;
     var _tsd = _t.store.data;
-    wx.request({
-      url: app.api.getAppointments,
-      method: "GET",
-      header: {
-        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-      },
-      dataType: "json",
-      success: function(result) {
-        console.log(result);
-        var resultData = result.data;
-        if (resultData.type == 401) {
-          wx.showToast({
-            title: '您需要先登录',
-            icon: 'none',
-            duration: 2000
-          });
-          //跳转去首页
-          config.router.goIndex(_td.classNumber);
-          return;
-        }
-
-        if (resultData.type != 200) {
-          wx.showToast({
-            title: resultData.content,
-            icon: 'none',
-          })
-          return;
-        }
-
-        var apps = resultData.data.creaters;
-        let appoints = [];
-        if (apps.length > 0) {
-          for(let i=0;i<apps.length;i++){
-            let creater = services.formatAppointment(apps[i], true);
-            appoints.push(creater); 
-          } 
-        }
-        _tsd.appointments = appoints;
-
-        //邀请数据
-        apps = resultData.data.inviters;
-        var inviters = [];
-        if (apps.length > 0) {
-          for (var i = 0; i < apps.length; i++) {
-            var creater = services.formatAppointment(apps[i], false); 
-              inviters.push(creater);
-          }
-
-          
-          _tsd.inviters = inviters
-          
+    let success = result => {
+      var apps = result.data.data.creaters;
+      let appoints = [];
+      if (apps.length > 0) {
+        for (let i = 0; i < apps.length; i++) {
+          let creater = services.formatAppointment(apps[i], true);
+          appoints.push(creater);
         }
       }
-    })
+      _tsd.appointments = appoints;
+
+      //邀请数据
+      apps = result.data.data.inviters;
+      var inviters = [];
+      if (apps.length > 0) {
+        for (var i = 0; i < apps.length; i++) {
+          var creater = services.formatAppointment(apps[i], false);
+          inviters.push(creater);
+        }
+        _tsd.inviters = inviters
+      }
+    };
+
+    services.getAppointments({
+      success
+    });
   },
 
   /**
@@ -257,9 +196,13 @@ create.Page(store, {
    */
   onLoad: function (options) {
     let _t = this;
+    let _tsd = _t.store.data;
     _t.initData(options);
 
-    _t.getAppointments();
+    if (_tsd.hasUserInfo && _tsd.userInfo.classNumber) {
+      _t.getAppointments();
+    }
+
 
   },
 
@@ -295,13 +238,16 @@ create.Page(store, {
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-    let _t = this; 
-
-    _t.getAppointments();
+    let _t = this;
+    let _tsd = _t.store.data;
 
     setTimeout(() => {
-      wx.stopPullDownRefresh(); 
-    }, 500); 
+      wx.stopPullDownRefresh();
+    }, 500);
+
+    if (_tsd.hasUserInfo && _tsd.userInfo.classNumber) {
+      _t.getAppointments();
+    }
   },
 
   /**

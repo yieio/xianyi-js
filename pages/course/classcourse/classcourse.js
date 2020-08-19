@@ -3,6 +3,7 @@ import create from '../../../utils/create'
 import store from '../../../store/index'
 import config from '../../../config.js';
 import util from '../../../utils/util.js';
+import services from '../../../services/services';
 
 const app = getApp();
 /**
@@ -59,41 +60,14 @@ create.Page(store, {
   },
 
   /**
-   * 获取自选课信息
+   * 获取班级课程信息
    */
   getClassCourse: function (classNumber) {
     var _t = this;
     var _td = _t.data;
     let _tsd = _t.store.data;
-    wx.request({
-      url: app.api.getMyCourse + "?classNumber=" + classNumber,
-      method: "GET",
-      header: {
-        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-      },
-      dataType: "json",
-      success: function (result) {
-        console.log(result);
-        if (result.data.type == 401) {
-          wx.showToast({
-            title: '您需要先登录',
-            icon: 'none',
-            duration: 2000
-          });
-          //跳转去首页
-          config.router.goIndex(_td.classNumber);
-          return;
-        }
-        if (result.data.type != 200) {
-          wx.showToast({
-            title: '数据请求失败',
-            icon: 'none',
-            duration: 2000
-          });
-          return;
-        }
-
-        var cs = result.data.data.courses;
+    let success = result =>{
+      var cs = result.data.data.courses;
         for (var i = 0; i < cs.length; i++) {
           cs[i].startTime = util.formatDateTime(cs[i].startTime);
           cs[i].endTime = util.formatDateTime(cs[i].endTime);
@@ -101,9 +75,10 @@ create.Page(store, {
         _t.setData({
           myCourses: cs
         });
-      }
-    });
+    };
+    let data = {classNumber};
 
+    services.getClassCourse({data,success}); 
   },
 
   /**
@@ -160,35 +135,9 @@ create.Page(store, {
     formData.endTime = formData.courseDate + " " + formData.endTime;
     formData.classNumber = _tsd.userInfo.classNumber;
 
-    //发起接口调用,保存班级
-    wx.request({
-      url: config.api.addClassCourse,
-      method: "POST",
-      header: {
-        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-      },
-      data: formData,
-      success: function (result) {
-        if (result.statusCode == 403) {
-          wx.showToast({
-            title: '无权限进行此操作',
-            icon: 'none',
-            duration: 2000
-          });
-          return;
-        }
-
-        if (result.data.type != 200) {
-          let title = result.data.content || "添加课程失败";
-          wx.showToast({
-            title: title,
-            icon: 'none',
-            duration: 2000
-          });
-          return;
-        }
-
-        var _data = result.data.data;
+    let data = formData;
+    let success = result=>{
+      var _data = result.data.data;
         //添加返回的数据到
         var course = _data.course;
         course.startTime = util.formatDateTime(course.startTime);
@@ -203,15 +152,18 @@ create.Page(store, {
           isShowAddMyCourseDialog: false
         });
         wx.showToast({
-          title: '保存成功',
+          title: '添加成功',
           icon: 'success',
           duration: 2000
         });
+    };
 
-      }
-    })
+     services.addClassCourse({data,success});
   },
 
+  /**
+   * 上传班级课程表
+   */
   uploadClassCourse: function () {
     let _t = this;
     let _tsd = _t.store.data;
@@ -296,6 +248,7 @@ create.Page(store, {
     //判断登录情况，已登录获取用户选修课程
     if (_tsd.userToken) {
       _t.getClassCourse(_tsd.userInfo.classNumber);
+      _tsd.isClassCourseEdit = false;
     } else {
       wx.showToast({
         title: '您需要先登录',
@@ -318,7 +271,15 @@ create.Page(store, {
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    let _t = this;
+    let _tsd = _t.store.data;
 
+    if(_tsd.isMyCourseEdit){
+      if (_tsd.userToken) {
+        _t.getClassCourse(_tsd.userInfo.classNumber);
+        _tsd.isClassCourseEdit = false;      
+      }
+    } 
   },
 
   /**

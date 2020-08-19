@@ -29,21 +29,21 @@ create.Component(store, {
       _t.setData({
         isShowOpAppointmentDialog: false,
         oppt: {},
-        isShowNoneBlock:false,
+        isShowNoneBlock: false,
 
       });
 
     },
- 
+
 
     /**
      * 取消约饭
      * @param id 
      */
-    cancelAppointment:function(id){
-      let _t = this; 
+    cancelAppointment: function (id) {
+      let _t = this;
       let _tsd = _t.store.data;
-      let success = function (result) { 
+      let success = function (result) {
         _t.setData({
           isShowOpAppointmentDialog: false
         });
@@ -63,18 +63,23 @@ create.Component(store, {
         });
 
       }
-      services.cancelAppointment({data:{id},success}); 
+      services.cancelAppointment({
+        data: {
+          id
+        },
+        success
+      });
     },
 
     /**
      * 完成约饭
      * @param  id 
      */
-    finishAppointment:function(id){
-      let _t = this; 
+    finishAppointment: function (id) {
+      let _t = this;
       let _tsd = _t.store.data;
 
-      let success = function(result) { 
+      let success = function (result) {
         _t.setData({
           isShowOpAppointmentDialog: false
         });
@@ -87,8 +92,13 @@ create.Component(store, {
           }
         }
       }
- 
-      services.finishAppointment({data:{id},success}); 
+
+      services.finishAppointment({
+        data: {
+          id
+        },
+        success
+      });
     },
 
     /**
@@ -98,50 +108,30 @@ create.Component(store, {
       var _t = this;
       var _td = _t.data;
       let _tsd = _t.store.data;
-      wx.request({
-        url: config.api.rejectAppointment + "?id=" + id,
-        method: "POST",
-        header: {
-          'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-        },
-        dataType: "json",
-        success: function (result) {
-          if (result.data.type == 401) {
-            wx.showToast({
-              title: '您需要先登录',
-              icon: 'none',
-              duration: 2000
-            });
-            //跳转去首页
-            config.router.goIndex('');
-            return;
+      let success = result => {
+        var app = result.data.data.appointment;
+        var inviters = _tsd.inviters;
+        for (var i = 0; i < inviters.length; i++) {
+          var item = inviters[i];
+          if (item.id == app.id) {
+            inviters.splice(i, 1);
           }
-          if (result.data.type != 200) {
-            wx.showToast({
-              title: result.data.content,
-              icon: "none"
-            })
-            return;
-          }
-
-          //拒绝成功，更新
-          var app = result.data.data.appointment;
-          var inviters = _tsd.inviters;
-          for (var i = 0; i < inviters.length; i++) {
-            var item = inviters[i];
-            if (item.id == app.id) {
-              inviters.splice(i, 1);
-            }
-          }
-
-          _t.setData({
-            isShowOpAppointmentDialog: false
-          });
-
-          _tsd.inviters = inviters;
-
         }
-      })
+
+        _t.setData({
+          isShowOpAppointmentDialog: false
+        });
+
+        _tsd.inviters = inviters;
+      };
+
+      let data = {
+        id
+      };
+      services.rejectAppointment({
+        data,
+        success
+      });
     },
 
     /**
@@ -151,49 +141,31 @@ create.Component(store, {
       var _t = this;
       var _td = _t.data;
       let _tsd = _t.store.data;
-      wx.request({
-        url: config.api.acceptAppointment + "?id=" + id,
-        method: "POST",
-        header: {
-          'Authorization': 'Bearer ' + a_tsd.userToken.accessToken
-        },
-        dataType: "json",
-        success: function (result) {
-          if (result.data.type == 401) {
-            wx.showToast({
-              title: '您需要先登录',
-              icon: 'none',
-              duration: 2000
-            });
-            //跳转去首页
-            config.router.goIndex('');
-            return;
+      let success = result => {
+        var app = result.data.data.appointment;
+        var inviters = _tsd.inviters;
+        for (var i = 0; i < inviters.length; i++) {
+          var item = inviters[i];
+          if (item.id == app.id) {
+            inviters[i] = services.formatAppointment(app, false);
+            break;
           }
-          if (result.data.type != 200) {
-            wx.showToast({
-              title: result.data.content,
-              icon: "none"
-            })
-            return;
-          }
-
-          var app = result.data.data.appointment;
-          var inviters = _tsd.inviters;
-          for (var i = 0; i < inviters.length; i++) {
-            var item = inviters[i];
-            if (item.id == app.id) {
-              inviters[i] = services.formatAppointment(app, false);
-              break;
-            }
-          }
-
-          _t.setData({
-            isShowOpAppointmentDialog: false
-          });
-
-          _tsd.inviters = inviters;
         }
-      })
+
+        _t.setData({
+          isShowOpAppointmentDialog: false
+        });
+
+        _tsd.inviters = inviters;
+      };
+
+      let data = {
+        id
+      };
+      services.acceptAppointment({
+        data,
+        success
+      });
     },
 
     /**
@@ -223,13 +195,13 @@ create.Component(store, {
       } else if (key == "acceptAppointment") {
         let id = dataset.id;
         _t.acceptAppointment(id);
-      }else if (key == "cancelAppointment") {
+      } else if (key == "cancelAppointment") {
         let id = dataset.id;
         _t.cancelAppointment(id);
-      }else if(key=="finishAppointment"){
+      } else if (key == "finishAppointment") {
         let id = dataset.id;
         _t.finishAppointment(id);
-      }else if(key=="goProfile"){
+      } else if (key == "goProfile") {
         let userid = dataset.userid;
         config.router.goProfile(userid);
       }
@@ -243,9 +215,9 @@ create.Component(store, {
       this.initData();
       let _t = this;
       let _tsd = _t.store.data;
-      if(_tsd.inviters.length<=0){
+      if (_tsd.inviters.length <= 0) {
         _t.setData({
-          isShowNoneBlock:true
+          isShowNoneBlock: true
         })
       }
     },

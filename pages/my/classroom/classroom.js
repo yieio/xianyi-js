@@ -31,17 +31,17 @@ create.Page(store, {
     let _tsd = _t.store.data;
     if (key == "createClass") {
       _tsd.isShowCreateClassDialog = true;
-    } else if (key == "changeClass") { 
+    } else if (key == "changeClass") {
       _tsd.isShowChangeClassDialog = true;
     } else if (key == "selectClassItem") {
       let dataset = e.currentTarget.dataset;
       _t.setData({
         classIndex: dataset.index,
         classValue: dataset.value
-      }); 
-    }else if(key=="hideChangeClassDialog"){
+      });
+    } else if (key == "hideChangeClassDialog") {
       _tsd.isShowChangeClassDialog = false;
-    }else if(key=="hideCreateClassDialog"){
+    } else if (key == "hideCreateClassDialog") {
       _tsd.isShowCreateClassDialog = false;
     }
   },
@@ -62,7 +62,7 @@ create.Page(store, {
 
     }
   },
- 
+
 
   /**
    * 新建班级体
@@ -95,40 +95,26 @@ create.Page(store, {
 
     formData.classNumber = formData.classNumber.replace(/\s/g, "");
 
-    //发起接口调用,新建班级
-    wx.request({
-      url: config.api.createClassroom,
-      method: "POST",
-      header: {
-        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-      },
+    let success = result => {
+      var _data = result.data.data;
+      //处理返回的数据
+      _tsd.userInfo.classNumber = _data.classInfo.classNumber;
+      _tsd.userInfo.className = _data.classInfo.name;
+
+      wx.showToast({
+        title: '新建班级成功',
+        icon: 'success',
+        duration: 2000
+      });
+
+      _tsd.isShowCreateClassDialog = false;
+    };
+
+    services.createClassroom({
       data: formData,
-      success: function (result) {
-        console.log(result);
-        if (result.data.type == 200) {
-          var _data = result.data.data;
-          //处理返回的数据
-          _tsd.userInfo.classNumber = _data.classInfo.classNumber;
-          _tsd.userInfo.className = _data.classInfo.name;
-
-          wx.showToast({
-            title: '新建班级成功',
-            icon: 'success',
-            duration: 2000
-          });
-
-          _tsd.isShowCreateClassDialog = false;
-        } else {
-          let title = result.data.content ||"新建班级失败";
-          wx.showToast({
-            title: title,
-            icon: 'none',
-            duration: 2000
-          });
-        }
-      }
-    })
-
+      success
+    });
+ 
   },
 
   /**
@@ -138,7 +124,7 @@ create.Page(store, {
     var _t = this;
     var _td = _t.data;
     let _tsd = _t.store.data;
-    let success =  function (result) {
+    let success = function (result) {
       console.log(result);
       if (result.data.type != 200) {
         let title = result.data.content || '班级列表获取失败';
@@ -166,7 +152,10 @@ create.Page(store, {
     };
     let classNumber = _tsd.userInfo.classNumber || _tsd.indexClassInfo.classNumber;
 
-    services.getOrganizations(classNumber,1,success); 
+    //classNumber, isAll
+    let data ={classNumber,isAll:1};
+
+    services.getOrganizations({data, success});
   },
 
   /**
@@ -188,17 +177,8 @@ create.Page(store, {
       return false;
     };
 
-    //发起接口调用,新建班级
-    wx.request({
-      url: config.api.changeClassroom + "?classNumber=" + formData.classNumber,
-      method: "POST",
-      header: {
-        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-      },
-      success: function (result) {
-        console.log(result);
-        if (result.data.type == 200) {
-          var _data = result.data.data;
+    let success = result =>{
+      var _data = result.data.data;
           wx.showToast({
             title: '加入班级成功',
             icon: 'success',
@@ -206,21 +186,16 @@ create.Page(store, {
           });
 
           _tsd.isShowChangeClassDialog = false;
-          if (_data&&_data.classInfo) {
+          if (_data && _data.classInfo) {
             //处理返回的数据
             _tsd.userInfo.classNumber = _data.classInfo.classNumber;
             _tsd.userInfo.className = _data.classInfo.name;
-          } 
-        } else {
-          wx.showToast({
-            title: '加入班级失败',
-            icon: 'none',
-            duration: 2000
-          });
-        }
-      }
-    })
+          }
+    };
 
+    let data = {classNumber:formData.classNumber};
+
+    services.changeClassroom({data,success}); 
   },
 
   /**
@@ -228,8 +203,11 @@ create.Page(store, {
    */
   onLoad: function (options) {
     let _t = this;
+    let _tsd = _t.store.data;
     _t.initData(options);
-    _t.getOrganizations();
+    if (_tsd.hasUserInfo && _tsd.userInfo.classNumber) {
+      _t.getOrganizations();
+    }
   },
 
   /**
@@ -287,8 +265,8 @@ create.Page(store, {
     let cname = className || "班集体";
 
     return {
-      title: nickName + '邀请你加入'+cname,
-      path: '/pages/index/index?classNumber=' + classNumber +"&className="+className
+      title: nickName + '邀请你加入' + cname,
+      path: '/pages/index/index?classNumber=' + classNumber + "&className=" + className
     };
 
   }

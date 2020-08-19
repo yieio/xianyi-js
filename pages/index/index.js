@@ -31,7 +31,7 @@ create.Page(store, {
     });
 
   },
-  
+
   /**
    * 页面事件处理
    * @param  e 
@@ -74,7 +74,7 @@ create.Page(store, {
 
   },
 
-    
+
   /**
    * 获取组织列表
    */
@@ -104,11 +104,10 @@ create.Page(store, {
         }
       }
     };
-    let classNumber = _tsd.userInfo.classNumber || _tsd.indexClassInfo.classNumber;
-    console.log("getOrganizations=>")
-    console.log(classNumber);
+    let classNumber = _tsd.userInfo.classNumber || _tsd.indexClassInfo.classNumber; 
+    let data = {classNumber,isAll:1};
 
-    services.getOrganizations(classNumber, 1, success);
+    services.getOrganizations({data, success});
   },
 
   /**
@@ -118,60 +117,60 @@ create.Page(store, {
     var _t = this;
     var _tsd = _t.store.data;
     _tsd.showCourseLoadding = true;
-    wx.request({
-      url: config.api.latestCourse,
-      method: "GET",
-      dataType: "json",
-      data: {
-        classNumber: classNumber,
-        userId: userId
-      },
-      success: function (result) {
-        console.log(config.api.latestCourse + "?classNumber=" + classNumber + "=>");
-        console.log(result);
-        if (result.data.type == 200) {
-          var cs = result.data.data.courses;
-          var courseDate = {};
+    let success = function (result) {
+      console.log(config.api.latestCourse + "?classNumber=" + classNumber + "=>");
+      console.log(result);
+      if (result.data.type == 200) {
+        var cs = result.data.data.courses;
+        var courseDate = {};
 
-          if (cs.length <= 0) {
-            _tsd.latestCourse = [];
-            _tsd.courseDate.hasCourse = false;
-            _tsd.showNoneCourseTip = true;
-            return;
-          }
-
-          _tsd.showNoneCourseTip = false;
-
-          var item = cs[0];
-          var date = new Date(item.courseDate);
-          courseDate.hasCourse = true;
-          courseDate.date = util.formatDate(date);
-          courseDate.gap = util.formatDayGap(util.getDateGap(date));
-          courseDate.week = util.formatWeekDay(date);
-
-          for (var i = 0; i < cs.length; i++) {
-            var item = cs[i];
-            var start = util.formatTime(item.startTime);
-            var end = util.formatTime(item.endTime);
-            cs[i].timeGap = start + "-" + end;
-          }
-
-          _t.store.set(_tsd, 'courseDate', courseDate);
-          _t.store.set(_tsd, 'latestCourse', cs);
-          _t.store.set(_tsd, 'schoolTerm', item.schoolTerm);
-
-        } else {
-          _t.store.set(_tsd, 'courseDate', null);
-          _t.store.set(_tsd, 'latestCourse', []);
+        if (cs.length <= 0) {
+          _tsd.latestCourse = [];
+          _tsd.courseDate.hasCourse = false;
+          _tsd.showNoneCourseTip = true;
+          return;
         }
-      },
-      complete: function (e) {
-        _tsd.showCourseLoadding = false;
+
+        _tsd.showNoneCourseTip = false;
+
+        var item = cs[0];
+        var date = new Date(item.courseDate);
+        courseDate.hasCourse = true;
+        courseDate.date = util.formatDate(date);
+        courseDate.gap = util.formatDayGap(util.getDateGap(date));
+        courseDate.week = util.formatWeekDay(date);
+
+        for (var i = 0; i < cs.length; i++) {
+          var item = cs[i];
+          var start = util.formatTime(item.startTime);
+          var end = util.formatTime(item.endTime);
+          cs[i].timeGap = start + "-" + end;
+        }
+
+        _t.store.set(_tsd, 'courseDate', courseDate);
+        _t.store.set(_tsd, 'latestCourse', cs);
+        _t.store.set(_tsd, 'schoolTerm', item.schoolTerm);
+
+      } else {
+        _t.store.set(_tsd, 'courseDate', null);
+        _t.store.set(_tsd, 'latestCourse', []);
       }
-    });
+    };
+
+    let data ={
+      classNumber: classNumber,
+      userId: userId
+    };
+
+    //完成事件处理
+    let complete = resp=>{
+      _tsd.showCourseLoadding = false;
+    };
+
+    services.getLatestCourse({data,success,complete}); 
   },
 
-  
+
 
   /**
    * 调用服务端登录，会自动注册登记到服务端
@@ -185,51 +184,38 @@ create.Page(store, {
     wx.login({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        console.log("res.code=>")
-        console.log(res);
+        console.log("res.code=>",res) 
         if (!res.code) {
           return;
         }
         userInfo.code = res.code;
-        //发送code 到服务端
-        wx.request({
-          url: config.api.login + "?code=" + res.code,
-          method: "post",
-          dataType: "json",
-          data: userInfo,
-          success: function (result) {
-            if (result.data.type == 200) {
-              var _data = result.data.data;
-              //记录用户token
-              _tsd.userToken = _data.token;
-              wx.setStorageSync(_tsd.userTokenKey, _data.token);
 
-              if (_data.userInfo.nickName) {
-                let ui = _data.userInfo;
-                ui.genderName = util.getGenderName(_data.userInfo.gender);
+        let success = function (result) {
+          var _data = result.data.data;
+          //记录用户token
+          _tsd.userToken = _data.token;
+          wx.setStorageSync(_tsd.userTokenKey, _data.token);
 
-                _tsd.userInfo = ui;
-                _tsd.hasUserInfo = true; //这个值改变后，监控会自动获取数去 
-              } else {
-                console.log(_tsd.selectPage);
-                if (!_tsd.indexClassInfo.classNumber) {
-                  _tsd.selectPage = "my";
-                  wx.showToast({
-                    title: '需要您先登录加入班集体',
-                    icon: 'none'
-                  })
-                }
-              }
+          if (_data.userInfo.nickName) {
+            let ui = _data.userInfo;
+            ui.genderName = util.getGenderName(_data.userInfo.gender);
 
-            } else {
-              console.log(result);
+            _tsd.userInfo = ui;
+            _tsd.hasUserInfo = true; //这个值改变后，监控会自动获取数去做后续请求 
+          } else { 
+            if (!_tsd.indexClassInfo.classNumber) {
+              wx.switchTab({
+                url: '/pages/my/home/home'
+              })
               wx.showToast({
-                title: '后端服务请求失败1',
+                title: '需要您登录加入班集体',
                 icon: 'none'
               })
             }
           }
-        })
+        };
+
+        services.login({data:userInfo,success}); 
       }
     })
 
@@ -252,7 +238,7 @@ create.Page(store, {
               // 可以将 res 发送给后台解码出 unionId
               if (!res.userInfo) {
                 return;
-              } 
+              }
               //请求登录
               _t.login(res.userInfo);
             }
@@ -289,7 +275,7 @@ create.Page(store, {
       if (keys[i].indexOf("userInfo.classNumber") == 0) {
         console.log("userInfo.classNumber=>");
         _t.getLatestCourse(_tsd.userInfo.classNumber, _tsd.userInfo.userId);
-        
+
         if (_tsd.userInfo.classNumber) {
           _tsd.indexClassInfo.classNumber = _tsd.userInfo.classNumber;
         }
@@ -299,32 +285,29 @@ create.Page(store, {
         }
       }
     }
-
-
   },
-
+ 
   onLoad: function (options) {
     let _t = this;
     let _tsd = _t.store.data;
-    //console.log("options.classNumber",unescape(decodeURI(options.className).replace(/\\u/gi, '%u')));
 
     if (options.classNumber) {
-      _tsd.indexClassInfo.classNumber = options.classNumber;
+      _tsd.indexClassInfo.classNumber = util.decodeUnicodeString(options.classNumber);
     }
     if (options.className) {
-      _tsd.indexClassInfo.className = options.className;
+      _tsd.indexClassInfo.className = util.decodeUnicodeString(options.className);
     }
-     
+
 
     //监控用户数据的变化
     _t.store.onChange(_t.userInfoChangeHandler);
 
-    if (_tsd.hasUserInfo) { 
+    if (_tsd.hasUserInfo) {
+      console.log("_tsd.hasUserInfo",_tsd.hasUserInfo);
       if (_tsd.userInfo.classNumber) {
         _tsd.indexClassInfo.classNumber = _tsd.userInfo.classNumber;
         _tsd.indexClassInfo.className = _tsd.userInfo.className;
-      }
-
+      } 
     } else {
       _t.getWxSetting();
       if (_tsd.indexClassInfo.classNumber) {
@@ -338,7 +321,17 @@ create.Page(store, {
   /**
    * 每次显示刷新
    */
-  onShow: function () { 
+  onShow: function () {
+    let _t = this;
+    let _tsd = _t.store.data;
+
+    //刷新最近课程
+    let classNumber = _tsd.indexClassInfo.classNumber || _tsd.userInfo.classNumber;
+    let userId = _tsd.userInfo.userId || 0;
+    if (classNumber || userId) {
+      _t.getLatestCourse(classNumber, userId);
+    }
+    
   },
 
   /**
@@ -348,7 +341,7 @@ create.Page(store, {
     let _t = this;
     let _tsd = _t.store.data;
     _t.getWxSetting();
-   
+
     //首次登录后，刷新最近课程
     let classNumber = _tsd.indexClassInfo.classNumber || _tsd.userInfo.classNumber;
     let userId = _tsd.userInfo.userId || 0;
@@ -357,7 +350,7 @@ create.Page(store, {
     }
 
     setTimeout(() => {
-      wx.stopPullDownRefresh(); 
+      wx.stopPullDownRefresh();
     }, 500);
 
   },
@@ -371,7 +364,7 @@ create.Page(store, {
     let _td = _t.data;
     let classNumber = _tsd.indexClassInfo.classNumber || _tsd.userInfo.classNumber || "";
     let className = _tsd.indexClassInfo.className || _tsd.userInfo.className || "";
-    let title =  className + '最近课程' ;
+    let title = className + '最近课程';
 
     return {
       title: title,
@@ -391,7 +384,7 @@ create.Page(store, {
 
     return {
       title: className + '最近课程',
-      query: 'classNumber=' + classNumber + "&className=" + className 
+      query: 'classNumber=' + classNumber + "&className=" + className
     };
 
   }

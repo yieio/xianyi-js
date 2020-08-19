@@ -3,6 +3,7 @@ import create from '../../../utils/create'
 import store from '../../../store/index'
 import util from '../../../utils/util.js';
 import config from '../../../config.js';
+import services from '../../../services/services';
 
 let app = getApp();
 
@@ -53,31 +54,21 @@ create.Page(store, {
    */
   getProfile: function (userId) {
     var _t = this;
-    wx.request({
-      url: config.api.classmateProfile + "?userid=" + userId,
-      method: "GET",
-      header: {
-        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-      },
-      dataType: "json",
-      success: function (result) {
-        if (result.data.type != 200) {
-          wx.showToast({
-            title: '获取同学资料失败',
-            icon: 'none',
-            duration: 2000
-          });
-          return;
-        }
 
-        var cp = result.data.data.classmateProfile;
-        cp.genderName = util.getGenderName(cp.gender);
-        _t.setData({
-          userInfo: cp
-        });
-      }
+    let success = result => {
+      var cp = result.data.data.classmateProfile;
+      cp.genderName = util.getGenderName(cp.gender);
+      _t.setData({
+        userInfo: cp
+      });
+    };
+    let data = {
+      userId
+    };
+    services.getProfile({
+      data,
+      success
     });
-
   },
 
   /**
@@ -111,44 +102,29 @@ create.Page(store, {
 
     formData.userId = _tsd.userInfo.userId;
 
+    let success = result => {
+      var _data = result.data.data;
+      _td.userInfo = _data.userInfo;
+      _td.userInfo.genderName = util.getGenderName(_data.userInfo.gender);
+      _tsd.userInfo = _td.userInfo;
+      _t.setData({
+        userInfo: _td.userInfo
+      });
 
-    //发起接口调用,保存用户信息
-    wx.request({
-      url: app.api.editProfile,
-      method: "POST",
-      header: {
-        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-      },
-      data: formData,
-      success: function (result) {
-        console.log(result);
-        if (result.data.type == 200) {
-          var _data = result.data.data;
-          _td.userInfo = _data.userInfo;
-          _td.userInfo.genderName = util.getGenderName(_data.userInfo.gender);
-          _tsd.userInfo = _td.userInfo;
-          _t.setData({
-            userInfo: _td.userInfo
-          });
+      _tsd.isShowEditProfileDialog = false;
+      wx.showToast({
+        title: '保存成功',
+        icon: 'success',
+        duration: 2000
+      });
+    };
 
-          _tsd.isShowEditProfileDialog = false;
+    let data = formData;
+    services.editProfile({
+      data,
+      success
+    });
 
-
-          //跳转到首页
-          wx.showToast({
-            title: '保存成功',
-            icon: 'success',
-            duration: 2000
-          });
-        } else {
-          wx.showToast({
-            title: '保存失败',
-            icon: 'none',
-            duration: 2000
-          });
-        }
-      }
-    })
   },
 
   /**

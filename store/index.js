@@ -28,6 +28,8 @@ export default {
     randomDateTitle:"我约的", 
     appointCount:{dateCount:0,callDateCount:0,inviteCount:0},
     
+    isMyCourseEdit:false,
+    isClassCourseEdit:false,
     
     logs: [],
   },

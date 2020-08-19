@@ -3,6 +3,7 @@ import create from '../../../utils/create'
 import util from '../../../utils/util.js';
 import config from '../../../config.js';
 import store from '../../../store/index';
+import services from '../../../services/services';
 
 let app = getApp();
 
@@ -15,6 +16,7 @@ create.Component(store, {
     'hasUserInfo',
     'canIUse',
     'isShowAddClassDialog',
+    'isShowChangeClassDialog',
     'classmates',
     'subClassmates',
     'classNumber',
@@ -64,39 +66,21 @@ create.Component(store, {
       userInfo.classNumber = _tsd.indexClassInfo.classNumber || '';
       userInfo.className =  _tsd.indexClassInfo.className || '';
 
-      //_tsd.userInfo = userInfo;
-      //_tsd.hasUserInfo = true;
+      let success = function (result) {
+        console.log(result); 
+          var _data = result.data.data;
+          let ui = _data.userInfo;
+          ui.genderName = util.getGenderName(_data.userInfo.gender);
 
-      wx.request({
-        url: app.api.signup,
-        method: "POST",
-        header: {
-          'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-        },
-        data: userInfo,
-        success: function (result) {
-          console.log(result);
-          if (result.data.type == 200) {
-            var _data = result.data.data;
-            let ui = _data.userInfo;
-            ui.genderName = util.getGenderName(_data.userInfo.gender);
+          _tsd.userInfo = ui;
+          _tsd.hasUserInfo = true;
 
-            _tsd.userInfo = ui;
-            _tsd.hasUserInfo = true;
+          //检查班级设置情况，没有班级弹窗引导去设置
+          _t.hasClassroom();
+ 
+      };
 
-            //检查班级设置情况，没有班级弹窗引导去设置
-            _t.hasClassroom();
-
-          } else {
-            //弹窗让用户重试
-            wx.showToast({
-              title: '授权登录失败',
-              icon: 'none',
-              duration: 2000
-            });
-          }
-        }
-      })
+      services.signup({data:userInfo,success}); 
     },
     /**
      * 是否已经加入班级
@@ -109,10 +93,13 @@ create.Component(store, {
       return !result;
     },
 
+    /**
+     * 判断并提示用户登录
+     */
     isLogin: function () {
       let _t = this;
       let _tsd = _t.store.data;
-      let result = !_tsd.userToken || !_tsd.userInfo || !_tsd.userInfo.nickName;
+      let result = !_tsd.hasUserInfo;
       if (result) {
         wx.showToast({
           title: '您需要先登录',
@@ -190,6 +177,7 @@ create.Component(store, {
       } else if (key == "hideModal") {
         _tsd.isShowAddClassDialog = false;
       } else if (key == "goClassroom") {
+        _tsd.isShowChangeClassDialog = true;
         config.router.goClassroom();
       }
     }
@@ -200,7 +188,7 @@ create.Component(store, {
     attached: function () {
       let _t = this;
       let _tsd = _t.store.data;
-      if (_tsd.userInfo.hasUserInfo && !_tsd.userInfo.classNumber) {
+      if (_tsd.hasUserInfo && !_tsd.userInfo.classNumber) {
         _tsd.isShowAddClassDialog = true;
       }
     },

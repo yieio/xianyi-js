@@ -84,7 +84,7 @@ create.Page(store,{
     //监控用户数据的变化
     _t.store.onChange(_t.userInfoChangeHandler);
     
-    if(_tsd.hasUserInfo){
+    if(_tsd.hasUserInfo && _tsd.userInfo.classNumber){
       _t.getClassmates();
       _t.getAppointmentCount();
     }
@@ -103,7 +103,10 @@ create.Page(store,{
    */
   onShow: function () {
     let _t = this; 
-    _t.getAppointmentCount(); 
+    let _tsd = _t.store.data;
+    if(_tsd.hasUserInfo && _tsd.userInfo.classNumber){ 
+      _t.getAppointmentCount();
+    } 
   },
 
   /**
@@ -125,12 +128,15 @@ create.Page(store,{
    */
   onPullDownRefresh: function () {
     let _t = this;
+    let _tsd = _t.store.data;
     setTimeout(() => {
       wx.stopPullDownRefresh(); 
     }, 500);
-
-    _t.getAppointmentCount();
-    _t.getClassmates();
+ 
+    if(_tsd.hasUserInfo && _tsd.userInfo.classNumber){
+      _t.getClassmates();
+      _t.getAppointmentCount();
+    }
   },
 
   /**

@@ -3,11 +3,12 @@ import create from '../../../utils/create'
 import store from '../../../store/index'
 import util from '../../../utils/util.js';
 import config from '../../../config.js';
+import services from '../../../services/services';
 
 let app = getApp();
 
 create.Page(store, {
-  use: ['userInfo', 'hasUserInfo', 'latestCourse','indexClassInfo'],
+  use: ['userInfo', 'hasUserInfo', 'latestCourse', 'indexClassInfo'],
 
 
   /**
@@ -18,8 +19,10 @@ create.Page(store, {
     let _td = _t.data;
     let _tsd = _t.store.data;
     //记录班级这个参数，给后面加入班级做准备
-    if(options.classNumber){
-      _tsd.indexClassInfo.classNumber = options.classNumber;
+    if (options.classNumber) {
+      _tsd.indexClassInfo.classNumber = options.classNumber; 
+    }
+    if(options.className){
       _tsd.indexClassInfo.className = options.className;
     }
 
@@ -41,8 +44,8 @@ create.Page(store, {
       courseDate: options.courseDate,
       courseStartDate: '',
       courseEndDate: '',
-      courses:[],
-      isShowNoneData:false,
+      courses: [],
+      isShowNoneData: false,
     });
   },
 
@@ -53,105 +56,89 @@ create.Page(store, {
     let _t = this;
     let _td = _t.data;
     let _tsd = _t.store.data;
-    let userId = _td.userId; 
+    let userId = _td.userId;
 
-    wx.request({
-      url: config.api.classCourse,
-      method: "GET",
-      dataType: "json",
-      data: {
-        classNumber: classNumber,
-        schoolTerm: schoolTerm,
-        userId: userId
-      },
-      success: function (result) {
-        if (result.data.type == 200) {
-          var cs = result.data.data.courses;
-          var classInfo = result.data.data.classInfo;
-          if(classInfo){
-            _t.setData({
-              className:classInfo.name
-            })
-          }
+    let data = {
+      classNumber: classNumber,
+      schoolTerm: schoolTerm,
+      userId: userId
+    };
 
-          if (cs.length <= 0) {
-            _t.setData({
-              courses: [],
-              isShowNoneData:true
-            })
-            return;
-          }
-
-          var courses = [];
-          var lastDate = "";
-          var courseDate = {};
-          var currentViewId = "";
-
-          for (var i = 0, j = 0; i < cs.length; i++) {
-            var item = cs[i];
-
-            var start = util.formatTime(item.startTime);
-            var end = util.formatTime(item.endTime);
-            cs[i].timeGap = start + "-" + end;
-
-            if (item.courseDate != lastDate) {
-              if (courseDate.date) {
-                courses.push(courseDate);
-                if (courseDate.date == util.formatDate(new Date(_td.courseDate))) {
-                  currentViewId = "date" + j;
-                }
-                j++;
-              }
-              lastDate = item.courseDate;
-              var date = new Date(item.courseDate);
-              courseDate = {
-                date: util.formatDate(date),
-                simpleDate: util.formatSimpleDate(date),
-                gap: util.formatDayGap(util.getDateGap(date)),
-                week: util.formatWeekDay(date),
-                color: item.nameEnSimple,
-                courseItems: []
-              };
-              if (i == 0) {
-                _t.setData({
-                  courseStartDate: courseDate.date
-                });
-              } else {
-                _t.setData({
-                  courseEndDate: courseDate.date
-                });
-              }
-            };
-            courseDate.courseItems.push(cs[i]);
-          };
-
-          //背景颜色加个简拼音控制下 
-          courses.push(courseDate);
-          _t.setData({
-            courses: courses
-          });
-          //这里要分开先后赋值才能滚动到对应位置
-          _t.setData({
-            scrollToViewId: currentViewId
-          });
-
-        } else {
-          _t.setData({
-            courses: []
-          })
-
-          wx.showToast({
-            title: '获取课程表失败',
-            icon: 'none',
-            duration: 2000
-          });
-          console.log(result.data);
-
-        }
-
+    let success = result => {
+      var cs = result.data.data.courses;
+      var classInfo = result.data.data.classInfo;
+      if (classInfo) {
+        _t.setData({
+          className: classInfo.name
+        })
       }
-    });
 
+      if (cs.length <= 0) {
+        _t.setData({
+          courses: [],
+          isShowNoneData: true
+        })
+        return;
+      }
+
+      var courses = [];
+      var lastDate = "";
+      var courseDate = {};
+      var currentViewId = "";
+
+      for (var i = 0, j = 0; i < cs.length; i++) {
+        var item = cs[i];
+
+        var start = util.formatTime(item.startTime);
+        var end = util.formatTime(item.endTime);
+        cs[i].timeGap = start + "-" + end;
+
+        if (item.courseDate != lastDate) {
+          if (courseDate.date) {
+            courses.push(courseDate);
+            if (courseDate.date == util.formatDate(new Date(_td.courseDate))) {
+              currentViewId = "date" + j;
+            }
+            j++;
+          }
+          lastDate = item.courseDate;
+          var date = new Date(item.courseDate);
+          courseDate = {
+            date: util.formatDate(date),
+            simpleDate: util.formatSimpleDate(date),
+            gap: util.formatDayGap(util.getDateGap(date)),
+            week: util.formatWeekDay(date),
+            color: item.nameEnSimple,
+            courseItems: []
+          };
+          if (i == 0) {
+            _t.setData({
+              courseStartDate: courseDate.date
+            });
+          } else {
+            _t.setData({
+              courseEndDate: courseDate.date
+            });
+          }
+        };
+        courseDate.courseItems.push(cs[i]);
+      };
+
+      courses.push(courseDate);
+      _t.setData({
+        courses: courses
+      });
+      //这里要分开先后赋值才能滚动到对应位置
+      _t.setData({
+        scrollToViewId: currentViewId
+      });
+
+    };
+
+    services.getCourseList({
+      data,
+      success
+    });
   },
 
   /**
@@ -213,12 +200,12 @@ create.Page(store, {
     var _t = this;
     var _td = _t.data;
     return {
-      title: _td.className+"课程表",
-      path: '/pages/course/list/list?classNumber='+ _td.classNumber 
-      + '&schoolTerm=' + _td.schoolTerm 
-      + '&courseDate=' + _td.courseDate 
-      + '&className=' + _td.className
-      + '&userId=' + _td.userId
+      title: _td.className + "课程表",
+      path: '/pages/course/list/list?classNumber=' + _td.classNumber +
+        '&schoolTerm=' + _td.schoolTerm +
+        '&courseDate=' + _td.courseDate +
+        '&className=' + _td.className +
+        '&userId=' + _td.userId
     };
 
   }

@@ -29,7 +29,7 @@ create.Component(store, {
         let schoolTerm = 1;
         let courseDate = _tsd.schoolTerm;
         if (_tsd.latestCourse.length > 0) {
-          classNumber = _tsd.latestCourse[0].classNumber;
+          classNumber = _tsd.latestCourse[0].classNumber || classNumber;
           schoolTerm = _tsd.latestCourse[0].schoolTerm;
           courseDate = _tsd.latestCourse[0].courseDate;
         };

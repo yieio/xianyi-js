@@ -89,6 +89,10 @@ const  getGenderName = gint=> {
   return result;
 }
 
+const decodeUnicodeString = str => {
+  return unescape(decodeURI(str).replace(/\\u/gi, '%u'));
+}
+
 module.exports = {
  formatTime: formatTime,
  getDateGap: getDateGap,
@@ -97,5 +101,6 @@ module.exports = {
  formatDayGap: formatDayGap,
  formatDateTime:formatDateTime,
  getGenderName:getGenderName,
- formatSimpleDate:formatSimpleDate
+ formatSimpleDate:formatSimpleDate,
+ decodeUnicodeString:decodeUnicodeString
 }

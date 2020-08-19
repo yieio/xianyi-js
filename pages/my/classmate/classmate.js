@@ -63,20 +63,6 @@ create.Page(store,{
     var _t = this;
     var _td = _t.store.data;
     let success = result=>{
-      if(result.statusCode == 401){
-        //wx.setStorageSync('userToken', null);
-        return;
-      }
-
-      if (result.data.type != 200) {
-        wx.showToast({
-          title: '获取同学信息失败',
-          icon: 'none',
-          duration: 2000
-        });
-        return;
-      }
-
       var cs = result.data.data.classmates;
       _td.classmates = cs;
       let sub = 3;
@@ -90,7 +76,7 @@ create.Page(store,{
         _td.subClassmates = cs;
       }
     }
-    services.getClassmates(success);
+    services.getClassmates({success});
   },
  
   /**
@@ -98,9 +84,10 @@ create.Page(store,{
    */
   onLoad: function (options) {
     let _t = this; 
+    let _tsd = _t.store.data;
     _t.initData();
 
-    if(_tsd.userToken){
+    if(_tsd.hasUserInfo && _tsd.userInfo.classNumber){
       _t.getClassmates();
     } 
   },

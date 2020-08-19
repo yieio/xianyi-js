@@ -1,20 +1,21 @@
 // pages/course/mycourse/mycourse.js
 import create from '../../../utils/create'
-import store from '../../../store/index' 
+import store from '../../../store/index'
 import config from '../../../config.js';
 import util from '../../../utils/util.js';
+import services from '../../../services/services';
 
 const app = getApp();
 /**
  * 选修课程页面
  */
-create.Page(store,{
-  use:['userInfo','hasUserInfo'],
+create.Page(store, {
+  use: ['userInfo', 'hasUserInfo'],
 
   /**
    * 页面的初始数据
    */
-  initData:function(options){ 
+  initData: function (options) {
 
     let _t = this;
     let _td = _t.data;
@@ -25,91 +26,67 @@ create.Page(store,{
           scrollViewHeight: res.windowHeight - 54
         });
       }
-    }); 
+    });
     _t.setData({
-      classNumber:options.classNumber||'',
-      myCourses:[],
-      isShowAddMyCourseDialog:false,
-      courseDate:'',
-      startTime:'',
-      endTime:'', 
-    }); 
+      classNumber: options.classNumber || '',
+      myCourses: [],
+      isShowAddMyCourseDialog: false,
+      courseDate: '',
+      startTime: '',
+      endTime: '',
+    });
   },
 
   /**
    * 选择器数据变更事件处理
    * @param  e 
    */
-  pickerDataChange:function(e){
+  pickerDataChange: function (e) {
     let id = e.currentTarget.id;
     let _t = this;
-    if(id=="courseDate"){
+    if (id == "courseDate") {
       _t.setData({
         courseDate: e.detail.value
-      }) 
-    }else if(id=="startTime"){
+      })
+    } else if (id == "startTime") {
       _t.setData({
         startTime: e.detail.value
-      }) 
-    }else if(id=="endTime"){
+      })
+    } else if (id == "endTime") {
       _t.setData({
         endTime: e.detail.value
-      }) 
+      })
     }
   },
 
   /**
    * 获取自选课信息
    */
-  getMyCourse:function(){
+  getMyCourse: function () {
     var _t = this;
     var _td = _t.data;
-    wx.request({
-      url: app.api.getMyCourse,
-      method: "GET",
-      header: {
-        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-      },
-      dataType: "json",
-      success: function(result) {
-        console.log(result);
-        if (result.data.type == 401) {
-          wx.showToast({
-            title: '您需要先登录',
-            icon: 'none',
-            duration: 2000
-          });
-         //跳转去首页
-         config.router.goIndex(_td.classNumber); 
-         return;
-        }
-        if (result.data.type != 200) {
-          wx.showToast({
-            title: '数据请求失败',
-            icon: 'none',
-            duration: 2000
-          });
-          return;
-        }
-
-        var cs = result.data.data.courses;
-        for(var i=0;i<cs.length;i++){
-          cs[i].startTime = util.formatDateTime(cs[i].startTime);
-          cs[i].endTime = util.formatDateTime(cs[i].endTime);
-        }
-        _t.setData({
-          myCourses: cs
-        });
+    let _tsd = _t.store.data;
+    let success = result => {
+      var cs = result.data.data.courses;
+      for (var i = 0; i < cs.length; i++) {
+        cs[i].startTime = util.formatDateTime(cs[i].startTime);
+        cs[i].endTime = util.formatDateTime(cs[i].endTime);
       }
-    });
+      _t.setData({
+        myCourses: cs
+      });
+    };
 
+    services.getMyCourse({
+      success
+    });
   },
 
   /**
    * 提交选修课程表单
    * @param {} e 
    */
-  courseFormSubmit:function(e){
+  courseFormSubmit: function (e) {
     var _t = this;
     var _td = _t.data;
     var formData = e.detail.value;
@@ -156,62 +133,56 @@ create.Page(store,{
       return false;
     };
 
-    formData.startTime = formData.courseDate+" "+formData.startTime;
-    formData.endTime = formData.courseDate+" "+formData.endTime;
+    formData.startTime = formData.courseDate + " " + formData.startTime;
+    formData.endTime = formData.courseDate + " " + formData.endTime;
 
-    //发起接口调用,保存用户信息
-    wx.request({
-      url: config.api.addMyCourse,
-      method: "POST",
-      header: {
-        'Authorization': 'Bearer ' + _tsd.userToken.accessToken
-      },
-      data: formData,
-      success: function (result) {
-        console.log(result);
-        if (result.data.type == 200) {
-          var _data = result.data.data;
-          //添加返回的数据到
-          var course = _data.course;
-          course.startTime = util.formatDateTime(course.startTime);
-          course.endTime = util.formatDateTime(course.endTime);
-          _td.myCourses.unshift(course);
-          _t.setData({
-            myCourses:_td.myCourses
-          });
+    let success = result => {
+      var _data = result.data.data;
+      //添加返回的数据到
+      var course = _data.course;
+      course.startTime = util.formatDateTime(course.startTime);
+      course.endTime = util.formatDateTime(course.endTime);
+      _td.myCourses.unshift(course);
+      _t.setData({
+        myCourses: _td.myCourses
+      });
 
-          //切换隐藏添加面板
-          _t.setData({isShowAddMyCourseDialog:false});
-          wx.showToast({
-            title: '保存成功',
-            icon: 'success',
-            duration: 2000
-          });
-        } else {
-          wx.showToast({
-            title: '保存失败',
-            icon: 'none',
-            duration: 2000
-          });
-        }
-      }
-    })
+      //切换隐藏添加面板
+      _t.setData({
+        isShowAddMyCourseDialog: false
+      });
+      wx.showToast({
+        title: '添加成功',
+        icon: 'success',
+        duration: 2000
+      });
+    };
+    let data = formData;
+    services.addMyCourse({
+      data,
+      success
+    });
+
   },
 
   /**
    * 处理页面事件点击
    * @param e 
    */
-  actionTap:function(e){
+  actionTap: function (e) {
     let _t = this;
     let _td = _t.data;
     let _tsd = _t.store.data;
     let key = e.currentTarget.dataset.key;
-    if(key == "showAddMyCourseDialog"){ 
-      _t.setData({isShowAddMyCourseDialog:true});
-    }else if(key=="hideAddMyCourseDialog"){
-      _t.setData({isShowAddMyCourseDialog:false});
-    }else if(key=="goMyCourseInfo"){
+    if (key == "showAddMyCourseDialog") {
+      _t.setData({
+        isShowAddMyCourseDialog: true
+      });
+    } else if (key == "hideAddMyCourseDialog") {
+      _t.setData({
+        isShowAddMyCourseDialog: false
+      });
+    } else if (key == "goMyCourseInfo") {
       let courseId = e.currentTarget.dataset.courseid;
       config.router.goMyCourseInfo(courseId);
     }
@@ -221,14 +192,15 @@ create.Page(store,{
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let _t = this; 
+    let _t = this;
     let _tsd = _t.store.data;
     _t.initData(options);
 
     //判断登录情况，已登录获取用户选修课程
     if (_tsd.userToken) {
-      _t.getMyCourse(); 
-    }else{
+      _t.getMyCourse();
+      _tsd.isMyCourseEdit = false;
+    } else {
       wx.showToast({
         title: '您需要先登录',
         icon: 'none',
@@ -251,6 +223,15 @@ create.Page(store,{
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    let _t = this;
+    let _tsd = _t.store.data;
+
+    if(_tsd.isMyCourseEdit){
+      if (_tsd.userToken) {
+        _t.getMyCourse();  
+        _tsd.isMyCourseEdit = false;      
+      }
+    }
 
   },
 

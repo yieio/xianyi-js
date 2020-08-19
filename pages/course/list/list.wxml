@@ -24,8 +24,9 @@
 					<view class="course-info">
 						<text class="course-date-tip">{{item.timeGap}} @{{item.classRoom}}</text>
 						<view class="course-name">
-							<text class="course-name-txt">{{item.name}}</text>
-							<text wx:if="{{item.isExam}}" class="bg-orange exam-tip">考试</text>
+							<text class="course-name-txt">{{item.name}}</text> 
+							<view wx:if="{{!item.classNumber}}" class="cu-tag round line-white margin-left-xs">选修</view>
+							<view wx:if="{{item.isExam}}" class="cu-tag round bg-orange margin-left-xs">考试</view> 
 						</view>
 						<view class="course-name-tip">{{item.teacher}}</view>
 					</view>

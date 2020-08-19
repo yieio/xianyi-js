@@ -45,6 +45,15 @@ var services = {
       return;
     }
 
+    if (resp.status == 404) {
+      wx.showToast({
+        title: '未找到相应服务',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+
   },
 
   /**
@@ -53,6 +62,7 @@ var services = {
    * @param {*} msg 
    */
   handleFailMessage: function (result, msg) {
+    console.log("handleFailMessage",result.data.type,msg);
     if (result.data.type != 200) {
       let title = result.data.content || msg;
       wx.showToast({
@@ -60,8 +70,10 @@ var services = {
         icon: 'none',
         duration: 2000
       });
-      return;
+      return false;
     }
+
+    return true;
   },
 
   /**
@@ -86,6 +98,145 @@ var services = {
   },
 
   /**
+   * 使用 wx.login 返回的code 进行后端登录
+   * @param {data,success} param0 
+   */
+  login:function({data,success}){
+    let _t = this;
+    const ins = axios.create();
+
+    ins.request({
+      url: config.api.login,
+      data: data,
+      method: 'POST'
+    }).then(resp => { 
+      if(_t.handleFailMessage(resp,"服务请求失败，重新进入小程序")){
+        success(resp);
+      } 
+    }).catch(({
+      request,
+      response
+    }) => { 
+      _t.handleCatchError(response,request);
+    });
+
+  },
+
+  /**
+   * 授权登录，保存用户信息到服务端
+   * @param {data,success} param0 
+   */
+  signup:function({data,success}){
+    let _t = this;
+    const ins = axios.create();
+
+    if (_t.checkUserTokenIsNull()) {
+      return;
+    } else {
+      _t.setAuthorization(ins);
+    }
+
+    ins.request({
+      url: config.api.signup,
+      data: data,
+      method: 'POST'
+    }).then(resp => { 
+      if(_t.handleFailMessage(resp,"")){
+        success(resp);
+      } 
+    }).catch(({
+      request,
+      response
+    }) => { 
+      _t.handleCatchError(response,request);
+    });
+
+  },
+
+  /**
+   * 刷新token 
+   * @param {*} token {grantType:'refresh_token',refreshToken:''}
+   * @param {*} success 
+   */
+  refreshToken: function (token, success) { 
+    let _t = this;
+    const ins = axios.create();
+    let data ={
+      grantType: 'refresh_token',
+      refreshToken: token
+    };
+
+    ins.request({
+      url: config.api.cancelAppointment,
+      data: data,
+      method: 'POST'
+    }).then(resp => {  
+      if(_t.handleFailMessage(resp,"")){
+        success(resp);
+      }
+    }).catch(({ 
+      response
+    }) => { 
+      _t.handleCatchError(response);
+    });
+  },
+
+  /**
+   * 获取最新课程
+   * @param {data,success} param0 
+   */
+  getLatestCourse:function({data,success,complete}){
+    let _t = this;
+    const ins = axios.create(); 
+    
+    ins.request({
+      url: config.api.latestCourse,
+      params: data,
+      method: 'GET'
+    }).then(resp => { 
+      complete(resp);
+      if(_t.handleFailMessage(resp,"")){
+        success(resp); 
+      } 
+    }).catch(({
+      request,
+      response
+    }) => { 
+      _t.handleCatchError(response,request);
+    });
+
+  },
+
+  /**
+   * 获取指定一学期的课程表
+   * @param {data,success} param0 
+   */
+  getCourseList:function({data,success}){
+    let _t = this;
+    const ins = axios.create(); 
+    
+    ins.request({
+      url: config.api.classCourse,
+      params: data,
+      method: 'GET'
+    }).then(resp => { 
+      //complete(resp);
+      if(_t.handleFailMessage(resp,"")){
+        success(resp); 
+      } 
+    }).catch(({
+      request,
+      response,
+      stack
+    }) => { 
+      console.log('捕获到了异常=>', request, response,stack);
+      _t.handleCatchError(response,request);
+    });
+
+
+  },
+
+  /**
    * 获取约饭数据
    */
   getAppointmentCount:function({data,success}){
@@ -103,8 +254,72 @@ var services = {
       params: data,
       method: 'GET'
     }).then(resp => { 
-      _t.handleFailMessage(resp,"");
-      success(resp);
+      if(_t.handleFailMessage(resp,"")){
+        success(resp);
+      } 
+    }).catch(({
+      request,
+      response
+    }) => { 
+      _t.handleCatchError(response,request);
+    });
+
+  },
+
+  /**
+   * 创建班级
+   * @param {data,success} param0 
+   */
+  createClassroom:function({data,success}){
+    let _t = this;
+    const ins = axios.create();
+
+    if (_t.checkUserTokenIsNull()) {
+      return;
+    } else {
+      _t.setAuthorization(ins);
+    }
+
+    ins.request({
+      url: config.api.createClassroom,
+      data: data,
+      method: 'POST'
+    }).then(resp => {  
+      if(_t.handleFailMessage(resp,"新建班级失败")){
+        success(resp);
+      } 
+    }).catch(({
+      request,
+      response
+    }) => { 
+      _t.handleCatchError(response,request);
+    });
+
+  },
+
+  /**
+   * 加入/更换班级
+   * @param {data,success} param0 
+   */
+  changeClassroom:function({data,success}){
+    let _t = this;
+    const ins = axios.create();
+
+    if (_t.checkUserTokenIsNull()) {
+      return;
+    } else {
+      _t.setAuthorization(ins);
+    }
+
+    ins.request({
+      url: config.api.changeClassroom,
+      params: data,
+      method: 'POST'
+    }).then(resp => { 
+      console.log("changeClassroom",resp)
+      if(_t.handleFailMessage(resp,"加入班级失败")){
+        success(resp);
+      } 
     }).catch(({
       request,
       response
@@ -135,10 +350,10 @@ var services = {
       url: config.api.deleteClassCourseDate,
       params: data,
       method: 'GET'
-    }).then(resp => {
-      console.log('请求结果数据', resp);
-      _t.handleFailMessage(resp,"删除课程日期失败");
-      success(resp);
+    }).then(resp => { 
+      if(_t.handleFailMessage(resp,"删除课程日期失败")){
+        success(resp);
+      }  
     }).catch(({
       request,
       response
@@ -170,10 +385,11 @@ var services = {
       url: config.api.updateClassCourse,
       data: data,
       method: 'POST'
-    }).then(resp => {
-      console.log('请求结果数据', resp);
-      _t.handleFailMessage(resp,"编辑课程失败");
-      success(resp);
+    }).then(resp => { 
+      if(_t.handleFailMessage(resp,"编辑课程失败")){
+        success(resp);
+      }  
+     
     }).catch(({
       request,
       response
@@ -205,10 +421,10 @@ var services = {
       url: config.api.addClassCourse,
       data: data,
       method: 'POST'
-    }).then(resp => {
-      console.log('请求结果数据', resp);
-      _t.handleFailMessage(resp, "添加班级课程失败"); 
-      success(resp);
+    }).then(resp => {  
+      if(_t.handleFailMessage(resp,"添加班级课程失败")){
+        success(resp);
+      } 
     }).catch(({
       request,
       response
@@ -216,6 +432,37 @@ var services = {
       console.log('捕获到了异常=>', request, response);
       _t.handleCatchError(response);
     });
+  },
+
+  /**
+   * 获取班级课程，data:{classNumber}
+   * @param {data,success} param0 
+   */
+  getClassCourse:function({data,success}){
+    let _t = this;
+    const ins = axios.create();
+
+    if (_t.checkUserTokenIsNull()) {
+      return;
+    } else {
+      _t.setAuthorization(ins);
+    }
+
+    ins.request({
+      url: config.api.getMyCourse,
+      params: data,
+      method: 'GET'
+    }).then(resp => {  
+      if(_t.handleFailMessage(resp,"获取课程失败")){
+        success(resp);
+      } 
+    }).catch(({
+      request,
+      response
+    }) => { 
+      _t.handleCatchError(response);
+    });
+
   },
 
   /**
@@ -236,10 +483,10 @@ var services = {
       url: config.api.getMyCourseDate,
       params: data,
       method: 'GET'
-    }).then(resp => {
-      console.log('请求结果数据', resp);
-      _t.handleFailMessage(resp, "获取课程数据失败"); 
-      success(resp);
+    }).then(resp => { 
+      if(_t.handleFailMessage(resp,"获取课程数据失败")){
+        success(resp);
+      } 
     }).catch(({
       request,
       response
@@ -251,23 +498,177 @@ var services = {
   },
 
   /**
-   * 刷新token 
-   * @param {*} token {grantType:'refresh_token',refreshToken:''}
-   * @param {*} success 
+   * 获取我的自选课程
+   * @param {data,success} param0 
    */
-  refreshToken: function (token, success) {
-    wx.request({
-      url: config.api.refreshToken,
-      method: "POST",
-      data: {
-        grantType: 'refresh_token',
-        refreshToken: token
-      },
-      dataType: "json",
-      success: success
-    })
+  getMyCourse:function({data,success}){
+    let _t = this;
+    _t.getClassCourse({data,success});
+
   },
 
+  /**
+   * 添加自选课程
+   * @param {data,success} param0 
+   */
+  addMyCourse: function ({
+    data,
+    success
+  }) {
+    let _t = this;
+    const ins = axios.create();
+
+    if (_t.checkUserTokenIsNull()) {
+      return;
+    } else {
+      _t.setAuthorization(ins);
+    }
+
+    ins.request({
+      url: config.api.addMyCourse,
+      data: data,
+      method: 'POST'
+    }).then(resp => {  
+      if(_t.handleFailMessage(resp,"添加课程失败")){
+        success(resp);
+      } 
+    }).catch(({
+      request,
+      response
+    }) => {
+      console.log('捕获到了异常=>', request, response);
+      _t.handleCatchError(response);
+    });
+  },
+
+  /**
+   * 删除自选课程上课时间
+   * @param {data,success} param0 
+   */
+  deleteMyCourseDate:function({data,success}){
+    let _t = this;
+    const ins = axios.create();
+
+    if (_t.checkUserTokenIsNull()) {
+      return;
+    } else {
+      _t.setAuthorization(ins);
+    }
+
+    ins.request({
+      url: config.api.deleteMyCourseDate,
+      params: data,
+      method: 'GET'
+    }).then(resp => { 
+      if(_t.handleFailMessage(resp,"删除课程日期失败")){
+        success(resp);
+      }  
+    }).catch(({
+      request,
+      response
+    }) => {
+      console.log('捕获到了异常=>', request, response);
+      _t.handleCatchError(response);
+    });
+
+  },
+
+  /**
+   * 更新自选课信息
+   * @param {data,success} param0 
+   */
+  updateMyCourse:function({data,success}){
+    let _t = this;
+    const ins = axios.create();
+
+    if (_t.checkUserTokenIsNull()) {
+      return;
+    } else {
+      _t.setAuthorization(ins);
+    }
+
+    ins.request({
+      url: config.api.updateMyCourse,
+      data: data,
+      method: 'POST'
+    }).then(resp => { 
+      if(_t.handleFailMessage(resp,"编辑课程失败")){
+        success(resp);
+      }  
+     
+    }).catch(({
+      request,
+      response
+    }) => {
+      console.log('捕获到了异常=>', request, response);
+      _t.handleCatchError(response);
+    }); 
+  },
+
+  /**
+   * 发起约饭
+   * @param {data,success} param0 
+   */
+  makeAppointment:function({data,success}){
+    let _t = this;
+    const ins = axios.create();
+
+    if (_t.checkUserTokenIsNull()) {
+      return;
+    } else {
+      _t.setAuthorization(ins);
+    }
+
+    ins.request({
+      url: config.api.makeAppointment,
+      data: data,
+      method: 'POST'
+    }).then(resp => { 
+      if(_t.handleFailMessage(resp,"约饭失败")){
+        success(resp);
+      } 
+    }).catch(({
+      request,
+      response
+    }) => {
+      console.log('捕获到了异常=>', request, response);
+      _t.handleCatchError(response);
+    });
+
+  },
+
+  /**
+   * 获取约饭列表
+   * @param {data,success} param0 
+   */
+  getAppointments:function({data,success}){
+    let _t = this;
+    const ins = axios.create();
+
+    if (_t.checkUserTokenIsNull()) {
+      return;
+    } else {
+      _t.setAuthorization(ins);
+    }
+
+    ins.request({
+      url: config.api.getAppointments,
+      params: data,
+      method: 'GET'
+    }).then(resp => { 
+      if(_t.handleFailMessage(resp,"获取约饭数据失败")){
+        success(resp);
+      } 
+    }).catch(({
+      request,
+      response
+    }) => {
+      console.log('捕获到了异常=>', request, response);
+      _t.handleCatchError(response);
+    });
+
+  },
+ 
   /**
    * 取消约饭
    * @param {data, success} param0 
@@ -286,9 +687,10 @@ var services = {
       url: config.api.cancelAppointment,
       params: data,
       method: 'POST'
-    }).then(resp => { 
-      _t.handleFailMessage(resp, "取消约饭失败"); 
-      success(resp);
+    }).then(resp => {  
+      if(_t.handleFailMessage(resp,"取消约饭失败")){
+        success(resp);
+      } 
     }).catch(({ 
       response
     }) => { 
@@ -314,9 +716,69 @@ var services = {
       url: config.api.finishAppointment,
       params: data,
       method: 'POST'
-    }).then(resp => { 
-      _t.handleFailMessage(resp, "结束约饭失败"); 
-      success(resp);
+    }).then(resp => {  
+      if(_t.handleFailMessage(resp,"结束约饭失败")){
+        success(resp);
+      }
+    }).catch(({ 
+      response
+    }) => { 
+      _t.handleCatchError(response);
+    });
+  },
+
+  /**
+   * 拒绝约饭
+   * @param {data,success} param0 
+   */
+  rejectAppointment:function({data,success}){
+    let _t = this;
+    const ins = axios.create();
+
+    if (_t.checkUserTokenIsNull()) {
+      return;
+    } else {
+      _t.setAuthorization(ins);
+    }
+
+    ins.request({
+      url: config.api.rejectAppointment,
+      params: data,
+      method: 'POST'
+    }).then(resp => {  
+      if(_t.handleFailMessage(resp,"拒绝约饭失败")){
+        success(resp);
+      }
+    }).catch(({ 
+      response
+    }) => { 
+      _t.handleCatchError(response);
+    });
+
+  },
+
+  /**
+   * 接受约饭
+   * @param {data,success} param0 
+   */
+  acceptAppointment:function({data,success}){
+    let _t = this;
+    const ins = axios.create();
+
+    if (_t.checkUserTokenIsNull()) {
+      return;
+    } else {
+      _t.setAuthorization(ins);
+    }
+
+    ins.request({
+      url: config.api.acceptAppointment,
+      params: data,
+      method: 'POST'
+    }).then(resp => {  
+      if(_t.handleFailMessage(resp,"接受约饭失败")){
+        success(resp);
+      }
     }).catch(({ 
       response
     }) => { 
@@ -391,9 +853,10 @@ var services = {
       url: config.api.classmates,
       params: data,
       method: 'GET'
-    }).then(resp => { 
-      _t.handleFailMessage(resp, "获取班级同学失败"); 
-      success(resp);
+    }).then(resp => {  
+      if(_t.handleFailMessage(resp,"获取班级同学失败")){
+        success(resp);
+      }
     }).catch(({ 
       response,request
     }) => { 
@@ -402,17 +865,86 @@ var services = {
   },
 
   /**
+   * 获取自己/同学资料，data:{userId:0}
+   * @param {data,success} param0 
+   */
+  getProfile:function({data,success}){
+    let _t = this;
+    const ins = axios.create();
+
+    if (_t.checkUserTokenIsNull()) {
+      return;
+    } else {
+      _t.setAuthorization(ins);
+    }
+
+    ins.request({
+      url: config.api.classmateProfile,
+      params: data,
+      method: 'GET'
+    }).then(resp => {  
+      if(_t.handleFailMessage(resp,"获取同学信息失败")){
+        success(resp);
+      }
+    }).catch(({ 
+      response,request
+    }) => { 
+      _t.handleCatchError(response,request);
+    });
+
+  },
+
+  /**
+   * 编辑自己的资料，data:{}
+   * @param {data,success} param0 
+   */
+  editProfile:function({data,success}){
+    let _t = this;
+    const ins = axios.create();
+
+    if (_t.checkUserTokenIsNull()) {
+      return;
+    } else {
+      _t.setAuthorization(ins);
+    }
+
+    ins.request({
+      url: config.api.editProfile,
+      data: data,
+      method: 'POST'
+    }).then(resp => {  
+      if(_t.handleFailMessage(resp,"信息保存失败")){
+        success(resp);
+      }
+    }).catch(({ 
+      response
+    }) => { 
+      _t.handleCatchError(response);
+    });
+
+  },
+
+  /**
    * 获取组织列表
    * @param {*} classNumber 
    * @param {Int 是否获取同级全部班级} isAll 
    * @param {*} success 
    */
-  getOrganizations: function (classNumber, isAll, success) {
-    wx.request({
-      url: config.api.organizations + "?classNumber=" + classNumber + "&isAll=" + isAll,
-      method: "GET",
-      dataType: "json",
-      success: success
+  getOrganizations: function ({data, success}) { 
+    let _t = this;
+    const ins = axios.create(); 
+    ins.request({
+      url: config.api.organizations,
+      params: data,
+      method: 'GET'
+    }).then(resp => {  
+      if(_t.handleFailMessage(resp,"")){
+        success(resp);
+      }
+    }).catch(({ 
+      response,request
+    }) => { 
+      _t.handleCatchError(response,request);
     });
   },
 }

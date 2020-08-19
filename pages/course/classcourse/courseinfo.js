@@ -184,6 +184,8 @@ create.Page(store, {
         myCourseDates: _td.myCourseDates,
         isShowAddMyCourseDateDialog: false
       });
+
+      _tsd.isClassCourseEdit = true;
       wx.showToast({
         title: '添加课程成功',
         icon: 'success',
@@ -204,17 +206,19 @@ create.Page(store, {
 
     var _t = this;
     var _td = _t.data;
+    let _tsd = _t.store.dataset;
 
     let success = result => { 
       var courseId = result.data.data.id;
+      _tsd.isClassCourseEdit = true;
       for (var i = 0; i < _td.myCourseDates.length; i++) {
         var item = _td.myCourseDates[i];
         if (item.id == courseId) {
           _td.myCourseDates.splice(i, 1);
           _t.setData({
             myCourseDates: _td.myCourseDates
-          })
-        }
+          }) 
+        } 
       }
 
     }
@@ -282,6 +286,8 @@ create.Page(store, {
         myCourseInfo: _td.myCourseInfo,
         isShowEditMyCourseDialog: false
       });
+
+      _tsd.isClassCourseEdit = true;
 
     }
     services.updateClassCourse({

@@ -50,14 +50,16 @@
 				<view class="padding" style="text-align:left;">
 					<view class="cu-form-group">
 						<view class="title">班级编号</view>
-						<input id="classNumber" name="classNumber" type="number" placeholder="输入班级编号" value="{{classValue}}"></input>
+						<input id="classNumber" name="classNumber" placeholder="输入班级编号" value="{{classValue}}"></input>
 					</view>
-					<view>
-						<text class="text-gray text-df" style="line-height: 80rpx;padding: 1rpx 30rpx;">可选班集体：</text>
-					</view>
-					<view style="text-align:center;" class="bg-white padding-top-sm padding-bottom-lg">
-						<view class="cu-tag round margin-top-sm padding {{classIndex==index?'bg-green':''}}" wx:for="{{classArrary}}" wx:for-item="cl" wx:key="index" data-value="{{cl.classNumber}}" data-key="selectClassItem" data-index="{{index}}" bindtap="actionTap">{{cl.classNumber}}-{{cl.name}}</view>
-					</view>
+					<block wx:if="{{classArrary.length>0}}">
+						<view>
+							<text class="text-gray text-df" style="line-height: 80rpx;padding: 1rpx 30rpx;">可选班集体：</text>
+						</view>
+						<view style="text-align:center;" class="bg-white padding-top-sm padding-bottom-lg">
+							<view class="cu-tag round margin-top-sm padding {{classIndex==index?'bg-green':''}}" wx:for="{{classArrary}}" wx:for-item="cl" wx:key="index" data-value="{{cl.classNumber}}" data-key="selectClassItem" data-index="{{index}}" bindtap="actionTap">{{cl.classNumber}}-{{cl.name}}</view>
+						</view>
+					</block>
 				</view>
 			</view>
 		</form>
@@ -78,11 +80,11 @@
 
 				</view>
 
-				<view class="padding" style="text-align:left;"> 
+				<view class="padding" style="text-align:left;">
 					<view class="cu-form-group">
 						<view class="title">班级名称</view>
 						<input id="name" name="name" placeholder="输入班级名称"></input>
-					</view> 
+					</view>
 					<view class="cu-form-group">
 						<view class="title">入学年份</view>
 						<input id="startYear" name="startYear" type="number" placeholder="输入入学年份"></input>
