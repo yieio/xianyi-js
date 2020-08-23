@@ -39,7 +39,6 @@ create.Page(store, {
       scrollToViewId: "date5",
       classNumber: options.classNumber,
       className: options.className || '',
-      userId: options.userId || _tsd.userInfo.userId || 0, //传userid将获取用户的选修课
       schoolTerm: options.schoolTerm,
       courseDate: options.courseDate,
       courseStartDate: '',
@@ -47,6 +46,16 @@ create.Page(store, {
       courses: [],
       isShowNoneData: false,
     });
+
+    if(options.userId){
+      _t.setData({
+        userId: options.userId
+      });
+    }else if(_tsd.hasUserInfo){
+      _t.setData({
+        userId: _tsd.userInfo.userId
+      });
+    }
   },
 
   /**

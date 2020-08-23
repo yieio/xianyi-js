@@ -205,7 +205,7 @@ create.Page(store, {
     let _t = this;
     let _tsd = _t.store.data;
     _t.initData(options);
-    if (_tsd.hasUserInfo && _tsd.userInfo.classNumber) {
+    if (_tsd.hasUserInfo) {
       _t.getOrganizations();
     }
   },

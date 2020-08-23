@@ -88,7 +88,13 @@ create.Component(store, {
     hasClassroom: function () {
       let _t = this;
       let _tsd = _t.store.data;
-      let result = !_tsd.userInfo.classNumber;
+      let result = true;
+      if(_tsd.userInfo)
+      {
+        if( _tsd.userInfo.classNumber){
+          result = false;
+        }
+      }
       _tsd.isShowAddClassDialog = result;
       return !result;
     },
@@ -188,8 +194,11 @@ create.Component(store, {
     attached: function () {
       let _t = this;
       let _tsd = _t.store.data;
-      if (_tsd.hasUserInfo && !_tsd.userInfo.classNumber) {
-        _tsd.isShowAddClassDialog = true;
+      if (_tsd.hasUserInfo && _tsd.userInfo) {
+        if(!_tsd.userInfo.classNumber){
+          _tsd.isShowAddClassDialog = true;
+        }
+        
       }
     },
     detached: function () {

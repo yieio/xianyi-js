@@ -14,8 +14,14 @@
 					<text class="text-grey text-sm">{{indexClassInfo.classNumber}}</text>
 				</view>
 			</view>
+			<view wx:if="{{isShowLoginMenu&&canIUse}}" class="cu-item arrow" hover-class="tap-hover">
+					<button class="cu-btn content" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="getUserInfo">
+			<text class="cuIcon-group_fill text-cyan"></text>
+			<text class="text-grey">点击加入{{indexClassInfo.className}}</text>
+		</button>
+			</view>
 
-			<view class="cu-item arrow" hover-class="tap-hover">
+			<view wx:else class="cu-item arrow" hover-class="tap-hover">
 				<button class="cu-btn content" open-type="share">
 					<text class="cuIcon-share text-cyan"></text>
 					<text class="text-grey">分享给同学</text>

@@ -28,6 +28,7 @@ create.Page(store, {
       isShowSwitchClassDialog: false,
       classArrary: [],
       classIndex: -1,
+      isShowLoginMenu:false
     });
 
   },
@@ -104,7 +105,10 @@ create.Page(store, {
         }
       }
     };
-    let classNumber = _tsd.userInfo.classNumber || _tsd.indexClassInfo.classNumber;
+    let classNumber = _tsd.indexClassInfo.classNumber;
+    if(_tsd.hasUserInfo&&_tsd.userInfo.classNumber){
+      classNumber = _tsd.userInfo.classNumber;
+    }
     let data = {
       classNumber,
       isAll: 1
@@ -221,6 +225,10 @@ create.Page(store, {
                 title: '需要您登录加入班集体',
                 icon: 'none'
               })
+            }else{
+              //邀请加入该班级，显示登录menu
+              _t.setData({isShowLoginMenu:true});
+
             }
           }
         };
@@ -233,6 +241,53 @@ create.Page(store, {
     })
 
   },
+
+  /**
+     * 授权获取用户信息，提交到服务端保存
+     * @param  e 
+     */
+    getUserInfo: function (e) {
+      let _t = this;
+      let _tsd = _t.store.data;
+      //拒绝授权的时候
+      if (!e.detail.userInfo) {
+        return;
+      }
+
+      //获取到了用户信息，提交到服务器，这里可能有之前登录失败的情况需要处理
+      if (!_tsd.userToken) {
+        //弹窗让用户重试
+        wx.showToast({
+          title: '服务请求失败，请重新进入小程序',
+          icon: 'none',
+          duration: 2000
+        });
+        return;
+      } 
+
+      let userInfo = e.detail.userInfo;
+      userInfo.genderName = util.getGenderName(userInfo.gender);
+      //从入口进来带了classNumber 参数，自动加入该班级
+      userInfo.classNumber = _tsd.indexClassInfo.classNumber || '';
+      userInfo.className =  _tsd.indexClassInfo.className || '';
+
+      let success = function (result) {
+          var _data = result.data.data;
+          let ui = _data.userInfo;
+          ui.genderName = util.getGenderName(_data.userInfo.gender);
+
+          _tsd.userInfo = ui;
+          _tsd.hasUserInfo = true;
+
+          if(_tsd.userInfo.classNumber){
+            _t.setData({
+              isShowLoginMenu:false
+            })
+          }
+      };
+
+      services.signup({data:userInfo,success}); 
+    },
 
 
   /**
@@ -345,7 +400,7 @@ create.Page(store, {
       if (!classNumber && _tsd.userInfo.classNumber) {
         classNumber = _tsd.userInfo.classNumber;
       }
-      userId = _tsd.userInfo.userId || 0; 
+      userId = _tsd.userInfo.userId || userId; 
     }
 
     if (classNumber || userId) {
@@ -367,8 +422,12 @@ create.Page(store, {
     _t.getWxSetting();
 
     //首次登录后，刷新最近课程
-    let classNumber =  _tsd.userInfo.classNumber|| _tsd.indexClassInfo.classNumber;
-    let userId = _tsd.userInfo.userId || 0;
+    let classNumber = _tsd.indexClassInfo.classNumber;    
+    let userId = 0;
+    if(_tsd.hasUserInfo){
+      classNumber =  _tsd.userInfo.classNumber||classNumber;
+      userId = _tsd.userInfo.userId||userId;
+    }
     if (classNumber || userId) {
       _t.getLatestCourse(classNumber, userId);
     } 
@@ -381,8 +440,14 @@ create.Page(store, {
     let _t = this;
     let _tsd = _t.store.data;
     let _td = _t.data;
-    let classNumber = _tsd.indexClassInfo.classNumber || _tsd.userInfo.classNumber || "";
-    let className = _tsd.indexClassInfo.className || _tsd.userInfo.className || "";
+    let classNumber = _tsd.indexClassInfo.classNumber;
+    let className = _tsd.indexClassInfo.className;
+
+    if(_tsd.hasUserInfo){
+      classNumber = classNumber || _tsd.userInfo.classNumber || "";
+      className = className|| _tsd.userInfo.className|| "";
+    }
+
     let title = className + '最近课程';
 
     return {
@@ -398,8 +463,13 @@ create.Page(store, {
   onShareTimeline: function () {
     let _t = this;
     let _tsd = _t.store.data;
-    let classNumber = _tsd.indexClassInfo.classNumber || _tsd.userInfo.classNumber;
-    let className = _tsd.indexClassInfo.className || _tsd.userInfo.className;
+    let classNumber = _tsd.indexClassInfo.classNumber ;
+    let className = _tsd.indexClassInfo.className ;
+
+    if(_tsd.hasUserInfo){
+      classNumber = classNumber || _tsd.userInfo.classNumber||"";
+      className = className|| _tsd.userInfo.className||"";
+    }
 
     return {
       title: className + '最近课程',
