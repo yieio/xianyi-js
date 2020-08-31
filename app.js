@@ -31,12 +31,13 @@ App({
       }
     }
 
+    //获取之前进入使用过的indexClassInfo
+    _tsd.indexClassInfo = wx.getStorageSync(_tsd.indexClassInfoKey) || {classNumber:'',className:''}; 
+    console.log(_tsd.indexClassInfo);
+
   },
 
   globalData: {
-    userInfo: null,
-    userToken: null,
-    userTokenKey:"userToken",
   },
 
 

@@ -15,6 +15,7 @@ create.Page(store, {
     'showNoneCourseTip',
     'showCourseLoadding',
     'indexClassInfo',
+    'isShowGoLoginTipDialog',
   ],
 
   /**
@@ -214,13 +215,15 @@ create.Page(store, {
             _tsd.hasUserInfo = true; //这个值改变后，监控会自动获取数去做后续请求 
           } else {
             if (!_tsd.indexClassInfo.classNumber) {
-              wx.switchTab({
-                url: '/pages/my/home/home'
-              })
-              wx.showToast({
-                title: '需要您登录加入班集体',
-                icon: 'none'
-              })
+              // wx.switchTab({
+              //   url: '/pages/my/home/home'
+              // })
+              // wx.showToast({
+              //   title: '需要您登录加入班集体',
+              //   icon: 'none'
+              // })
+
+              _tsd.isShowGoLoginTipDialog = true;
             }
           }
         };
@@ -272,6 +275,7 @@ create.Page(store, {
     let _t = this;
     let _tsd = _t.store.data;
     if (e.hasUserInfo) {
+      _tsd.isShowGoLoginTipDialog = false;
       //首次登录后，刷新最近课程
       let classNumber = _tsd.userInfo.classNumber || _tsd.indexClassInfo.classNumber;
       _t.getLatestCourse(classNumber, _tsd.userInfo.userId);
@@ -296,6 +300,9 @@ create.Page(store, {
         if (_tsd.userInfo.className) {
           _tsd.indexClassInfo.className = _tsd.userInfo.className;
         }
+      } else if (keys[i].indexOf("indexClassInfo") == 0) {
+        //记录用户入口参数
+        wx.setStorageSync(_tsd.indexClassInfoKey, _tsd.indexClassInfo); 
       }
     }
   },
@@ -310,6 +317,7 @@ create.Page(store, {
     if (options.className) {
       _tsd.indexClassInfo.className = util.decodeUnicodeString(options.className);
     }
+
 
 
     //监控用户数据的变化
@@ -345,7 +353,7 @@ create.Page(store, {
       if (!classNumber && _tsd.userInfo.classNumber) {
         classNumber = _tsd.userInfo.classNumber;
       }
-      userId = _tsd.userInfo.userId || 0; 
+      userId = _tsd.userInfo.userId || 0;
     }
 
     if (classNumber || userId) {
@@ -367,11 +375,11 @@ create.Page(store, {
     _t.getWxSetting();
 
     //首次登录后，刷新最近课程
-    let classNumber =  _tsd.userInfo.classNumber|| _tsd.indexClassInfo.classNumber;
+    let classNumber = _tsd.userInfo.classNumber || _tsd.indexClassInfo.classNumber;
     let userId = _tsd.userInfo.userId || 0;
     if (classNumber || userId) {
       _t.getLatestCourse(classNumber, userId);
-    } 
+    }
   },
 
   /**
