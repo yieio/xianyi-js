@@ -52,16 +52,18 @@
 
 	<!--登录授权弹窗开始-->
 
-	<view class="cu-modal bottom-modal {{isShowGoLoginTipDialog?'show':''}}" bindtap="actionTap" data-key="hideGoLoginTipDialog">
+	<view class="cu-modal bottom-modal {{isShowGoLoginTipDialog?'show':''}}">
 	<view class="cu-dialog">
 		<view class="cu-bar bg-white justify-end">
-			<view class="content">需登录加入班级</view>
+			<view class="content">需登录加入班集体</view>
 		</view>
 		<view class="padding-xl">
-			你还未登录和加入班集体，登录后也可以创建自己的班级，快去登录吧~，
+			你还未登录和加入班集体，登录后也可以创建自己的班集体，快去登录吧~
 		</view>
-		<view class="cu-bar bg-white"> 
-			<view class="action margin-0 flex-sub  text-green" bindtap="actionTap" data-key="goClassroom">授权登录</view>
+		<view class="cu-bar bg-white">  
+			<button class="cu-btn bg-white text-green"  style="text-align:center;width:100%" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="getUserInfo"> 
+			授权登录
+		</button> 
 		</view>
 	</view>
 </view>

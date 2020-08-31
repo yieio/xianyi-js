@@ -237,6 +237,52 @@ create.Page(store, {
 
   },
 
+  /**
+     * 授权获取用户信息，提交到服务端保存
+     * @param  e 
+     */
+    getUserInfo: function (e) {
+      let _t = this;
+      let _tsd = _t.store.data;
+      //拒绝授权的时候
+      if (!e.detail.userInfo) {
+        return;
+      }
+
+      //获取到了用户信息，提交到服务器，这里可能有之前登录失败的情况需要处理
+      if (!_tsd.userToken) {
+        //弹窗让用户重试
+        wx.showToast({
+          title: '服务请求失败，请重新进入小程序',
+          icon: 'none',
+          duration: 2000
+        });
+        return;
+      } 
+
+      let userInfo = e.detail.userInfo;
+      userInfo.genderName = util.getGenderName(userInfo.gender);
+      //从入口进来带了classNumber 参数，自动加入该班级
+      userInfo.classNumber = _tsd.indexClassInfo.classNumber || '';
+      userInfo.className =  _tsd.indexClassInfo.className || '';
+
+      let success = function (result) {
+        console.log(result); 
+          var _data = result.data.data;
+          let ui = _data.userInfo;
+          ui.genderName = util.getGenderName(_data.userInfo.gender);
+
+          _tsd.userInfo = ui;
+          _tsd.hasUserInfo = true;
+
+          //检查班级设置情况，没有班级弹窗引导去设置
+          //_t.hasClassroom();
+ 
+      };
+
+      services.signup({data:userInfo,success}); 
+    },
+
 
   /**
    * 判断用户是否授权过
