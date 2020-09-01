@@ -8,17 +8,20 @@ export default {
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
 
     indexClassInfo:{classNumber:'',className:''}, 
+    indexClassInfoKey:'indexClassInfo',
 
     courseDate: {hasCourse: false},
     latestCourse: [],
     showNoneCourseTip:false,//最近没有课程
-    showCourseLoadding:true,//最近没有课程
+    showCourseLoadding:true,//最近课程loadding
     schoolTerm:1,
     
     isShowAddClassDialog:false,
     isShowCreateClassDialog:false,
     isShowChangeClassDialog:false,
     isShowEditProfileDialog:false,
+    isShowGoLoginTipDialog:false,//首页，引导登录和加入班级
+
 
     classmates:[],
     subClassmates:[],

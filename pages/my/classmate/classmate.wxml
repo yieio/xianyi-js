@@ -19,7 +19,7 @@
 					</view>
 				</block>
 				<block wx:else>
-					<view id="{{cmate.userId}}" bindtap="actionTap" key="goProfile" class="classmate-item-wrap {{isShowAllClassmate?'':'hide'}}">
+					<view id="{{cmate.userId}}" bindtap="actionTap" data-key="goProfile" class="classmate-item-wrap {{isShowAllClassmate?'':'hide'}}">
 						<view class="classmate-item-header">
 							<image src='{{cmate.avatarUrl}}'></image>
 						</view>
