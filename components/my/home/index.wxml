@@ -112,7 +112,7 @@
 
 <!--弹窗-->
 <!--加入班级弹窗-->
-<view class="cu-modal bottom-modal {{isShowAddClassDialog?'show':''}}" bindtap="actionTap" data-key="hideModal">
+<!-- <view class="cu-modal bottom-modal {{isShowAddClassDialog?'show':''}}" bindtap="actionTap" data-key="hideModal">
 	<view class="cu-dialog">
 		<view class="cu-bar bg-white justify-end">
 			<view class="content">加入班集体</view>
@@ -125,7 +125,8 @@
 			<view class="action margin-0 flex-sub  text-green" bindtap="actionTap" data-key="goClassroom">去加入</view>
 		</view>
 	</view>
-</view>
+</view> -->
+<addclass-dialog />
 <!--加入班级弹窗结束-->
 
 <!--授权注册失败重试弹窗-->

@@ -16,6 +16,7 @@ create.Page(store, {
     'showCourseLoadding',
     'indexClassInfo',
     'isShowGoLoginTipDialog',
+    'isShowAddClassDialog',
   ],
 
   /**
@@ -282,6 +283,8 @@ create.Page(store, {
             _t.setData({
               isShowLoginMenu:false
             })
+          }else{
+            _tsd.isShowAddClassDialog = true;
           }
       };
 

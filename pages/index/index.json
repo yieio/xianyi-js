@@ -1,7 +1,8 @@
 {
   "usingComponents": { 
     "latest-course": "/components/course/home/index", 
-    "add-tips": "/components/add-tips/index"
+    "add-tips": "/components/add-tips/index",
+    "addclass-dialog": "/components/addClassDialog/addClassDialog"
   },
   "enablePullDownRefresh": true
 }

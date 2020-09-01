@@ -1,0 +1,17 @@
+<!--components/addClassDialog/addClassDialog.wxml-->
+<!--加入班级弹窗-->
+<view class="cu-modal bottom-modal {{isShowAddClassDialog?'show':''}}" bindtap="actionTap" data-key="hideModal">
+	<view class="cu-dialog">
+		<view class="cu-bar bg-white justify-end">
+			<view class="content">加入班集体</view>
+		</view>
+		<view class="padding-xl">
+			你还未加入班集体，快去加入吧~
+		</view>
+		<view class="cu-bar bg-white">
+			<view class="action margin-0 flex-sub solid-right" bindtap="actionTap" data-key="hideModal">取消</view>
+			<view class="action margin-0 flex-sub  text-green" bindtap="actionTap" data-key="goClassroom">去加入</view>
+		</view>
+	</view>
+</view>
+<!--加入班级弹窗结束-->
