@@ -15,28 +15,31 @@
 	</view>
 	<!--数据加载占位效果结束-->
 
-	<view wx:if="{{courseDate.hasCourse}}" class="card-content nextcourse-content">
-		<view class="course-date-wrap">
-			<text class="course-date">{{courseDate.date}}</text>
-			<text class="course-date-tip"> {{courseDate.gap}} {{courseDate.week}}</text>
-		</view>
-
-		<view class="course-info-wrap">
-			<view wx:for="{{latestCourse}}" wx:for-index="idx" wx:key="unique" class="course-info">
-				<text class="course-date-tip">{{item.timeGap}} @{{item.classRoom}}</text>
-				<view class="course-name">
-					<text class="course-name-txt">{{item.name}}</text>
-					<view wx:if="{{item.isExam}}" class="cu-tag round bg-orange margin-left-xs">考试</view> 
-				</view>
-				<view class="course-name-tip">{{item.teacher}}</view>
+	<view wx:if="{{courseDates.length>0}}" class="card-content nextcourse-content">
+		<block wx:for="{{courseDates}}" wx:for-index="idx" wx:key="unique" wx:for-item="dateItem">
+			<view class="course-date-wrap">
+				<text class="course-date">{{dateItem.date}}</text>
+				<text class="course-date-tip"> {{dateItem.gap}} {{dateItem.week}}</text>
 			</view>
-		</view>
+
+			<view class="course-info-wrap">
+				<block wx:for="{{latestCourse}}" wx:for-index="idx" wx:key="unique" wx:for-item="item">
+					<view wx:if="{{item.courseDate==dateItem.courseDate}}" class="course-info">
+						<text class="course-date-tip">{{item.timeGap}} @{{item.classRoom}}</text>
+						<view class="course-name">
+							<text class="course-name-txt">{{item.name}}</text>
+							<view wx:if="{{item.isExam}}" class="cu-tag round bg-orange margin-left-xs">考试</view>
+						</view>
+						<view class="course-name-tip">{{item.teacher}}</view>
+					</view>
+				</block>
+
+			</view>
+		</block>
+
 	</view>
 
-	<view wx:if="{{showNoneCourseTip}}" class="card-content card-content-tip" >最近没有课程~~</view>
-
-	
-
+	<view wx:if="{{showNoneCourseTip}}" class="card-content card-content-tip" style="min-height:300rpx;">最近没有课程~~</view>
 
 	<view class="cu-bar bg-white solid-top" hover-class="tap-hover" bindtap="actionTap" data-key="goCourseList">
 		<view class="action margin-0 flex-sub">查看课程表</view>

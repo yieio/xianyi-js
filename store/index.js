@@ -11,7 +11,8 @@ export default {
     indexClassInfoKey:'indexClassInfo',
 
     courseDate: {hasCourse: false},
-    latestCourse: [],
+    courseDates:[],//最近课程日期
+    latestCourse: [],//最近课程名称
     showNoneCourseTip:false,//最近没有课程
     showCourseLoadding:true,//最近课程loadding
     schoolTerm:1,

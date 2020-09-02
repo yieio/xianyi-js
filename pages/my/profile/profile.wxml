@@ -12,8 +12,8 @@
 			<view class="my-label-wrap">
 				<view wx:if="{{userInfo.realName}}" class="cu-tag round bg-orange light margin-top-xs">{{userInfo.realName}}</view>
 				<view class="cu-tag round bg-olive light margin-top-xs">{{userInfo.genderName}}</view>
-				<view class="cu-tag round bg-blue light margin-top-xs">{{userInfo.province}}{{userInfo.city}}</view>
-				<view class="cu-tag round bg-purple light margin-top-xs">{{userInfo.className||userInfo.classNumber}}</view>
+				<view class="cu-tag round bg-blue light margin-top-xs">{{userInfo.province||"未知省"}}{{userInfo.city||"未知市"}}</view>
+				<view class="cu-tag round bg-purple light margin-top-xs">{{userInfo.className||userInfo.classNumber||"未加入"}}</view>
 				<view class="cu-tag round bg-cyan light margin-top-xs">约饭{{userInfo.dateCount}}次</view>
 				<view class="cu-tag round bg-cyan light margin-top-xs">被约{{userInfo.callDateCount}}次</view>
 			</view>
@@ -21,15 +21,15 @@
 
 		<text class="card-title bl-purple">我是谁？</text>
 
-		<view class="card-content card-content-tip">{{userInfo.myIntro}}</view>
+		<view class="card-content card-content-tip">{{userInfo.myIntro||"未填写"}}</view>
 
 		<text class="card-title bl-orange">我从哪里来？</text>
 
-		<view class="card-content card-content-tip">{{userInfo.cameFrom}}</view>
+		<view class="card-content card-content-tip">{{userInfo.cameFrom||"未填写"}}</view>
 
 		<text class="card-title bl-blue">我的兴趣爱好/擅长？</text>
 
-		<view class="card-content card-content-tip">{{userInfo.hobby}}</view>
+		<view class="card-content card-content-tip">{{userInfo.hobby||"未填写"}}</view>
 
 		<!-- <text class="card-title bl-red">我擅长做什么？</text>
 
@@ -37,7 +37,7 @@
 
 		<text class="card-title bl-green">我的资源是什么？</text>
 
-		<view class="card-content card-content-tip">{{userInfo.mySource}}</view>
+		<view class="card-content card-content-tip">{{userInfo.mySource||"未填写"}}</view>
 	</view>
 
 	<!--弹窗-->

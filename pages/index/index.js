@@ -127,8 +127,9 @@ create.Page(store, {
    */
   getLatestCourse: function (classNumber, userId) {
     var _t = this;
-    var _tsd = _t.store.data;
-    _tsd.showCourseLoadding = true;
+    var _tsd = _t.store.data;  
+    _tsd.showCourseLoadding = _tsd.latestCourse.length<=0;
+    _tsd.showNoneCourseTip = false;
     let success = function (result) {
       console.log(config.api.latestCourse + "?classNumber=" + classNumber + "=>");
       console.log(result);
@@ -152,14 +153,30 @@ create.Page(store, {
         courseDate.gap = util.formatDayGap(util.getDateGap(date));
         courseDate.week = util.formatWeekDay(date);
 
+        let lastDate = "";
+        let courseDates = [];
+
+
         for (var i = 0; i < cs.length; i++) {
           var item = cs[i];
+          if(item.courseDate!=lastDate){
+            let date = new Date(item.courseDate);
+            lastDate = item.courseDate;
+            courseDates.push({
+              courseDate:item.courseDate,
+              date:util.formatDate(date),
+              gap:util.formatDayGap(util.getDateGap(date)),
+              week:util.formatWeekDay(date)
+            }); 
+          }
           var start = util.formatTime(item.startTime);
           var end = util.formatTime(item.endTime);
           cs[i].timeGap = start + "-" + end;
         }
 
         _t.store.set(_tsd, 'courseDate', courseDate);
+        _t.store.set(_tsd, 'courseDates', courseDates);
+        //console.log("courseDates",courseDates);
         _t.store.set(_tsd, 'latestCourse', cs);
         _t.store.set(_tsd, 'schoolTerm', item.schoolTerm);
 
@@ -171,7 +188,8 @@ create.Page(store, {
 
     let data = {
       classNumber: classNumber,
-      userId: userId
+      userId: userId,
+      isNextDate:true,//同时获取第二天的课程
     };
 
     //完成事件处理
@@ -385,9 +403,9 @@ create.Page(store, {
       }
     } else {
       _t.getWxSetting();
-      if (_tsd.indexClassInfo.classNumber) {
-        _t.getLatestCourse(_tsd.indexClassInfo.classNumber, 0);
-      }
+      // if (_tsd.indexClassInfo.classNumber) {
+      //   _t.getLatestCourse(_tsd.indexClassInfo.classNumber, 0);
+      // }
 
     }
 

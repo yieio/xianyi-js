@@ -6,6 +6,7 @@
 
 .course-info-wrap {
   margin-top: 10rpx;
+  margin-bottom:30rpx;
 }
 
 .course-date {
@@ -33,7 +34,6 @@
 
 .course-info {
   font-size: 32rpx;
-  margin-top: 26rpx;
 }
 
 .exam-tip{

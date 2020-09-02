@@ -4,7 +4,16 @@ import config from '../../../config.js';
 import store from '../../../store/index'
 
 create.Component(store, {
-  use: ['userInfo', 'hasUserInfo', 'courseDate', 'latestCourse', 'classNumber', 'showNoneCourseTip', 'showCourseLoadding'],
+  use: [
+    'userInfo',
+    'hasUserInfo',
+    'courseDates',
+    'latestCourse',
+    'classNumber',
+    'showNoneCourseTip',
+    'showCourseLoadding',
+    
+  ],
   /**
    * 组件的属性列表
    */
@@ -26,7 +35,7 @@ create.Component(store, {
       let _tsd = _t.store.data;
       if (key == "goCourseList") {
         let classNumber = "";
-        if(_tsd.hasUserInfo){
+        if (_tsd.hasUserInfo) {
           classNumber = _tsd.userInfo.classNumber;
         }
         classNumber = classNumber || _tsd.indexClassInfo.classNumber;
@@ -37,10 +46,10 @@ create.Component(store, {
           schoolTerm = _tsd.latestCourse[0].schoolTerm;
           courseDate = _tsd.latestCourse[0].courseDate;
         };
- 
+
 
         let userId = 0;
-        if(_tsd.hasUserInfo){
+        if (_tsd.hasUserInfo) {
           userId = _tsd.userInfo.userId;
         }
         if (!classNumber && userId == 0) {
@@ -50,7 +59,7 @@ create.Component(store, {
           wx.showToast({
             title: '需要您登录加入班集体',
             icon: 'none'
-          }) 
+          })
         } else {
           config.router.goCourseList(classNumber, schoolTerm, courseDate);
         }
