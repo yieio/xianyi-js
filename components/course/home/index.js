@@ -35,7 +35,7 @@ create.Component(store, {
       let _tsd = _t.store.data;
       if (key == "goCourseList") {
         let classNumber = "";
-        if (_tsd.hasUserInfo) {
+        if(_tsd.hasUserInfo){
           classNumber = _tsd.userInfo.classNumber;
         }
         classNumber = classNumber || _tsd.indexClassInfo.classNumber;
@@ -47,9 +47,8 @@ create.Component(store, {
           courseDate = _tsd.latestCourse[0].courseDate;
         };
 
-
         let userId = 0;
-        if (_tsd.hasUserInfo) {
+        if(_tsd.hasUserInfo){
           userId = _tsd.userInfo.userId;
         }
         if (!classNumber && userId == 0) {
@@ -59,7 +58,7 @@ create.Component(store, {
           wx.showToast({
             title: '需要您登录加入班集体',
             icon: 'none'
-          })
+          }) 
         } else {
           config.router.goCourseList(classNumber, schoolTerm, courseDate);
         }
