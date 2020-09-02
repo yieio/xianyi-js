@@ -3,7 +3,7 @@ export default {
     userTokenKey:'userToken',
     userToken:null,
 
-    userInfo: null,
+    userInfo: {},
     hasUserInfo: false, 
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
 

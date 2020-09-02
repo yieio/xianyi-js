@@ -16,6 +16,7 @@ create.Page(store, {
     'showCourseLoadding',
     'indexClassInfo',
     'isShowGoLoginTipDialog',
+    'isShowAddClassDialog',
   ],
 
   /**
@@ -29,6 +30,7 @@ create.Page(store, {
       isShowSwitchClassDialog: false,
       classArrary: [],
       classIndex: -1,
+      isShowLoginMenu:false
     });
 
   },
@@ -105,7 +107,10 @@ create.Page(store, {
         }
       }
     };
-    let classNumber = _tsd.userInfo.classNumber || _tsd.indexClassInfo.classNumber;
+    let classNumber = _tsd.indexClassInfo.classNumber;
+    if(_tsd.hasUserInfo&&_tsd.userInfo.classNumber){
+      classNumber = _tsd.userInfo.classNumber;
+    }
     let data = {
       classNumber,
       isAll: 1
@@ -267,7 +272,6 @@ create.Page(store, {
       userInfo.className =  _tsd.indexClassInfo.className || '';
 
       let success = function (result) {
-        console.log(result); 
           var _data = result.data.data;
           let ui = _data.userInfo;
           ui.genderName = util.getGenderName(_data.userInfo.gender);
@@ -275,9 +279,13 @@ create.Page(store, {
           _tsd.userInfo = ui;
           _tsd.hasUserInfo = true;
 
-          //检查班级设置情况，没有班级弹窗引导去设置
-          //_t.hasClassroom();
- 
+          if(_tsd.userInfo.classNumber){
+            _t.setData({
+              isShowLoginMenu:false
+            })
+          }else{
+            _tsd.isShowAddClassDialog = true;
+          }
       };
 
       services.signup({data:userInfo,success}); 
@@ -399,7 +407,7 @@ create.Page(store, {
       if (!classNumber && _tsd.userInfo.classNumber) {
         classNumber = _tsd.userInfo.classNumber;
       }
-      userId = _tsd.userInfo.userId || 0;
+      userId = _tsd.userInfo.userId || userId; 
     }
 
     if (classNumber || userId) {
@@ -421,8 +429,12 @@ create.Page(store, {
     _t.getWxSetting();
 
     //首次登录后，刷新最近课程
-    let classNumber = _tsd.userInfo.classNumber || _tsd.indexClassInfo.classNumber;
-    let userId = _tsd.userInfo.userId || 0;
+    let classNumber = _tsd.indexClassInfo.classNumber;    
+    let userId = 0;
+    if(_tsd.hasUserInfo){
+      classNumber =  _tsd.userInfo.classNumber||classNumber;
+      userId = _tsd.userInfo.userId||userId;
+    }
     if (classNumber || userId) {
       _t.getLatestCourse(classNumber, userId);
     }
@@ -435,8 +447,14 @@ create.Page(store, {
     let _t = this;
     let _tsd = _t.store.data;
     let _td = _t.data;
-    let classNumber = _tsd.indexClassInfo.classNumber || _tsd.userInfo.classNumber || "";
-    let className = _tsd.indexClassInfo.className || _tsd.userInfo.className || "";
+    let classNumber = _tsd.indexClassInfo.classNumber;
+    let className = _tsd.indexClassInfo.className;
+
+    if(_tsd.hasUserInfo){
+      classNumber = classNumber || _tsd.userInfo.classNumber || "";
+      className = className|| _tsd.userInfo.className|| "";
+    }
+
     let title = className + '最近课程';
 
     return {
@@ -452,8 +470,13 @@ create.Page(store, {
   onShareTimeline: function () {
     let _t = this;
     let _tsd = _t.store.data;
-    let classNumber = _tsd.indexClassInfo.classNumber || _tsd.userInfo.classNumber;
-    let className = _tsd.indexClassInfo.className || _tsd.userInfo.className;
+    let classNumber = _tsd.indexClassInfo.classNumber ;
+    let className = _tsd.indexClassInfo.className ;
+
+    if(_tsd.hasUserInfo){
+      classNumber = classNumber || _tsd.userInfo.classNumber||"";
+      className = className|| _tsd.userInfo.className||"";
+    }
 
     return {
       title: className + '最近课程',

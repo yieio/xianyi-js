@@ -14,8 +14,14 @@
 				<text class="text-grey text-sm">{{indexClassInfo.classNumber}}</text>
 			</view>
 		</view>
+		<view wx:if="{{isShowLoginMenu&&canIUse}}" class="cu-item arrow" hover-class="tap-hover">
+			<button class="cu-btn content" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="getUserInfo">
+				<text class="cuIcon-group_fill text-cyan"></text>
+				<text class="text-grey">点击加入{{indexClassInfo.className}}</text>
+			</button>
+		</view>
 
-		<view class="cu-item arrow" hover-class="tap-hover">
+		<view wx:else class="cu-item arrow" hover-class="tap-hover">
 			<button class="cu-btn content" open-type="share">
 				<text class="cuIcon-share text-cyan"></text>
 				<text class="text-grey">分享给同学</text>
@@ -24,7 +30,7 @@
 	</view>
 
 	<!--有问题加我微信-->
-	<view class="text-gray" style="text-align:center"><text bindtap="actionTap" data-key="copyWechatNumber">有想法或问题，欢迎加我微信：yieioo</text></view>
+	<view class="text-gray" style="text-align:center"><text bindtap="actionTap" data-key="copyWechatNumber">3.0.3-有想法或问题，欢迎加我微信：yieioo</text></view>
 
 	<!--更换班级弹窗开始-->
 	<view class="cu-modal bottom-modal {{isShowSwitchClassDialog?'show':''}}" bindtap="actionTap" data-key="hideSwitchClassDialog">
@@ -53,21 +59,25 @@
 	<!--登录授权弹窗开始-->
 
 	<view class="cu-modal bottom-modal {{isShowGoLoginTipDialog?'show':''}}">
-	<view class="cu-dialog">
-		<view class="cu-bar bg-white justify-end">
-			<view class="content">需登录加入班集体</view>
-		</view>
-		<view class="padding-xl">
-			你还未登录和加入班集体，登录后也可以创建自己的班集体，快去登录吧~
-		</view>
-		<view class="cu-bar bg-white">  
-			<button class="cu-btn bg-white text-green"  style="text-align:center;width:100%" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="getUserInfo"> 
-			授权登录
-		</button> 
+		<view class="cu-dialog">
+			<view class="cu-bar bg-white justify-end">
+				<view class="content">需登录加入班集体</view>
+			</view>
+			<view class="padding-xl">
+				你还未登录和加入班集体，登录后也可以创建自己的班集体，快去登录吧~
+			</view>
+			<view class="cu-bar bg-white">
+				<button class="cu-btn bg-white text-green" style="text-align:center;width:100%" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="getUserInfo">
+					授权登录
+				</button>
+			</view>
 		</view>
 	</view>
-</view>
-	<!--更换班级弹窗结束-->
+	<!--登录授权弹窗结束-->
+
+	<!--加入班级弹窗开始-->
+	<addclass-dialog />
+	<!--加入班级弹窗结束-->
 
 
 </view>

@@ -25,7 +25,11 @@ create.Component(store, {
       let _t = this;
       let _tsd = _t.store.data;
       if (key == "goCourseList") {
-        let classNumber = _tsd.userInfo.classNumber || _tsd.indexClassInfo.classNumber;
+        let classNumber = "";
+        if(_tsd.hasUserInfo){
+          classNumber = _tsd.userInfo.classNumber;
+        }
+        classNumber = classNumber || _tsd.indexClassInfo.classNumber;
         let schoolTerm = 1;
         let courseDate = _tsd.schoolTerm;
         if (_tsd.latestCourse.length > 0) {
@@ -35,14 +39,18 @@ create.Component(store, {
         };
  
 
-        let userId = _tsd.userInfo.userId || 0;
+        let userId = 0;
+        if(_tsd.hasUserInfo){
+          userId = _tsd.userInfo.userId;
+        }
         if (!classNumber && userId == 0) {
+          wx.switchTab({
+            url: '/pages/my/home/home'
+          })
           wx.showToast({
-            title: '没有课程表',
-            icon: 'none',
-            duration: 2000
-          });
-
+            title: '需要您登录加入班集体',
+            icon: 'none'
+          }) 
         } else {
           config.router.goCourseList(classNumber, schoolTerm, courseDate);
         }
